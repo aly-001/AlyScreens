@@ -1,3 +1,7 @@
+// Desc: Service for managing EPUB files, including saving and loading them from the device's file system.
+// When an EPUB is selected, it gets moved to the app's document directory using the FileSystemService.
+// Then, the URI of the stored EPUB is saved in AsyncStorage using the StorageService.
+
 import { saveFileToDocumentDirectory, checkFileExists } from './FileSystemService';
 import { saveEpubUri, getEpubUri, removeEpubUri } from './StorageService';
 

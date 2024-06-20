@@ -1,3 +1,4 @@
+// Code to save epub to document directory and check if file exists in document directory
 import * as FileSystem from 'expo-file-system';
 
 export const saveFileToDocumentDirectory = async (fileUri, fileName) => {

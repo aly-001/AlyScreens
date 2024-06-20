@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Alert } from 'react-native';
 import { ReaderProvider } from '@epubjs-react-native/core';
-import { Reader } from '@epubjs-react-native/core';
 import { useFileSystem } from '@epubjs-react-native/expo-file-system';
 
 import EpubPicker from '../components/EpubPicker';
