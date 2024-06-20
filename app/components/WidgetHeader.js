@@ -1,0 +1,36 @@
+import { View, StyleSheet, Text } from "react-native";
+import React from "react";
+import colors from "../config/colors";
+import fonts from "../config/fonts";
+import margins from "../config/margins";
+import { FontAwesome6} from "@expo/vector-icons";
+
+export default function WidgetHeader({ text }) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>{text}</Text>
+      
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  header: {
+    fontSize: 30,
+    fontWeight: "600",
+    marginBottom: 10,
+    fontFamily: fonts.main,
+    margin: margins.homeHeaderMargin,
+    marginBottom: 50,
+    color: colors.widgetHeader,
+  },
+  chevron: {
+    position: "absolute",
+    right: 28,
+    top: 28,
+  },
+});
