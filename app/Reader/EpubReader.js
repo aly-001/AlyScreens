@@ -5,8 +5,6 @@ import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { injectedScript } from "./injectedScript";
 
 export default function EpubReader({ uri, handleWebViewMessage }) {
-
-
   return (
     <View style={styles.readerContainer}>
       <Reader
@@ -18,7 +16,7 @@ export default function EpubReader({ uri, handleWebViewMessage }) {
           console.log("word", message.word);
           console.log("innerContext", message.innerContext);
           console.log("outerContext", message.outerContext);
-
+          console.log("location", message.location);
           handleWebViewMessage(message);
         }}
       />

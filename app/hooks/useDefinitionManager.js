@@ -7,6 +7,8 @@ export default function useDefinitionManager() {
   const [currentWord, setCurrentWord] = useState('');
   const [currentDefinition, setCurrentDefinition] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const [started, setStarted] = useState(false);
   const [ws, setWs] = useState(null);
 
   useEffect(() => {
@@ -31,11 +33,14 @@ export default function useDefinitionManager() {
           setIsLoading(true);
           break;
         case 'content':
+          setStarted(false);
           setCurrentDefinition((prev) => prev + message.data);
           setIsLoading(false);
           break;
         case 'done':
+          console.log("Finished");
           setIsLoading(false);
+          setFinished(true);
           break;
         case 'error':
           console.error('Error from server:', message.error);
@@ -54,8 +59,12 @@ export default function useDefinitionManager() {
     };
   }, []);
 
-  const handleWebViewMessage = async (message) => {
+  const handleWebViewMessageDefinition = async (message) => {
     setCurrentDefinition('');
+    setFinished(false);
+    setStarted(true);
+    console.log("Started");
+
     const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
     const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
     setCurrentWord(capitalizedWord);
@@ -88,7 +97,9 @@ export default function useDefinitionManager() {
     currentWord,
     currentDefinition,
     isLoading,
-    handleWebViewMessage,
+    finished,
+    started,
+    handleWebViewMessageDefinition,
     handleClosePopup
   };
 }

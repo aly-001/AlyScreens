@@ -64,8 +64,18 @@ export const injectedScript = `
               const endIndexOuter = Math.min(doc.body.wordList.length, wordId + contextOuter);
               const outerContext = doc.body.wordList.slice(startIndexOuter, endIndexOuter).join(" ");
               const entireTextHTML = doc.body.innerHTML;
-              window.ReactNativeWebView.postMessage(JSON.stringify({ type: "longpress", text: targetElement.outerHTML, innerContext: innerContext, outerContext: outerContext, word: word, entireTextHTML: entireTextHTML}));
-            }, 200); // 300ms for long press duration
+
+              // Get location
+              const rect = targetElement.getBoundingClientRect();
+              const location = {
+                top: rect.top,
+                left: rect.left % window.innerWidth, // Normalize left position
+                width: rect.width,
+                height: rect.height
+              };
+
+              window.ReactNativeWebView.postMessage(JSON.stringify({ type: "longpress", text: targetElement.outerHTML, innerContext: innerContext, outerContext: outerContext, word: word, location: location, entireTextHTML: entireTextHTML}));
+            }, 200); // 200ms for long press duration
           }
         });
 
@@ -101,5 +111,5 @@ export const injectedScript = `
     applyCustomStyles();
     wrapWordsInSpans();
     addLongPressListener();
-  }, 0010);
+  }, 0000);
 `;
