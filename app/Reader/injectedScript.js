@@ -51,7 +51,7 @@ export const injectedScript = `
           const targetElement = event.target;
           if (targetElement.tagName === 'SPAN') {
             timer = setTimeout(() => {
-              targetElement.style.backgroundColor = 'yellow'; // Highlight the long-pressed element
+             // targetElement.style.backgroundColor = 'yellow'; // Highlight the long-pressed element
               const wordId = parseInt(targetElement.id.replace('word-', ''), 10);
               const word = targetElement.textContent.trim();
 
@@ -85,5 +85,5 @@ export const injectedScript = `
   setInterval(() => {
     wrapWordsInSpans();
     addLongPressListener();
-  }, 2000);
+  }, 3000);
 `;
