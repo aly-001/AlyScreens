@@ -2,8 +2,7 @@ import { View, StyleSheet, Text } from "react-native";
 import React from "react";
 import colors from "../config/colors";
 import fonts from "../config/fonts";
-import margins from "../config/margins";
-import { FontAwesome6} from "@expo/vector-icons";
+import layout from "../config/layout";
 
 export default function WidgetHeader({ text }) {
   return (
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
     fontFamily: fonts.main,
-    margin: margins.homeHeaderMargin,
+    margin: layout.margins.homeHeaderMargin,
     marginBottom: 50,
     color: colors.widgetHeader,
   },

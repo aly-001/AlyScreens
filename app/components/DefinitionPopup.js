@@ -15,7 +15,9 @@ const DefinitionPopup = ({ visible, onClose, word, definition, isLoading }) => {
             <View style={styles.modalView}>
               <Text style={styles.wordText}>{word}</Text>
               {isLoading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="grey" />
+                </View>
               ) : (
                 <Text style={styles.definitionText}>{definition}</Text>
               )}
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent', // Changed back to transparent
+    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Semi-transparent background
   },
   modalView: {
     backgroundColor: 'white',
@@ -68,6 +70,17 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 20,
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#0000ff',
     fontWeight: 'bold',
   },
 });

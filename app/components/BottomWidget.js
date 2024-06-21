@@ -1,9 +1,7 @@
 import { View, StyleSheet, Text } from "react-native";
 import React from "react";
 import WidgetHeader from "./WidgetHeader";
-import borderRadius from "../config/borderRadius";
-import margins from "../config/margins";
-import shadows from "../config/shadows";
+import layout from "../config/layout";
 
 export default function BottomWidget({ header, IconComponent, iconColor="#000" }) {
   return (
@@ -19,16 +17,15 @@ export default function BottomWidget({ header, IconComponent, iconColor="#000" }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: margins.homeScreenWidgets / 2,
+    marginHorizontal: layout.margins.homeScreenWidgets/2,
     height: 190,
     backgroundColor: "white",
-    borderRadius: borderRadius.homeScreenWidgets,
-
-    shadowColor: shadows.homeScreenWidgets.shadowColor,
-    shadowOffset: shadows.homeScreenWidgets.shadowOffset,
-    shadowOpacity: shadows.homeScreenWidgets.shadowOpacity,
-    shadowRadius: shadows.homeScreenWidgets.shadowRadius,
-    elevation: shadows.homeScreenWidgets.elevation,
+    borderRadius: layout.borderRadius.homeScreenWidgets,
+    shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
+    shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
+    shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
+    shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
+    elevation: layout.shadows.homeScreenWidgets.elevation,
   },
   iconContainer: {
     flex: 1,

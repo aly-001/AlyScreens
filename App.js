@@ -1,7 +1,6 @@
 import React from "react";
-import ReadScreen from "./app/screens/ReadScreen";
-import EpubPicker from "./app/components/EpubPicker";
+import HomeScreen from "./app/screens/HomeScreen";
 
 export default function App({}) {
-  return <ReadScreen />;
+  return <HomeScreen />;
 }

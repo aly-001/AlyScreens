@@ -7,11 +7,11 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import StatBox from "../components/StatBox";
 import colors from "../config/colors";
-import margins from "../config/margins";
+import layout from "../config/layout";
 import MyLibrary from "../components/MyLibrary";
 import BottomWidget from "../components/BottomWidget";
 
-export default function TestHome({}) {
+export default function HomeScreen({}) {
   return (
     <View style={styles.superContainer}>
       <Screen>
@@ -66,24 +66,24 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: margins.homeScreenWidgets / 2,
+    padding: layout.margins.homeScreenWidgets / 2,
     paddingTop: 210,
   },
   headerContainer: {
     position: "absolute",
     top: 30,
-    left: margins.homeScreenWidgets,
+    left: layout.margins.homeScreenWidgets,
     zIndex: 1,
   },
   topWidgetContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: margins.homeScreenWidgets,
+    marginBottom: layout.margins.homeScreenWidgets,
   },
   libraryContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: margins.homeScreenWidgets,
+    marginBottom: layout.margins.homeScreenWidgets,
   },
   bottomWidgetContainer: {
     flexDirection: "row",

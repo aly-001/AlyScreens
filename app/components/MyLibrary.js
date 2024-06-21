@@ -2,12 +2,8 @@ import { View, StyleSheet, ScrollView, Text } from "react-native";
 import React from "react";
 
 import BookCoverThumb from "./BookCoverThumb";
-import fonts from "../config/fonts";
-import colors from "../config/colors";
-import borderRadius from "../config/borderRadius";
+import layout from "../config/layout";
 import WidgetHeader from "./WidgetHeader";
-import shadows from "../config/shadows";
-import margins from "../config/margins";
 
 const books = [
   {
@@ -82,21 +78,21 @@ export default function MyLibrary({}) {
 
 const styles = StyleSheet.create({
   hiddenStrip: {
-    width: 35,
+    width: 45,
   },
   booksContainer: {
   },
   container: {
     paddingBottom: 35,
     flex: 1,
-    marginHorizontal: margins.homeScreenWidgets / 2,
+    marginHorizontal: layout.margins.homeScreenWidgets / 2,
     backgroundColor: "white",
-    borderRadius: borderRadius.homeScreenWidgets,
+    borderRadius: layout.borderRadius.homeScreenWidgets,
 
-    shadowColor: shadows.homeScreenWidgets.shadowColor,
-    shadowOffset: shadows.homeScreenWidgets.shadowOffset,
-    shadowOpacity: shadows.homeScreenWidgets.shadowOpacity,
-    shadowRadius: shadows.homeScreenWidgets.shadowRadius,
-    elevation: shadows.homeScreenWidgets.elevation,
+    shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
+    shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
+    shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
+    shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
+    elevation: layout.shadows.homeScreenWidgets.elevation,
   },
 });
