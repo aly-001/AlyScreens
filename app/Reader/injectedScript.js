@@ -1,4 +1,3 @@
-// injectedScript.js
 export const injectedScript = `
   function wrapNode(node, wordList) {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -51,7 +50,6 @@ export const injectedScript = `
           const targetElement = event.target;
           if (targetElement.tagName === 'SPAN') {
             timer = setTimeout(() => {
-             // targetElement.style.backgroundColor = 'yellow'; // Highlight the long-pressed element
               const wordId = parseInt(targetElement.id.replace('word-', ''), 10);
               const word = targetElement.textContent.trim();
 
@@ -82,8 +80,26 @@ export const injectedScript = `
     }
   }
 
+  function applyCustomStyles() {
+    const iframe = document.querySelector("iframe");
+    if (iframe) {
+      const doc = iframe.contentWindow.document;
+      var style = document.createElement('style');
+      style.innerHTML = \`
+        body {
+          font-family: 'System', Helvetica, !important;
+          font-size: 18pt !important;
+          font-weight: 500 !important;
+          line-height: 1.6 !important;
+        }
+      \`;
+      doc.head.appendChild(style);
+    }
+  }
+
   setInterval(() => {
+    applyCustomStyles();
     wrapWordsInSpans();
     addLongPressListener();
-  }, 3000);
+  }, 0010);
 `;
