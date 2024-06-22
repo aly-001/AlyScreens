@@ -11,7 +11,6 @@ import LocationPointer from '../components/LocationPointer';
 
 export default function ReadScreen() {
   const [location, setLocation] = useState({ top: 0, left: 0, width: 0, height: 0 });
-  const [added, setAdded] = useState(true);
   const { fileUri, handlePickComplete } = useEpubManager();
   const { 
     popupVisible, 
@@ -20,8 +19,10 @@ export default function ReadScreen() {
     isLoading, 
     started,
     finished,
+    added,
     handleWebViewMessageDefinition, 
-    handleClosePopup 
+    handleClosePopup,
+    handleToggle,
   } = useDefinitionManager();
 
   const handleWebViewMessage = (message) => {
@@ -48,7 +49,7 @@ export default function ReadScreen() {
           added={added}
           finished={finished}
           started={started}
-          onToggleCheck={() => setAdded(!added)}
+          onToggleCheck={handleToggle}
         />
         <LocationPointer location={location} />
       </ReaderProvider>

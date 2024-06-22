@@ -5,22 +5,24 @@ import { Ionicons } from "@expo/vector-icons";
 
 
 
-export default function CheckMark({ checked, finished, started, checkDelay}) {
+export default function CheckMark({ added, finished, started, checkDelay}) {
   const [defFinished, setDefFinished] = useState(finished);
   useEffect(() => {
     let timer;
-    if (checked && finished) {
+    if (added && finished) {
       timer = setTimeout(() => {
         setDefFinished(true);
       }, checkDelay);
     }
+    // pretty log of all state variables
+    console.log({ "added": added, "finished": finished, "defFinished": defFinished });
     return () => clearTimeout(timer);
-  }, [checked, finished, checkDelay]);
+  }, [added, finished, checkDelay]);
 
   return (
       
       <View style={styles.container}>
-        {(checked && defFinished) && (
+        {(added && defFinished) && (
           <View style={styles.iconContainer}>
             <Ionicons name="checkmark" size={40} color={colors.utilityBlue} />
           </View>

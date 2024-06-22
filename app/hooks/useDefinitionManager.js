@@ -11,6 +11,8 @@ export default function useDefinitionManager() {
   const [started, setStarted] = useState(false);
   const [ws, setWs] = useState(null);
 
+  const [added, setAdded] = useState(true);
+
   useEffect(() => {
     connectWebSocket();
     return () => {
@@ -60,6 +62,7 @@ export default function useDefinitionManager() {
   }, []);
 
   const handleWebViewMessageDefinition = async (message) => {
+    setAdded(true);
     setCurrentDefinition('');
     setFinished(false);
     setStarted(true);
@@ -92,6 +95,12 @@ export default function useDefinitionManager() {
     setCurrentDefinition('');
   };
 
+  const handleToggle = () => {
+    console.log("Toggled");
+    console.log(added);
+    setAdded(!added);
+  };
+
   return {
     popupVisible,
     currentWord,
@@ -99,7 +108,10 @@ export default function useDefinitionManager() {
     isLoading,
     finished,
     started,
+    added,
     handleWebViewMessageDefinition,
-    handleClosePopup
+    handleClosePopup,
+    handleToggle,
+
   };
 }

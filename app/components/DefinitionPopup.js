@@ -87,7 +87,7 @@ const DefinitionPopup = ({
                   activeOpacity={1}
                   style={{ flexDirection: "row" }}
                 >
-                  <CheckMark checked={added} started={started} finished={finished} checkDelay={400} />
+                  <CheckMark added={added} started={started} finished={finished} checkDelay={400} />
                   <View style={styles.footerTextContainer}>
                     <Text style={styles.footerText}>{addText}</Text>
                   </View>

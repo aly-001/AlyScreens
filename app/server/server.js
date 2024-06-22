@@ -28,7 +28,7 @@ wss.on('connection', (ws) => {
         messages: [
           {
             role: "user",
-            content: `give a short (no more than 20 words and no less than 3 words) definition of ${word} in the context of ${innerContext}. Oh and in english please.`,
+            content: `give a short (no more than 20 words and no less than 3 words) definition of ${word} in the context of ${innerContext}. Oh and in english please. Here's more context: ${outerContext}`,
           },
         ],
         stream: true,
