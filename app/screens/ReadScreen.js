@@ -41,6 +41,7 @@ export default function ReadScreen() {
           handleWebViewMessage={handleWebViewMessage}
         />
         <DefinitionPopup
+          location={location}
           visible={popupVisible}
           onClose={handleClosePopup}
           word={currentWord}
