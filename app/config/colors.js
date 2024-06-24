@@ -4,12 +4,17 @@ export default {
   utilityBlueLight: "#8489B3",
   utilityBlueUltraLight: "#B8BACE",
   utilityBlueCrazyLight: "#EEEFF5",
+  
+  utilityGrey: "#2E2E2E",
+  utilityGreyUltraLight: "#CDCDCD",
+  utilityGrayCrazyLight: "#F1F1F5",
+
   homeScreenBackground: "#F1F1F5",
   homeScreenIcon: "#e7e6ea",
   homeHeader: "#9192A3",
   widgetHeader: "#707395",
-  defHeader: "#1B225C",
-  defText: "#3C3E4D",
+  defHeader: "#3F3F3F",
+  defText: "#4C4C4C",
   book: {
     // Brianna's colors:
     pinkRed: "#D15A6C",

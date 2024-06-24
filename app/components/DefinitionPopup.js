@@ -29,6 +29,7 @@ const DefinitionPopup = ({
   onToggleCheck,
   started,
   finished,
+
 }) => {
   const [addText, setAddText] = useState("");
   const [direction, setDirection] = useState("D");
@@ -82,7 +83,7 @@ const DefinitionPopup = ({
   };
 
   const animateAddText = () => {
-    const text = "Added to deck";
+    const text = "Generate flashcard";
     const words = text.split(" ");
     let index = 0;
 
@@ -124,8 +125,8 @@ const DefinitionPopup = ({
       z = modalWidth + locationLeft - width + padding;
     }
 
-    return z; 
-  }
+    return z;
+  };
 
   return (
     <Modal
@@ -135,6 +136,7 @@ const DefinitionPopup = ({
       animationType="fade"
     >
       <TouchableWithoutFeedback onPress={onClose}>
+        
         <View style={styles.centeredView}>
           <View
             style={[
@@ -155,7 +157,7 @@ const DefinitionPopup = ({
                       justifyContent: "flex-start",
                     }
                   : direction === "U"
-                  ? { height: locationTop -20, justifyContent: "flex-end" }
+                  ? { height: locationTop - 20, justifyContent: "flex-end" }
                   : null,
               ]}
             >
@@ -178,11 +180,24 @@ const DefinitionPopup = ({
                   <View
                     style={[
                       styles.pointerContainer,
-                      direction === "U" ? styles.pointerBottom : styles.pointerTop,
-                      { left: calculatePointerLeft() - 6},
+                      direction === "U"
+                        ? styles.pointerBottom
+                        : styles.pointerTop,
+                      { left: calculatePointerLeft() - 6 },
                     ]}
                   >
                     <Pointer direction={direction} />
+                  </View>
+                  <View
+                    style={[
+                      styles.pointerContainer,
+                      direction === "U"
+                        ? styles.pointerCoverBottom
+                        : styles.pointerCoverTop,
+                      { left: calculatePointerLeft() - 6 },
+                    ]}
+                  >
+                    <View style={styles.pointerCover}></View>
                   </View>
                 </View>
               </TouchableWithoutFeedback>
@@ -198,7 +213,7 @@ const ModalHeader = ({ word, onClose }) => (
   <View style={styles.header}>
     <Text style={styles.wordText}>{word}</Text>
     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-      <Ionicons name="close" size={28} color={colors.utilityBlue} />
+      <Ionicons name="close" size={28} color={colors.utilityGrey} />
     </TouchableOpacity>
   </View>
 );
@@ -226,7 +241,7 @@ const ModalFooter = ({ added, started, finished, onToggleCheck, addText }) => (
         added={added}
         started={started}
         finished={finished}
-        checkDelay={400}
+        checkDelay={300}
       />
       <View style={styles.footerTextContainer}>
         <Text style={styles.footerText}>{addText}</Text>
@@ -252,19 +267,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     width: (width * 3.75) / 6.25,
     borderRadius: 10,
-    borderColor: colors.utilityBlueUltraLight,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    borderColor: "grey",
+    borderWidth: 2,
   },
   header: {
     height: 70,
     justifyContent: "center",
     alignItems: "center",
     borderBottomWidth: 1.5,
-    borderColor: colors.utilityBlueUltraLight,
+    borderColor: colors.utilityGreyUltraLight,
   },
   closeButton: {
     position: "absolute",
@@ -299,7 +310,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontFamily: fonts.main,
-    color: colors.utilityBlue,
+    color: colors.utilityGrey,
     fontSize: 24,
     marginLeft: 10,
     opacity: 0.5,
@@ -310,14 +321,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pointerContainer: {
-    position: 'absolute',
-    alignItems: 'center',
+    position: "absolute",
+    alignItems: "center",
   },
   pointerTop: {
     top: -8,
   },
   pointerBottom: {
     bottom: -8,
+  },
+  pointerCover: {
+    width: 80,
+    height: 20,
+  },
+  pointerCoverTop: {
+    top: 0,
+    left: -5,
+    right: 230,
+  },
+  pointerCoverBottom: {
+    position: "absolute",
+    bottom: 0,
+    right: width * (3.75 / 6.25) - 30,
+  },
+  highlight: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 0, 0.3)',
+    zIndex: 1,
   },
 });
 

@@ -52,7 +52,7 @@ export default function ReadScreen() {
           started={started}
           onToggleCheck={handleToggle}
         />
-        <LocationPointer location={location} />
+        <LocationPointer location={location} visible={popupVisible } />
       </ReaderProvider>
     );
   } else {

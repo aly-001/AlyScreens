@@ -24,7 +24,7 @@ export default function CheckMark({ added, finished, started, checkDelay}) {
       <View style={styles.container}>
         {(added && defFinished) && (
           <View style={styles.iconContainer}>
-            <Ionicons name="checkmark" size={40} color={colors.utilityBlue} />
+            <Ionicons name="checkmark" size={40} color={colors.utilityGrey} />
           </View>
         )}
       </View>
@@ -33,7 +33,7 @@ export default function CheckMark({ added, finished, started, checkDelay}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.utilityBlueCrazyLight,
+    backgroundColor: colors.utilityGrayCrazyLight,
     height: 27,
     width: 27,
     borderRadius: 4,
