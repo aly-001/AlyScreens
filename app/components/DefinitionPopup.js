@@ -15,6 +15,7 @@ import fonts from "../config/fonts";
 import colors from "../config/colors";
 import CheckMark from "./CheckMark";
 import Pointer from "./Pointer";
+import PulsatingCircles from "./PulsatingCircles";
 
 const { width, height } = Dimensions.get("window");
 
@@ -222,7 +223,7 @@ const ModalContent = ({ isLoading, definition }) => (
   <View style={styles.content}>
     {isLoading ? (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="grey" />
+        <PulsatingCircles />
       </View>
     ) : (
       <Text style={styles.definitionText}>{definition}</Text>
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   pointerContainer: {
     position: "absolute",

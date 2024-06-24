@@ -1,14 +1,8 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity } from "react-native";
-import HomeScreen from "./app/screens/HomeScreen";
-import ReadScreen from "./app/screens/ReadScreen";
-import MagnificentCheckmark from "./app/components/MagnificentCheckmark";
-import DefinitionPopup from "./app/components/DefinitionPopup";
+import React from 'react';
+import ReadScreen from './app/screens/ReadScreen';
 
-export default function App() {
-  const [isChecked, setIsChecked] = useState(false);
-  
+export default function App({}) {
   return (
-  <ReadScreen />
+    <ReadScreen/>
   );
 }

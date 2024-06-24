@@ -2,6 +2,7 @@ import { View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import React, { useState, useEffect } from "react";
 import colors from "../config/colors";
 import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 
 
@@ -24,7 +25,7 @@ export default function CheckMark({ added, finished, started, checkDelay}) {
       <View style={styles.container}>
         {(added && defFinished) && (
           <View style={styles.iconContainer}>
-            <Ionicons name="checkmark" size={40} color={colors.utilityGrey} />
+            <FontAwesome6 name="check" size={23} color={colors.utilityGrey} />
           </View>
         )}
       </View>
@@ -42,7 +43,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     position: "absolute",
-    top: -8,
-    left: -1,
+    top: 2,
+    left:4,
+    opacity: 1,
   },
 });
