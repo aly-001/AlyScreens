@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import fonts from "../config/fonts";
 import colors from "../config/colors";
 import CheckMark from "./CheckMark";
+import Pointer from "./Pointer";
 
 const { width, height } = Dimensions.get("window");
 
@@ -31,6 +32,8 @@ const DefinitionPopup = ({
 }) => {
   const [addText, setAddText] = useState("");
   const [direction, setDirection] = useState("D");
+  const [locationTop, setLocationTop] = useState(0);
+  const [locationLeft, setLocationLeft] = useState(0);
 
   useEffect(() => {
     if (visible) {
@@ -43,6 +46,8 @@ const DefinitionPopup = ({
       const { top, left } = calculatePosition(location);
       const newDirection = calculateDirection(top, left);
       updateDirection(newDirection);
+      setLocationTop(top);
+      setLocationLeft(left);
     }
   }, [location]);
 
@@ -58,11 +63,11 @@ const DefinitionPopup = ({
   });
 
   const calculateDirection = (top, left) => {
-    if (left < width - (width * 3.75) / 6.25 && top < height * (3.5 / 9)) return "R";
-    if (left < (width * 3.75) / 6.25 && top > height * (3.5 / 9)) return "U";
-    if (left > width - (width * 3.75) / 6.25 && left < (width * 3.75) / 6.25 && top < height * (3.5 / 9)) return "D";
-    if (left > (width * 3.75) / 6.5) return "L";
-    return "D";
+    if (top < 450) {
+      return "D";
+    } else {
+      return "U";
+    }
   };
 
   const updateDirection = (newDirection) => {
@@ -92,6 +97,20 @@ const DefinitionPopup = ({
     return () => clearInterval(interval);
   };
 
+  const calculateModalLeft = () => {
+    const modalWidth = width * (3.75 / 6.25);
+    let x = locationLeft - modalWidth / 2;
+    padding = 20;
+
+    if (x < 0) {
+      x = 0 + padding;
+    } else if (x + modalWidth > width) {
+      x = width - modalWidth - padding;
+    }
+
+    return x;
+  };
+
   return (
     <Modal
       transparent={true}
@@ -101,19 +120,57 @@ const DefinitionPopup = ({
     >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.centeredView}>
-          <TouchableWithoutFeedback>
-            <View style={styles.modalView}>
-              <ModalHeader word={word} onClose={onClose} />
-              <ModalContent isLoading={isLoading} definition={definition} />
-              <ModalFooter
-                added={added}
-                started={started}
-                finished={finished}
-                onToggleCheck={onToggleCheck}
-                addText={addText}
-              />
+          <View
+            style={[
+              styles.stabilizer1,
+              direction === "D"
+                ? { justifyContent: "flex-end" }
+                : direction === "U"
+                ? { justifyContent: "flex-start" }
+                : null,
+            ]}
+          >
+            <View
+              style={[
+                styles.stabilizer2,
+                direction === "D"
+                  ? {
+                      height: height - locationTop,
+                      justifyContent: "flex-start",
+                    }
+                  : direction === "U"
+                  ? { height: locationTop, justifyContent: "flex-end" }
+                  : null,
+              ]}
+            >
+              <TouchableWithoutFeedback>
+                <View
+                  style={[
+                    styles.modalView,
+                    { position: "absolute", left: calculateModalLeft() },
+                  ]}
+                >
+                  <ModalHeader word={word} onClose={onClose} />
+                  <ModalContent isLoading={isLoading} definition={definition} />
+                  <ModalFooter
+                    added={added}
+                    started={started}
+                    finished={finished}
+                    onToggleCheck={onToggleCheck}
+                    addText={addText}
+                  />
+                  <View
+                    style={{
+                      position: "absolute",
+                      left: locationLeft - (width * 3.75) / (6.25 *2),
+                    }}
+                  >
+                    <Pointer direction={direction} />
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </TouchableWithoutFeedback>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -164,9 +221,15 @@ const ModalFooter = ({ added, started, finished, onToggleCheck, addText }) => (
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, .03)",
+  },
+  stabilizer1: {
+    flex: 1,
+    justifyContent: "flex-start",
+  },
+  stabilizer2: {
+    height: 600,
+    justifyContent: "flex-end",
   },
   modalView: {
     backgroundColor: "white",
