@@ -111,6 +111,22 @@ const DefinitionPopup = ({
     return x;
   };
 
+  const calculatePointerLeft = () => {
+    const modalWidth = width * (3.75 / 6.25);
+    let x = locationLeft - modalWidth / 2;
+    let z = modalWidth / 2;
+    padding = 20;
+
+    if (x < 0) {
+      // pushed right
+      z = locationLeft - padding;
+    } else if (x + modalWidth > width) {
+      z = modalWidth + locationLeft - width + padding;
+    }
+
+    return z; 
+  }
+
   return (
     <Modal
       transparent={true}
@@ -135,11 +151,11 @@ const DefinitionPopup = ({
                 styles.stabilizer2,
                 direction === "D"
                   ? {
-                      height: height - locationTop,
+                      height: height - locationTop - 30,
                       justifyContent: "flex-start",
                     }
                   : direction === "U"
-                  ? { height: locationTop, justifyContent: "flex-end" }
+                  ? { height: locationTop -20, justifyContent: "flex-end" }
                   : null,
               ]}
             >
@@ -160,10 +176,11 @@ const DefinitionPopup = ({
                     addText={addText}
                   />
                   <View
-                    style={{
-                      position: "absolute",
-                      left: locationLeft - (width * 3.75) / (6.25 *2),
-                    }}
+                    style={[
+                      styles.pointerContainer,
+                      direction === "U" ? styles.pointerBottom : styles.pointerTop,
+                      { left: calculatePointerLeft() - 6},
+                    ]}
                   >
                     <Pointer direction={direction} />
                   </View>
@@ -291,6 +308,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  pointerContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+  },
+  pointerTop: {
+    top: -8,
+  },
+  pointerBottom: {
+    bottom: -8,
   },
 });
 

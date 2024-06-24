@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   container: {
     height: 10,
     width: 10,
-    backgroundColor: 'dodgerblue',
+    // backgroundColor: 'dodgerblue',
     position: 'absolute',
   }
 });

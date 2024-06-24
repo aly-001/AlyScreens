@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
   container: {
     height: 20,
     width: 20,
-    backgroundColor: 'dodgerblue',
-    transform: [{ rotate: '45deg' }]
+    backgroundColor: 'white',
+    transform: [{ rotate: '45deg' }],
+    borderRadius: 3,
   }
 });
