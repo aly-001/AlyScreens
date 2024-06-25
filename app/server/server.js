@@ -24,11 +24,11 @@ wss.on('connection', (ws) => {
 
     try {
       const stream = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-4o",
         messages: [
           {
             role: "user",
-            content: `give a short (no more than 20 words and no less than 3 words) definition of ${word} in the context of ${innerContext}. Oh and in english please. Here's more context: ${outerContext}`,
+            content: `Give the most helpful translation to english of the word "${word}" in the context of "${innerContext}" and "${outerContext}". If the word is cut off, define the word as best as you can. Keep it short. Avoid saying things like "in this context".`,
           },
         ],
         stream: true,

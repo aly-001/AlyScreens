@@ -26,8 +26,10 @@ export default function EpubReader({ uri, handleWebViewMessage }) {
 
 const styles = StyleSheet.create({
   readerContainer: {
+    backgroundColor: "white",
     flex: 1,
-    marginTop: 50,
-    margin: 20,
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    paddingBottom: 0,
   },
 });
