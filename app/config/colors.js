@@ -6,6 +6,7 @@ export default {
   utilityBlueCrazyLight: "#EEEFF5",
   
   utilityGrey: "#2E2E2E",
+  utilityGreyLight: "#A6A6A6",
   utilityGreyUltraLight: "#CDCDCD",
   utilityGrayCrazyLight: "#F1F1F5",
 
