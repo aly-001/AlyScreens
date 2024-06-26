@@ -268,8 +268,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     width: (width * 3.75) / 6.25,
     borderRadius: 10,
-    borderColor: "grey",
-    borderWidth: 2,
+    borderColor: colors.utilityGreyUltraLight,
+    borderWidth: 1.75,
   },
   header: {
     height: 70,

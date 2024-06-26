@@ -68,14 +68,4 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     opacity: 0.4,
   },
-  strip: {
-    backgroundColor: "white",
-    zIndex: 0,
-    height: 155,
-    width: 2,
-    position: "absolute",
-    top: 0,
-    opacity: 0.3,
-    left: 25,
-  },
 });

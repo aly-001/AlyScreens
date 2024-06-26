@@ -25,7 +25,8 @@ import colors from "../config/colors";
 import BookHiddenFooter from "../components/BookHiddenFooter";
 
 const bookTitle = "Brave New World";
-const progress = 50; // This should be a state variable that updates as the user reads
+const progress = 30; // This should be a state variable that updates as the user reads
+const progressColor = "#D15A6C";
 const duration = 300; // Animation duration
 
 const BookHeader = ({ bookTitle, style }) => (
@@ -165,6 +166,7 @@ export default function ReadScreen() {
         />
         <BookHiddenFooter 
           progress={progress}
+          color={progressColor}
           style={{ 
             transform: [{ translateY: headerAnimation }],
             opacity: footerOpacity
