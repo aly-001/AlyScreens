@@ -1,5 +1,5 @@
 import React from "react";
-import ReadScreen from "./app/screens/ReadScreen";
+import PracticeScreenDef from "./app/screens/PracticeScreenDef";
 import AppNavigator from "./app/navigation/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 

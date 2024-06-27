@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome6 } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ReadScreen from "../screens/ReadScreen";
 import PracticeScreen from "../screens/PracticeScreen";
@@ -26,9 +27,13 @@ const AppNavigator = () => (
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarIcon: () => (
+          tabBarIcon: ({ focused }) => (
             <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name="home" color={colors.utilityGrey} size={30} />
+              <MaterialCommunityIcons 
+                name="home" 
+                color={focused ? colors.utilityGrey : colors.inactiveGrey} 
+                size={30} 
+              />
             </View>
           ),
         }}
@@ -37,9 +42,13 @@ const AppNavigator = () => (
         name="Read"
         component={ReadScreen}
         options={({ route }) => ({
-          tabBarIcon: () => (
+          tabBarIcon: ({ focused }) => (
             <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name="book-open" color={colors.utilityGrey} size={30} />
+              <FontAwesome6 
+                name="book-open" 
+                color={focused ? colors.utilityGrey : colors.inactiveGrey} 
+                size={25} 
+              />
             </View>
           ),
           tabBarStyle: route.params?.hideTabBar 
@@ -51,9 +60,13 @@ const AppNavigator = () => (
         name="Practice"
         component={PracticeScreen}
         options={{
-          tabBarIcon: () => (
+          tabBarIcon: ({ focused }) => (
             <View style={styles.iconContainer}>
-              <MaterialCommunityIcons name="pencil" color={colors.utilityGrey} size={30} />
+              <MaterialCommunityIcons 
+                name="pencil" 
+                color={focused ? colors.utilityGrey : colors.inactiveGrey} 
+                size={30} 
+              />
             </View>
           ),
         }}
@@ -93,7 +106,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   iconContainer: {
-    height: 50,
+    width: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },

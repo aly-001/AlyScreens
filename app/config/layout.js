@@ -6,8 +6,9 @@ const layout = {
     // Add more border radius constants as needed
   },
   margins: {
-    homeHeaderMargin: 25,
+    screenHeaderMargin: 25,
     homeScreenWidgets: 30,
+    practiceScreenPaddingHorizontal: 30,
     // Add more margin constants as needed
   },
   shadows: {

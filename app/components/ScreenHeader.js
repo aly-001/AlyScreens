@@ -3,10 +3,10 @@ import React from 'react';
 import fonts from '../config/fonts';
 import colors from '../config/colors';
 
-export default function HomeHeader({}) {
+export default function ScreenHeader({ text }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Home</Text>
+      <Text style={styles.header}>{text}</Text>
     </View>
   );
 }
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: colors.homeHeader,
+    color: colors.screenHeader,
     fontFamily: fonts.main,
   }
 });

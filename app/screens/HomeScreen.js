@@ -1,6 +1,6 @@
 import { View, StyleSheet, ScrollView } from "react-native";
 import React from "react";
-import HomeHeader from "../components/HomeHeader";
+import ScreenHeader from "../components/ScreenHeader";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 
@@ -17,7 +17,7 @@ export default function HomeScreen({}) {
       <Screen>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <View style={styles.headerContainer}>
-            <HomeHeader />
+            <ScreenHeader text="Home" />
           </View>
           <View style={styles.topWidgetContainer}>
             <StatBox header="All" value={25} valueColor="green" />
@@ -35,7 +35,7 @@ export default function HomeScreen({}) {
                   name="question"
                   size={65}
                   color={colors.homeScreenIcon}
-                  style={{ position: "absolute" , top: -30,}}
+                  style={{ position: "absolute", top: -30 }}
                   {...props}
                 />
               )}
@@ -47,7 +47,7 @@ export default function HomeScreen({}) {
                   name="gear"
                   size={65}
                   color={colors.homeScreenIcon}
-                  style={{ position: "absolute" , top: -30,}}
+                  style={{ position: "absolute", top: -30 }}
                   {...props}
                 />
               )}

@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
     fontFamily: fonts.main,
-    margin: layout.margins.homeHeaderMargin,
+    margin: layout.margins.screenHeaderMargin,
     marginBottom: 50,
     color: colors.widgetHeader,
   },
