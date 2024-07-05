@@ -21,7 +21,7 @@ export default function HomeScreen({}) {
           </View>
           <View style={styles.topWidgetContainer}>
             <StatBox header="All" value={25} valueColor="green" />
-            <StatBox header="Learning" value={8} valueColor="blue" />
+            <StatBox header="Learning" value={12} valueColor="blue" />
             <StatBox header="Mature" value={3} valueColor="red" />
           </View>
           <View style={styles.libraryContainer}>

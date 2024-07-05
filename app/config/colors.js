@@ -12,15 +12,22 @@ export default {
 
   appleBlue: "#007AFF",
 
-  newWords: "green",
-  learnWords: "orange",
-  dueWords: "blue",
+  newWords: "#447a83",
+  learnWords: "#D15A6C",
+  dueWords: "#708eb9",
+
+  // word: "#816966",
+  word: "#898989",
 
   tabs: {
-    again: "red",
-    hard: "orange",
-    good: "blue",
-    easy: "green",
+    // again: "red",
+    // hard: "orange",
+    // good: "blue",
+    // easy: "green",
+    again: "#2E2E2E",
+    hard: "#2E2E2E",
+    good: "#2E2E2E",
+    easy: "#2E2E2E",
   },
 
   inactiveGrey: 'rgba(128, 128, 128, 1)', // Semi-transparent grey
@@ -28,7 +35,7 @@ export default {
   homeScreenBackground: "#F1F1F5",
   homeScreenIcon: "#e7e6ea",
   screenHeader: "#A6A6A6",
-  widgetHeader: "#707395",
+  widgetHeader: "#808080",
   defHeader: "#3F3F3F",
   defText: "#4C4C4C",
   book: {

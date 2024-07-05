@@ -2,6 +2,7 @@ import { View, StyleSheet, ScrollView, Text } from "react-native";
 import React from "react";
 import Word from "./Word";
 import colors from "../config/colors";
+import layout from "../config/layout";
 
 export default function WordBox({ words = [], color = "black", title = "" }) {
   return (
@@ -13,7 +14,7 @@ export default function WordBox({ words = [], color = "black", title = "" }) {
       <ScrollView horizontal style={styles.wordsContainer}>
         <View style={styles.hiddenStrip}></View>
         {words.map((word) => (
-          <Word key={word.id} word={word.word} color={color}/>
+          <Word key={word.id} word={word.word} color={colors.word}/>
         ))}
       </ScrollView>
     </View>
@@ -25,7 +26,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 15,
     borderColor: "#e0e0e0",
-    borderWidth: 1, 
+    shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
+    shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
+    shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
+    shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
+    elevation: layout.shadows.homeScreenWidgets.elevation,
   },
   hiddenStrip: {
     width: 25,
@@ -33,6 +38,7 @@ const styles = StyleSheet.create({
   wordsContainer: {
     paddingBottom: 30,
     paddingTop: 20,
+    opacity: .6,
   },
   header: {
     flexDirection: "row",

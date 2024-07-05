@@ -1,12 +1,18 @@
 import React from "react";
-import PracticeScreenDef from "./app/screens/PracticeScreenDef";
-import AppNavigator from "./app/navigation/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import MyLibraryScreen from "./app/screens/MyLibraryScreen";
+import ReadScreen from "./app/screens/ReadScreen"; // Assuming you have this component
 
-export default function App({}) {
+const Stack = createStackNavigator();
+
+export default function App() {
   return (
     <NavigationContainer>
-      <AppNavigator />
+      <Stack.Navigator>
+        <Stack.Screen name="MyLibrary" component={MyLibraryScreen} />
+        <Stack.Screen name="ReadScreen" component={ReadScreen} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

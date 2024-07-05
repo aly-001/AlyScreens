@@ -28,7 +28,7 @@ wss.on('connection', (ws) => {
         messages: [
           {
             role: "user",
-            content: `Give the most helpful translation to english of the word "${word}" in the context of "${innerContext}" and "${outerContext}". If the word is cut off, define the word as best as you can. Keep it short. Avoid saying things like "in this context".`,
+            content: `Give a translation to english of the word "${word}" in the context of "${innerContext}" and "${outerContext}". Provide a tiny explanation of what's going on in the book. Keep it short. Your entire response shouldn't be more than 50 words, and paragraphs shouln't be more than 15 or so words. The explanation really shouldn't be more than 10 words, and make sure that it has to do with the original word, and not just explaining the book plot. Avoid referring to the title of the book, even if you know it. You're part of an e-reader, so don't say things like "sure" or "cetainly" or "I can help with that". Just give the translation and the explanation. For the translation, you don't have to say, "in english" or "to english" or "in the context of". Just give the translation.`,
           },
         ],
         stream: true,

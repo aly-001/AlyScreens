@@ -49,14 +49,14 @@ const styles = StyleSheet.create({
     fontFamily: fonts.main,
     fontWeight: "500",
     fontSize: 18,
-    color: colors.utilityBlue,
+    color: colors.utilityGrey,
   },
   subtitle: {
     textAlign: "center",
     fontFamily: fonts.main,
     fontWeight: "500",
     fontSize: 18,
-    color: colors.utilityBlueLight,
+    color: colors.utilityGreyLight,
   },
   statusSection: {
     backgroundColor: "white",

@@ -24,8 +24,8 @@ import LocationPointer from "../components/LocationPointer";
 import colors from "../config/colors";
 import BookHiddenFooter from "../components/BookHiddenFooter";
 
-const bookTitle = "Brave New World";
-const progress = 30; // This should be a state variable that updates as the user reads
+const bookTitle = "Le Compte de Monte-Cristo";
+const progress = 13; // This should be a state variable that updates as the user reads
 const progressColor = "#D15A6C";
 const duration = 300; // Animation duration
 

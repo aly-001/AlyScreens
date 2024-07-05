@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Text } from "react-native";
+import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
 import BookCoverThumb from "./BookCoverThumb";
@@ -6,6 +6,30 @@ import layout from "../config/layout";
 import WidgetHeader from "./WidgetHeader";
 
 const books = [
+  {
+    title: "Le Compte de Monte-Cristo",
+    subtitle: "Alexandre Dumas",
+    color: "#D15A6C",
+    status: 13,
+  },
+  {
+    title: "L'Étranger",
+    subtitle: "Albert Camus",
+    color: "#708eb9",
+    status: 50,
+  },
+  {
+    title: "À la recherche du temps perdu",
+    subtitle: "Marcel Proust",
+    color: "#83947c",
+    status: 70,
+  },
+  {
+    title: "Madame Bovary",
+    subtitle: "Gustave Flaubert",
+    color: "#447a83",
+    status: 90,
+  },
   {
     title: "War and Peace",
     subtitle: "Leo Tolstoy",
@@ -60,9 +84,11 @@ export default function MyLibrary({}) {
   return (
     <View style={styles.container}>
       <WidgetHeader text="Library" />
+
       <ScrollView horizontal style={styles.booksContainer}>
         <View style={styles.hiddenStrip}></View>
         {books.map((book, index) => (
+          <TouchableOpacity key={index} activeOpacity={.8}>
           <BookCoverThumb
             key={index}
             title={book.title}
@@ -70,6 +96,7 @@ export default function MyLibrary({}) {
             color={book.color}
             status={book.status}
           />
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </View>
@@ -95,4 +122,11 @@ const styles = StyleSheet.create({
     shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
     elevation: layout.shadows.homeScreenWidgets.elevation,
   },
+  nicolas:{
+    fontSize: 20,
+    fontWeight: "500",
+    color: "#83947c",
+    marginLeft: 20,
+    marginTop: 20,
+  }
 });

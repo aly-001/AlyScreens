@@ -33,3 +33,17 @@ export const loadStoredEpub = async () => {
     return null;
   }
 };
+
+export const removeEpub = async () =>{
+  try {
+    const storedUri = await getEpubUri();
+    if (storedUri) {
+      await removeEpubUri();
+      return storedUri;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error removing stored EPUB:', error);
+    return null;
+  }
+}

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
-import { saveEpub, loadStoredEpub } from '../services/EpubManager';
+import { saveEpub, loadStoredEpub, removeEpub } from '../services/EpubManager';
 
 export default function useEpubManager() {
   const [fileUri, setFileUri] = useState(null);
 
   useEffect(() => {
+    //removeEpubFile();
     loadEpub();
   }, []);
 
@@ -13,6 +14,16 @@ export default function useEpubManager() {
     const uri = await loadStoredEpub();
     setFileUri(uri);
   };
+
+  const removeEpubFile = async () => {
+    try {
+      const uri = await removeEpub();
+      setFileUri(null);
+      Alert.alert('Success', 'EPUB file removed successfully');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to remove EPUB file');
+    }
+  }
 
   const handlePickComplete = async (fileAsset) => {
     try {

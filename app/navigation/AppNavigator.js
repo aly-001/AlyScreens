@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ReadScreen from "../screens/ReadScreen";
-import PracticeScreen from "../screens/PracticeScreen";
+import PracticeScreenStart from "../screens/PracticeScreenStart";
 import colors from "../config/colors";
 
 const Tab = createBottomTabNavigator();
@@ -58,8 +58,8 @@ const AppNavigator = () => (
       />
       <Tab.Screen
         name="Practice"
-        component={PracticeScreen}
-        options={{
+        component={PracticeScreenStart}
+        options={({ route }) => ({
           tabBarIcon: ({ focused }) => (
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons 
@@ -69,7 +69,10 @@ const AppNavigator = () => (
               />
             </View>
           ),
-        }}
+          tabBarStyle: route.params?.hideTabBar 
+            ? { display: 'none' } 
+            : styles.tabBar,
+        })}
       />
     </Tab.Navigator>
   </View>

@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import ScreenHeader from "../components/ScreenHeader";
 
@@ -10,42 +10,30 @@ import PracticeStartButton from "../components/PracticeStartButton";
 
 // some random words that could be defined words from a book
 const newWords = [
-  {id: 1, word:"Abate"},
-  {id: 2, word: "Benevolent"},
-  {id: 3, word: "Cacophony"},
-  {id: 4, word: "Deleterious"},
-  {id: 5, word: "Ephemeral"},
-  {id: 6, word: "Furtive"},
-  {id: 7, word: "Gregarious"},
-  {id: 8, word: "Hapless"},
-  {id: 9, word: "Innocuous"},
-  {id: 10, word: "Juxtapose"},
-  {id: 11, word: "Kowtow"},
-  {id: 12, word: "Languid"},
-  {id: 13, word: "Mellifluous"},
-  {id: 14, word: "Nefarious"},
-]
+  { id: 1, word: "Pourpre" },
+  { id: 2, word: "Composait" },
+];
 
 const learnWords = [
-  {id: 1, word: "Adroit"},
-  {id: 2, word: "Bucolic"},
-  {id: 3, word: "Clandestine"},
-  {id: 4, word: "Dichotomy"},
-  {id: 5, word: "Ebullient"},
-  {id: 6, word: "Fervent"},
-  {id: 7, word: "Garrulous"},
-  {id: 8, word: "Histrionic"},
-  {id: 9, word: "Ineffable"},
-  {id: 10, word: "Jubilant"},
-]
+  { id: 1, word: "Éblouissant" },
+  { id: 2, word: "Vengeance" },
+  { id: 3, word: "Trésor" },
+  { id: 4, word: "Château d'If" },
+  { id: 5, word: "Intrigue" },
+  { id: 6, word: "Honneur" },
+  { id: 7, word: "Conspiration" },
+  { id: 8, word: "Duel" },
+  { id: 9, word: "Aristocrate" },
+  { id: 10, word: "Emprisonnement" },
+  { id: 11, word: "Rédemption" },
+  { id: 12, word: "Mascarade" }
+];
 
 const dueWords = [
-  {id: 1, word: "Alacrity"},
-  {id: 2, word: "Banal"},
-  {id: 3, word: "Cacophony"},
-  {id: 4, word: "Deleterious"},
-  {id: 5, word: "Ephemeral"},
-]
+  { id: 1, word: "Éphémère" },
+  { id: 2, word: "Mélancolie" },
+  { id: 3, word: "Subterfuge" }
+];
 
 export default function HomeScreen({}) {
   return (
@@ -56,18 +44,27 @@ export default function HomeScreen({}) {
             <ScreenHeader text="Practice" />
           </View>
           <View style={styles.wordBoxContainer}>
-            <WordBox words={newWords} color={colors.newWords} title="New"/>
+            <WordBox words={newWords} color={colors.newWords} title="New" />
           </View>
           <View style={styles.wordBoxContainer}>
-            <WordBox words={learnWords} color={colors.learnWords} title="Learn"/>
+            <WordBox
+              words={learnWords}
+              color={colors.learnWords}
+              title="Learn"
+            />
           </View>
- 
+
           <View style={styles.wordBoxContainer}>
-            <WordBox words={dueWords} color={colors.dueWords} title="Due"/>
+            <WordBox words={dueWords} color={colors.dueWords} title="Due" />
           </View>
- 
+
           <View style={styles.startBoxContainer}>
-            <PracticeStartButton/>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() => console.log("Pressed")}
+            >
+              <PracticeStartButton />
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </Screen>
@@ -91,12 +88,12 @@ const styles = StyleSheet.create({
     left: layout.margins.homeScreenWidgets,
     zIndex: 1,
   },
-  wordBoxContainer:{
-    paddingHorizontal: layout.margins.practiceScreenPaddingHorizontal, 
-    marginBottom:  20,
+  wordBoxContainer: {
+    paddingHorizontal: layout.margins.homeScreenWidgets -15,
+    marginBottom: (layout.margins.homeScreenWidgets),
   },
   startBoxContainer: {
-    paddingHorizontal: layout.margins.practiceScreenPaddingHorizontal,
+    paddingHorizontal: layout.margins.homeScreenWidgets - 15,
     marginTop: 140,
-  }
+  },
 });

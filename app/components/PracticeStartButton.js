@@ -1,6 +1,7 @@
 import { View, StyleSheet, Text} from 'react-native';
 import React from 'react';
 import colors from '../config/colors';
+import layout from '../config/layout';
 
 export default function PracticeStartButton({}) {
   return (
@@ -15,9 +16,14 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 15,
     borderColor: "#e0e0e0",
-    borderWidth: 1, 
     justifyContent: "center",
     alignItems: "center",
+
+    shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
+    shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
+    shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
+    shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
+    elevation: layout.shadows.homeScreenWidgets.elevation,
   },
   start: {
     // color: colors.appleBlue,
