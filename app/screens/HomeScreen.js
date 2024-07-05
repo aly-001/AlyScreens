@@ -1,17 +1,34 @@
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import React from "react";
+import { useNavigation } from "@react-navigation/native";
 import ScreenHeader from "../components/ScreenHeader";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
-
+import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import Screen from "../components/Screen";
 import StatBox from "../components/StatBox";
 import colors from "../config/colors";
 import layout from "../config/layout";
 import MyLibrary from "../components/MyLibrary";
 import BottomWidget from "../components/BottomWidget";
+import { loadBooks } from "../services/BookLoader"; // Adjust the path accordingly
 
-export default function HomeScreen({}) {
+export default function HomeScreen() {
+  const [books, setBooks] = useState([]);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    loadBooks(setBooks);
+  }, []);
+
+  const handleBookPress = (bookName) => {
+    const book = books.find((b) => b.name === bookName);
+    if (book) {
+      navigation.navigate("Read", {
+        screen: "ReadScreen",
+        params: { uri: book.uri },
+      });
+    }
+  };
+
   return (
     <View style={styles.superContainer}>
       <Screen>
@@ -25,7 +42,7 @@ export default function HomeScreen({}) {
             <StatBox header="Mature" value={3} valueColor="red" />
           </View>
           <View style={styles.libraryContainer}>
-            <MyLibrary />
+            <MyLibrary books={books} onBookPress={handleBookPress} />
           </View>
           <View style={styles.bottomWidgetContainer}>
             <BottomWidget

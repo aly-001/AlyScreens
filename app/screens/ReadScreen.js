@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -7,9 +7,8 @@ import {
   SafeAreaView,
   StatusBar,
   Animated,
-  Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, useIsFocused } from "@react-navigation/native";
 import { ReaderProvider } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -23,6 +22,7 @@ import useDefinitionManager from "../hooks/useDefinitionManager";
 import LocationPointer from "../components/LocationPointer";
 import colors from "../config/colors";
 import BookHiddenFooter from "../components/BookHiddenFooter";
+import { TabBarVisibilityContext } from "../navigation/TabBarVisibilityContext"; // Adjust the import path as needed
 
 const bookTitle = "Le Compte de Monte-Cristo";
 const progress = 13; // This should be a state variable that updates as the user reads
@@ -51,6 +51,9 @@ const BookHeader = ({ bookTitle, style }) => (
 
 export default function ReadScreen() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const isFocused = useIsFocused();
+  const { setIsTabBarVisible } = useContext(TabBarVisibilityContext);
   const [location, setLocation] = useState({
     top: 0,
     left: 0,
@@ -58,7 +61,10 @@ export default function ReadScreen() {
     height: 0,
   });
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const { fileUri, handlePickComplete } = useEpubManager();
+  const { handlePickComplete } = useEpubManager();
+  
+  const { uri } = route.params || {};
+
   const {
     popupVisible,
     currentWord,
@@ -75,6 +81,17 @@ export default function ReadScreen() {
   const headerAnimation = useRef(new Animated.Value(0)).current;
   const headerOpacity = useRef(new Animated.Value(1)).current;
   const footerOpacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (isFocused) {
+      setIsTabBarVisible(!isFullscreen);
+    }
+    return () => {
+      if (isFocused) {
+        setIsTabBarVisible(true);
+      }
+    };
+  }, [isFocused, isFullscreen, setIsTabBarVisible]);
 
   useEffect(() => {
     if (isFullscreen) {
@@ -114,10 +131,6 @@ export default function ReadScreen() {
     }
   }, [isFullscreen]);
 
-  useLayoutEffect(() => {
-    navigation.setParams({ hideTabBar: isFullscreen });
-  }, [navigation, isFullscreen]);
-
   const handleWebViewMessage = (message) => {
     handleWebViewMessageDefinition(message);
     if (message.location) {
@@ -126,10 +139,10 @@ export default function ReadScreen() {
   };
 
   const handleMiddlePress = () => {
-    setIsFullscreen(!isFullscreen);
+    setIsFullscreen((prev) => !prev);
   };
 
-  if (fileUri) {
+  if (uri) {
     return (
       <View style={styles.container}>
         <StatusBar hidden={isFullscreen} />
@@ -137,7 +150,7 @@ export default function ReadScreen() {
           <View style={styles.readerContainer}>
             <ReaderProvider>
               <EpubReader
-                uri={fileUri}
+                uri={uri}
                 fileSystem={useFileSystem}
                 handleWebViewMessage={handleWebViewMessage}
               />
@@ -190,7 +203,6 @@ export default function ReadScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: "100%",
     backgroundColor: "white",
   },
   headerContainer: {
@@ -208,7 +220,7 @@ const styles = StyleSheet.create({
     height: 65,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
-    paddingHorizontal: 10, // Add some horizontal padding
+    paddingHorizontal: 10,
   },
   headerTitle: {
     color: colors.utilityGrey,
@@ -216,31 +228,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   headerIconContainer: {
-    marginHorizontal: 20, 
+    marginHorizontal: 20,
   },
-  
-  hiddenFooterContainer: {
-    position: "absolute",
-    bottom: 25,
-    left: 0,
-    right: 0,
-    backgroundColor: "dodgerblue",
-    zIndex: 2,
-  },
-  hiddenFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    height: 65,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    paddingHorizontal: 10, // Add some horizontal padding
-  },
-  
   readerContainer: {
-    backgroundColor: "white",
     flex: 1,
-    paddingBottom: 20, // Add padding to account for the tab bar
+    backgroundColor: "white",
+    paddingBottom: 20,
   },
   pickerContainer: {
     flex: 1,

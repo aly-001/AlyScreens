@@ -1,82 +1,94 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ReadScreen from "../screens/ReadScreen";
 import PracticeScreenStart from "../screens/PracticeScreenStart";
 import colors from "../config/colors";
+import { TabBarVisibilityProvider, TabBarVisibilityContext } from "./TabBarVisibilityContext"; // Adjust the path accordingly
 
 const Tab = createBottomTabNavigator();
+const ReadStack = createStackNavigator();
 
-const AppNavigator = () => (
-  <View style={styles.container}>
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarBackground: () => (
-          <View style={styles.tabBarBackground} />
-        ),
-        tabBarItemStyle: styles.tabBarItem,
-        tabBarShowLabel: false,
-      }}
-    >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <View style={styles.iconContainer}>
-              <MaterialCommunityIcons 
-                name="home" 
-                color={focused ? colors.utilityGrey : colors.inactiveGrey} 
-                size={30} 
-              />
-            </View>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Read"
-        component={ReadScreen}
-        options={({ route }) => ({
-          tabBarIcon: ({ focused }) => (
-            <View style={styles.iconContainer}>
-              <FontAwesome6 
-                name="book-open" 
-                color={focused ? colors.utilityGrey : colors.inactiveGrey} 
-                size={25} 
-              />
-            </View>
-          ),
-          tabBarStyle: route.params?.hideTabBar 
-            ? { display: 'none' } 
-            : styles.tabBar,
-        })}
-      />
-      <Tab.Screen
-        name="Practice"
-        component={PracticeScreenStart}
-        options={({ route }) => ({
-          tabBarIcon: ({ focused }) => (
-            <View style={styles.iconContainer}>
-              <MaterialCommunityIcons 
-                name="pencil" 
-                color={focused ? colors.utilityGrey : colors.inactiveGrey} 
-                size={30} 
-              />
-            </View>
-          ),
-          tabBarStyle: route.params?.hideTabBar 
-            ? { display: 'none' } 
-            : styles.tabBar,
-        })}
-      />
-    </Tab.Navigator>
-  </View>
+const ReadNavigator = () => (
+  <ReadStack.Navigator screenOptions={{ headerShown: false }}>
+    <ReadStack.Screen name="ReadScreen" component={ReadScreen} />
+    <ReadStack.Screen name="ReadHome" component={HomeScreen} />
+  </ReadStack.Navigator>
 );
+
+const AppNavigator = () => {
+  return (
+    <TabBarVisibilityProvider>
+      <TabBarVisibilityContext.Consumer>
+        {({ isTabBarVisible }) => (
+          <View style={styles.container}>
+            <Tab.Navigator
+              screenOptions={{
+                headerShown: false,
+                tabBarStyle: isTabBarVisible ? styles.tabBar : { display: 'none' },
+                tabBarBackground: () => (
+                  <View style={styles.tabBarBackground} />
+                ),
+                tabBarItemStyle: styles.tabBarItem,
+                tabBarShowLabel: false,
+              }}
+            >
+              <Tab.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                  tabBarIcon: ({ focused }) => (
+                    <View style={styles.iconContainer}>
+                      <MaterialCommunityIcons 
+                        name="home" 
+                        color={focused ? colors.utilityGrey : colors.inactiveGrey} 
+                        size={30} 
+                      />
+                    </View>
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Read"
+                component={ReadNavigator}
+                options={{
+                  tabBarIcon: ({ focused }) => (
+                    <View style={styles.iconContainer}>
+                      <FontAwesome6 
+                        name="book-open" 
+                        color={focused ? colors.utilityGrey : colors.inactiveGrey} 
+                        size={25} 
+                      />
+                    </View>
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Practice"
+                component={PracticeScreenStart}
+                options={{
+                  tabBarIcon: ({ focused }) => (
+                    <View style={styles.iconContainer}>
+                      <MaterialCommunityIcons 
+                        name="pencil" 
+                        color={focused ? colors.utilityGrey : colors.inactiveGrey} 
+                        size={30} 
+                      />
+                    </View>
+                  ),
+                }}
+              />
+            </Tab.Navigator>
+          </View>
+        )}
+      </TabBarVisibilityContext.Consumer>
+    </TabBarVisibilityProvider>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
