@@ -3,29 +3,30 @@ import React from "react";
 import BookCoverThumb from "./BookCoverThumb";
 import layout from "../config/layout";
 import WidgetHeader from "./WidgetHeader";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
-export default function MyLibrary({ books, onBookPress }) {
+export default function MyLibrary({ books, onBookPress, onPress }) {
   return (
-    <View style={styles.container}>
-      <WidgetHeader text="Library" />
-      <ScrollView horizontal style={styles.booksContainer}>
-        <View style={styles.hiddenStrip}></View>
-        {books.map((book, index) => (
-          <TouchableOpacity 
-            key={index} 
-            activeOpacity={.8} 
-            onPress={() => onBookPress(book.name)}
-          >
-            <BookCoverThumb
-              title={book.title}
-              subtitle={book.subtitle}
-              color={book.color}
-              status={book.status}
-            />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+      <View style={styles.container}>
+        <WidgetHeader text="Library" />
+        <ScrollView horizontal style={styles.booksContainer}>
+          <View style={styles.hiddenStrip}></View>
+          {books.map((book, index) => (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={0.8}
+              onPress={() => onBookPress(book.name)}
+            >
+              <BookCoverThumb
+                title={book.title}
+                subtitle={book.subtitle}
+                color={book.color}
+                status={book.status}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
   );
 }
 
@@ -33,8 +34,7 @@ const styles = StyleSheet.create({
   hiddenStrip: {
     width: 45,
   },
-  booksContainer: {
-  },
+  booksContainer: {},
   container: {
     paddingBottom: 35,
     flex: 1,
@@ -48,11 +48,11 @@ const styles = StyleSheet.create({
     shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
     elevation: layout.shadows.homeScreenWidgets.elevation,
   },
-  nicolas:{
+  nicolas: {
     fontSize: 20,
     fontWeight: "500",
     color: "#83947c",
     marginLeft: 20,
     marginTop: 20,
-  }
+  },
 });

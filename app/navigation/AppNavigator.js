@@ -4,21 +4,13 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
-import HomeScreen from "../screens/HomeScreen";
-import ReadScreen from "../screens/ReadScreen";
 import PracticeScreenStart from "../screens/PracticeScreenStart";
 import colors from "../config/colors";
-import { TabBarVisibilityProvider, TabBarVisibilityContext } from "./TabBarVisibilityContext"; // Adjust the path accordingly
+import { TabBarVisibilityProvider, TabBarVisibilityContext } from "./TabBarVisibilityContext";
+import HomeNavigator from "./HomeNavigator";
+import ReadNavigator from "./ReadNavigator";
 
 const Tab = createBottomTabNavigator();
-const ReadStack = createStackNavigator();
-
-const ReadNavigator = () => (
-  <ReadStack.Navigator screenOptions={{ headerShown: false }}>
-    <ReadStack.Screen name="ReadScreen" component={ReadScreen} />
-    <ReadStack.Screen name="ReadHome" component={HomeScreen} />
-  </ReadStack.Navigator>
-);
 
 const AppNavigator = () => {
   return (
@@ -39,7 +31,7 @@ const AppNavigator = () => {
             >
               <Tab.Screen
                 name="Home"
-                component={HomeScreen}
+                component={HomeNavigator}
                 options={{
                   tabBarIcon: ({ focused }) => (
                     <View style={styles.iconContainer}>
@@ -89,6 +81,7 @@ const AppNavigator = () => {
     </TabBarVisibilityProvider>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

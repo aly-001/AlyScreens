@@ -24,9 +24,6 @@ import colors from "../config/colors";
 import BookHiddenFooter from "../components/BookHiddenFooter";
 import { TabBarVisibilityContext } from "../navigation/TabBarVisibilityContext"; // Adjust the import path as needed
 
-const bookTitle = "Le Compte de Monte-Cristo";
-const progress = 13; // This should be a state variable that updates as the user reads
-const progressColor = "#D15A6C";
 const duration = 300; // Animation duration
 
 const BookHeader = ({ bookTitle, style }) => (
@@ -63,7 +60,7 @@ export default function ReadScreen() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { handlePickComplete } = useEpubManager();
   
-  const { uri } = route.params || {};
+  const { uri, title, color, status } = route.params || {};
 
   const {
     popupVisible,
@@ -171,15 +168,15 @@ export default function ReadScreen() {
           </View>
         </TouchableWithoutFeedback>
         <BookHeader 
-          bookTitle={bookTitle} 
+          bookTitle={title} 
           style={{ 
             transform: [{ translateY: headerAnimation }],
             opacity: headerOpacity
           }}
         />
         <BookHiddenFooter 
-          progress={progress}
-          color={progressColor}
+          progress={status}
+          color={color}
           style={{ 
             transform: [{ translateY: headerAnimation }],
             opacity: footerOpacity
@@ -190,7 +187,7 @@ export default function ReadScreen() {
   } else {
     return (
       <View style={styles.container}>
-        <BookHeader bookTitle={bookTitle} />
+        <BookHeader bookTitle={title} />
         <View style={styles.pickerContainer}>
           <Text>No EPUB file selected</Text>
           <EpubPicker onPickComplete={handlePickComplete} />

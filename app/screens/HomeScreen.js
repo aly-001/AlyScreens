@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import Screen from "../components/Screen";
@@ -9,22 +9,30 @@ import colors from "../config/colors";
 import layout from "../config/layout";
 import MyLibrary from "../components/MyLibrary";
 import BottomWidget from "../components/BottomWidget";
-import { loadBooks } from "../services/BookLoader"; // Adjust the path accordingly
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { useBooks } from "../context/BooksContext";
 
 export default function HomeScreen() {
-  const [books, setBooks] = useState([]);
   const navigation = useNavigation();
+  const { books, loadBooks } = useBooks();
 
-  useEffect(() => {
-    loadBooks(setBooks);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadBooks();
+    }, [loadBooks])
+  );
 
   const handleBookPress = (bookName) => {
     const book = books.find((b) => b.name === bookName);
     if (book) {
       navigation.navigate("Read", {
         screen: "ReadScreen",
-        params: { uri: book.uri },
+        params: {
+          uri: book.uri,
+          title: book.title,
+          color: book.color,
+          status: 40,
+        },
       });
     }
   };
@@ -37,13 +45,17 @@ export default function HomeScreen() {
             <ScreenHeader text="Home" />
           </View>
           <View style={styles.topWidgetContainer}>
-            <StatBox header="All" value={25} valueColor="green" />
-            <StatBox header="Learning" value={12} valueColor="blue" />
-            <StatBox header="Mature" value={3} valueColor="red" />
+            <StatBox header="All" value={books.length} valueColor="green" />
+            <StatBox header="Learning" value={books.filter(book => book.status < 100).length} valueColor="blue" />
+            <StatBox header="Mature" value={books.filter(book => book.status === 100).length} valueColor="red" />
           </View>
-          <View style={styles.libraryContainer}>
-            <MyLibrary books={books} onBookPress={handleBookPress} />
-          </View>
+          <TouchableWithoutFeedback
+            onPress={() => navigation.navigate('Library')}
+          >
+            <View style={styles.libraryContainer}>
+              <MyLibrary books={books} onBookPress={handleBookPress} />
+            </View>
+          </TouchableWithoutFeedback>
           <View style={styles.bottomWidgetContainer}>
             <BottomWidget
               header="Help"
