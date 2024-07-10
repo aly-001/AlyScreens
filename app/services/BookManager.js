@@ -38,3 +38,38 @@ export const loadBooks = async (setBooks) => {
     console.error("Error loading books:", error);
   }
 };
+
+export const deleteBook = async (uri, setBooks) => {
+  try {
+    // Get current book metadata
+    const bookMetadata = await AsyncStorage.getItem("bookMetadata");
+    if (!bookMetadata) {
+      throw new Error("No book metadata found");
+    }
+
+    let books = JSON.parse(bookMetadata);
+
+    // Find the book with the given URI
+    const bookIndex = books.findIndex(book => book.uri === uri);
+    if (bookIndex === -1) {
+      throw new Error("Book not found");
+    }
+
+    // Delete the file from the file system
+    await FileSystem.deleteAsync(uri, { idempotent: true });
+
+    // Remove the book from the metadata
+    books.splice(bookIndex, 1);
+
+    // Update AsyncStorage
+    await AsyncStorage.setItem("bookMetadata", JSON.stringify(books));
+
+    // Update state
+    setBooks(books);
+
+    console.log(`Book deleted successfully: ${uri}`);
+  } catch (error) {
+    console.error("Error deleting book:", error);
+    throw error; // Re-throw the error so the caller can handle it
+  }
+};

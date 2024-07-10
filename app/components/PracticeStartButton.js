@@ -3,10 +3,10 @@ import React from 'react';
 import colors from '../config/colors';
 import layout from '../config/layout';
 
-export default function PracticeStartButton({}) {
+export default function PracticeStartButton({text}) {
   return (
     <View style={styles.container}>
-      <Text style={styles.start}>Start</Text>
+      <Text style={styles.start}>{text}</Text>
     </View>
   );
 }
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     // color: colors.appleBlue,
     padding: 20,
     fontSize: 23,
-    fontWeight: "600",
-    color: colors.utilityGrey,
+    fontWeight: "500",
+    color: "dodgerblue",
   }
 });

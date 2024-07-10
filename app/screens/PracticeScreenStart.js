@@ -63,7 +63,7 @@ export default function HomeScreen({}) {
               activeOpacity={0.5}
               onPress={() => console.log("Pressed")}
             >
-              <PracticeStartButton />
+              <PracticeStartButton text="Start" />
             </TouchableOpacity>
           </View>
         </ScrollView>

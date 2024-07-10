@@ -1,57 +1,84 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Text, Button, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
-import colors from '../config/colors';
-import { useBooks } from '../context/BooksContext';
+import React, { useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Button,
+  Text,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import * as DocumentPicker from "expo-document-picker";
+import * as FileSystem from "expo-file-system";
+import colors from "../config/colors";
+import { useBooks } from "../context/BooksContext";
+import BookCoverThumb from "../components/BookCoverThumb";
+import Screen from "../components/Screen";
+import ScreenHeader from "../components/ScreenHeader";
+import layout from "../config/layout";
+import PracticeStartButton from "../components/PracticeStartButton";
 
 const LibraryScreen = () => {
   const navigation = useNavigation();
-  const { books, loadBooks, addBook } = useBooks();
+  const { books, loadBooks, addBook, deleteBook } = useBooks();
 
   useEffect(() => {
     loadBooks();
   }, [loadBooks]);
 
   const handleBookPress = (book) => {
-    navigation.navigate('Read', {
-      screen: 'ReadScreen',
+    navigation.navigate("Read", {
+      screen: "ReadScreen",
       params: {
         uri: book.uri,
         title: book.title,
         color: book.color,
-        status: 40,
+        status: book.status,
       },
     });
   };
 
-  const renderBookItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.bookItem}
-      onPress={() => handleBookPress(item)}
-    >
-      <Text style={styles.bookTitle}>{item.title}</Text>
-    </TouchableOpacity>
-  );
+  const handleLongPress = (book) => {
+    Alert.alert(
+      "Delete Book",
+      `Are you sure you want to delete "${book.title}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              await deleteBook(book.uri);
+              Alert.alert("Success", "Book deleted successfully");
+            } catch (error) {
+              console.error("Failed to delete book:", error);
+              Alert.alert("Error", "Failed to delete book");
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
 
   const getRandomColor = () => {
-    return '#' + Math.floor(Math.random()*16777215).toString(16);
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
   };
 
   const handleUpload = async () => {
     try {
       console.log("Uploading file");
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/epub+zip',
+        type: "application/epub+zip",
         copyToCacheDirectory: true,
       });
-      
+
       if (result.assets && result.assets.length > 0) {
         console.log("Successfully picked file");
         const sourceUri = result.assets[0].uri;
         const originalName = result.assets[0].name;
-        const bookDir = FileSystem.documentDirectory + 'books/';
+        const bookDir = FileSystem.documentDirectory + "books/";
         const destinationUri = bookDir + originalName;
         await FileSystem.makeDirectoryAsync(bookDir, { intermediates: true });
         await FileSystem.copyAsync({
@@ -60,64 +87,120 @@ const LibraryScreen = () => {
         });
         const fileInfo = await FileSystem.getInfoAsync(destinationUri);
         if (!fileInfo.exists) {
-          throw new Error('Failed to copy file to document directory');
+          throw new Error("Failed to copy file to document directory");
         }
         const newBook = {
           uri: destinationUri,
           name: originalName,
-          title: originalName.replace('.epub', ''),
-          subtitle: 'Unknown Author',
+          title: originalName.replace(".epub", ""),
+          subtitle: "Unknown Author",
           color: getRandomColor(),
-          status: 0
+          status: 0,
         };
         await addBook(newBook);
-        Alert.alert('Success', 'EPUB file stored successfully');
+        Alert.alert("Success", "EPUB file stored successfully");
       } else {
         console.log("No file selected");
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
-      Alert.alert('Error', 'Failed to store EPUB file');
+      console.error("Error uploading file:", error);
+      Alert.alert("Error", "Failed to store EPUB file");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.listContainer}>
-        <FlatList
-          data={books}
-          renderItem={renderBookItem}
-          keyExtractor={(item) => item.name}
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Upload Book" onPress={handleUpload} />
-      </View>
+    <View style={styles.superContainer}>
+      <Screen>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          <View style={styles.headerContainer}>
+            <ScreenHeader text="Library" />
+          </View>
+
+          <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+              <View style={styles.booksContainer}>
+                {books.map((book) => (
+                  <TouchableOpacity
+                    key={book.name}
+                    onPress={() => handleBookPress(book)}
+                    onLongPress={() => handleLongPress(book)}
+                    delayLongPress={500}
+                    style={styles.bookWrapper}
+                  >
+                    <BookCoverThumb
+                      title={book.title}
+                      subtitle={book.subtitle}
+                      color={book.color}
+                      status={book.status}
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+            
+          </View>
+          <View style={styles.startBoxContainer}>
+          <TouchableOpacity onPress={handleUpload} style={styles.button}>
+          <Text style={styles.buttonText}>Upload</Text>
+        </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </Screen>
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
-  container: {
+  superContainer: {
     flex: 1,
     backgroundColor: colors.homeScreenBackground,
-    padding: 20,
   },
-  listContainer: {
+  contentContainer: {
     flex: 1,
+    padding: layout.margins.homeScreenWidgets / 2,
+    paddingTop: 210,
   },
-  bookItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.inactiveGrey,
+  headerContainer: {
+    position: "absolute",
+    top: 30,
+    left: layout.margins.homeScreenWidgets,
+    zIndex: 1,
   },
-  bookTitle: {
-    fontSize: 16,
+  container: {
+  },
+  scrollContent: {
+    padding: 10,
+  },
+  booksContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+  },
+  bookWrapper: {
+    margin: 5,
+  },
+  upload: {
+    // color: colors.appleBlue,
+    padding: 20,
+    fontSize: 23,
+    fontWeight: "600",
     color: colors.utilityGrey,
   },
-  buttonContainer: {
-    height: 100,
+  startBoxContainer: {
+    position: "absolute",
+    bottom: 130, 
+    width: "100%",
+    paddingHorizontal: layout.margins.homeScreenWidgets - 15,
+    marginTop: 140,
+  },
+  button: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 20, // Change this value to adjust the text size
+    color: 'dodgerblue',
   },
 });
 
