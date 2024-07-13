@@ -190,7 +190,6 @@ const FlashcardTest = () => {
           />
         ))}
       </View>
-      <Button title="Clear Database" onPress={clearDatabase} />
     </ScrollView>
   );
 };
