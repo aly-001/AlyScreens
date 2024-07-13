@@ -10,6 +10,14 @@ const FlashcardTest = () => {
   const [showingFront, setShowingFront] = useState(true);
   const [masters, setMasters] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [stats, setStats] = useState({
+    new: 0,
+    learning: 0,
+    later: 0,
+    due: 0,
+    mature: 0,
+    overdue: 0
+  });
 
   useEffect(() => {
     initializeDatabase();
@@ -46,6 +54,8 @@ const FlashcardTest = () => {
       const mastersResult = await database.getAllAsync('SELECT * FROM masters');
       const reviewsResult = await database.getAllAsync('SELECT * FROM reviews');
 
+      console.log('Reviews result:', reviewsResult);
+
       const loadedMasters = mastersResult.map(row => JSON.parse(row.data));
       const loadedReviews = reviewsResult.map(row => ({
         ...JSON.parse(row.data),
@@ -58,7 +68,7 @@ const FlashcardTest = () => {
       dolphinSRInstance.addMasters(...loadedMasters);
       dolphinSRInstance.addReviews(...loadedReviews);
 
-      console.log('Stats:', dolphinSRInstance.summary());
+      updateStats(dolphinSRInstance);
       console.log('Masters:', loadedMasters);
       console.log('Reviews:', loadedReviews);
 
@@ -68,10 +78,17 @@ const FlashcardTest = () => {
     }
   };
 
+  const updateStats = (dolphinSRInstance) => {
+    const currentStats = dolphinSRInstance.summary();
+    setStats(currentStats);
+    console.log('Stats:', currentStats);
+  };
+
   const getNextCard = (dolphinSRInstance) => {
     const nextCard = dolphinSRInstance.nextCard();
     setCurrentCard(nextCard);
     setShowingFront(true);
+    updateStats(dolphinSRInstance);
   };
 
   const addCard = async (front, back) => {
@@ -92,7 +109,7 @@ const FlashcardTest = () => {
         return updatedMasters;
       });
       dolphinSR.addMasters(newCard);
-      console.log('Stats:', dolphinSR.summary());
+      updateStats(dolphinSR);
       getNextCard(dolphinSR);
     } catch (error) {
       console.error('Error adding card:', error);
@@ -116,12 +133,14 @@ const FlashcardTest = () => {
     });
     dolphinSR.addReviews(review);
 
+    const timeStamp = Date.now().toString();
+
     try {
       await db.runAsync(
         'INSERT OR REPLACE INTO reviews (id, data) VALUES (?, ?)',
-        [review.master + '#' + review.combination, JSON.stringify(review)]
+        [timeStamp, JSON.stringify(review)]
       );
-      console.log('Stats:', dolphinSR.summary());
+      updateStats(dolphinSR);
       getNextCard(dolphinSR);
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -130,11 +149,6 @@ const FlashcardTest = () => {
 
   const flipCard = () => {
     setShowingFront(!showingFront);
-  };
-
-  const displayStats = () => {
-    const stats = dolphinSR ? dolphinSR.summary() : {};
-    return stats;
   };
 
   const renderCardContent = () => {
@@ -157,17 +171,16 @@ const FlashcardTest = () => {
       setMasters([]);
       setReviews([]);
       setCurrentCard(null);
-      setDolphinSR(new DolphinSR());
+      const newDolphinSR = new DolphinSR();
+      setDolphinSR(newDolphinSR);
+      updateStats(newDolphinSR);
       
       console.log('Masters:', []);
       console.log('Reviews:', []);
-      console.log('Stats:', new DolphinSR().summary());
     } catch (error) {
       console.error('Error clearing database:', error);
     }
   };
-
-  const stats = displayStats();
 
   return (
     <View style={styles.container}>
@@ -188,6 +201,16 @@ const FlashcardTest = () => {
         <Text>Add a new card:</Text>
         <Button title="Add '猫' - 'cat'" onPress={() => addCard('猫', 'cat')} />
         <Button title="Add '犬' - 'dog'" onPress={() => addCard('犬', 'dog')} />
+        <Button title="Add '本' - 'book'" onPress={() => addCard('本', 'book')} />
+        <Button title="Add '水' - 'water'" onPress={() => addCard('水', 'water')} />
+        <Button title="Add '食べる' - 'to eat'" onPress={() => addCard('食べる', 'to eat')} />
+        <Button title="Add '行く' - 'to go'" onPress={() => addCard('行く', 'to go')} />
+        <Button title="Add '見る' - 'to see'" onPress={() => addCard('見る', 'to see')} />
+        <Button title="Add '車' - 'car'" onPress={() => addCard('車', 'car')} />
+        <Button title="Add '家' - 'house'" onPress={() => addCard('家', 'house')} />
+        <Button title="Add '学校' - 'school'" onPress={() => addCard('学校', 'school')} />
+        <Button title="Add '友達' - 'friend'" onPress={() => addCard('友達', 'friend')} />
+        <Button title="Add '音楽' - 'music'" onPress={() => addCard('音楽', 'music')} />
       </View>
     </View>
   );
