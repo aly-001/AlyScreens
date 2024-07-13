@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
 import * as SQLite from 'expo-sqlite';
-const { DolphinSR } = require("../../lib/index");
+import { DolphinSR } from "../../lib/index";
 
 const FlashcardTest = () => {
   const [db, setDb] = useState(null);
   const [dolphinSR, setDolphinSR] = useState(null);
   const [currentCard, setCurrentCard] = useState(null);
   const [showingFront, setShowingFront] = useState(true);
-  const [masters, setMasters] = useState([]);
-  const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState({
     new: 0,
     learning: 0,
@@ -23,12 +21,6 @@ const FlashcardTest = () => {
     initializeDatabase();
   }, []);
 
-  function generateId() {
-    const timestamp = Date.now().toString(36);
-    const randomPart = Math.random().toString(36).substr(2, 5);
-    return `${timestamp}-${randomPart}`;
-  }
-  
   const initializeDatabase = async () => {
     try {
       const database = await SQLite.openDatabaseAsync('flashcards.db');
@@ -38,8 +30,6 @@ const FlashcardTest = () => {
         CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
         CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
       `);
-
-      // clearDatabase(database);
 
       const dolphinSRInstance = new DolphinSR();
       setDolphinSR(dolphinSRInstance);
@@ -54,24 +44,16 @@ const FlashcardTest = () => {
       const mastersResult = await database.getAllAsync('SELECT * FROM masters');
       const reviewsResult = await database.getAllAsync('SELECT * FROM reviews');
 
-      console.log('Reviews result:', reviewsResult);
-
       const loadedMasters = mastersResult.map(row => JSON.parse(row.data));
       const loadedReviews = reviewsResult.map(row => ({
         ...JSON.parse(row.data),
         ts: new Date(JSON.parse(row.data).ts)
       }));
 
-      setMasters(loadedMasters);
-      setReviews(loadedReviews);
-
       dolphinSRInstance.addMasters(...loadedMasters);
       dolphinSRInstance.addReviews(...loadedReviews);
 
       updateStats(dolphinSRInstance);
-      console.log('Masters:', loadedMasters);
-      console.log('Reviews:', loadedReviews);
-
       getNextCard(dolphinSRInstance);
     } catch (error) {
       console.error('Load deck error:', error);
@@ -81,7 +63,6 @@ const FlashcardTest = () => {
   const updateStats = (dolphinSRInstance) => {
     const currentStats = dolphinSRInstance.summary();
     setStats(currentStats);
-    console.log('Stats:', currentStats);
   };
 
   const getNextCard = (dolphinSRInstance) => {
@@ -103,11 +84,6 @@ const FlashcardTest = () => {
         'INSERT INTO masters (id, data) VALUES (?, ?)',
         [newCard.id, JSON.stringify(newCard)]
       );
-      setMasters(prevMasters => {
-        const updatedMasters = [...prevMasters, newCard];
-        console.log('Masters:', updatedMasters);
-        return updatedMasters;
-      });
       dolphinSR.addMasters(newCard);
       updateStats(dolphinSR);
       getNextCard(dolphinSR);
@@ -126,11 +102,6 @@ const FlashcardTest = () => {
       rating: rating
     };
 
-    setReviews(prevReviews => {
-      const updatedReviews = [...prevReviews, review];
-      console.log('Reviews:', updatedReviews);
-      return updatedReviews;
-    });
     dolphinSR.addReviews(review);
 
     const timeStamp = Date.now().toString();
@@ -147,43 +118,55 @@ const FlashcardTest = () => {
     }
   };
 
-  const flipCard = () => {
-    setShowingFront(!showingFront);
-  };
+  const flipCard = () => setShowingFront(!showingFront);
 
   const renderCardContent = () => {
-    if (!currentCard) {
-      return <Text>No card data available</Text>;
-    }
+    if (!currentCard) return <Text>No card data available</Text>;
     const content = showingFront ? currentCard.front : currentCard.back;
     return <Text style={styles.cardText}>{content.join(', ') || 'No content'}</Text>;
   };
 
-  const clearDatabase = async (database) => {
+  const clearDatabase = async () => {
+    if (!db) return;
     try {
-      await database.execAsync(`
+      await db.execAsync(`
         DELETE FROM masters;
         DELETE FROM reviews;
         DELETE FROM dolphin_state;
       `);
       
-      // Reset the state
-      setMasters([]);
-      setReviews([]);
       setCurrentCard(null);
       const newDolphinSR = new DolphinSR();
       setDolphinSR(newDolphinSR);
       updateStats(newDolphinSR);
-      
-      console.log('Masters:', []);
-      console.log('Reviews:', []);
     } catch (error) {
       console.error('Error clearing database:', error);
     }
   };
 
+  const generateId = () => {
+    const timestamp = Date.now().toString(36);
+    const randomPart = Math.random().toString(36).substr(2, 5);
+    return `${timestamp}-${randomPart}`;
+  };
+
+  const flashcards = [
+    { front: '猫', back: 'cat' },
+    { front: '犬', back: 'dog' },
+    { front: '本', back: 'book' },
+    { front: '水', back: 'water' },
+    { front: '食べる', back: 'to eat' },
+    { front: '行く', back: 'to go' },
+    { front: '見る', back: 'to see' },
+    { front: '車', back: 'car' },
+    { front: '家', back: 'house' },
+    { front: '学校', back: 'school' },
+    { front: '友達', back: 'friend' },
+    { front: '音楽', back: 'music' },
+  ];
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.statsText}>
         New: {stats.new}, Learning: {stats.learning}, Young: {stats.later}, Due: {stats.due}
       </Text>
@@ -199,26 +182,22 @@ const FlashcardTest = () => {
       )}
       <View style={styles.addCardContainer}>
         <Text>Add a new card:</Text>
-        <Button title="Add '猫' - 'cat'" onPress={() => addCard('猫', 'cat')} />
-        <Button title="Add '犬' - 'dog'" onPress={() => addCard('犬', 'dog')} />
-        <Button title="Add '本' - 'book'" onPress={() => addCard('本', 'book')} />
-        <Button title="Add '水' - 'water'" onPress={() => addCard('水', 'water')} />
-        <Button title="Add '食べる' - 'to eat'" onPress={() => addCard('食べる', 'to eat')} />
-        <Button title="Add '行く' - 'to go'" onPress={() => addCard('行く', 'to go')} />
-        <Button title="Add '見る' - 'to see'" onPress={() => addCard('見る', 'to see')} />
-        <Button title="Add '車' - 'car'" onPress={() => addCard('車', 'car')} />
-        <Button title="Add '家' - 'house'" onPress={() => addCard('家', 'house')} />
-        <Button title="Add '学校' - 'school'" onPress={() => addCard('学校', 'school')} />
-        <Button title="Add '友達' - 'friend'" onPress={() => addCard('友達', 'friend')} />
-        <Button title="Add '音楽' - 'music'" onPress={() => addCard('音楽', 'music')} />
+        {flashcards.map((card, index) => (
+          <Button 
+            key={index}
+            title={`Add '${card.front}' - '${card.back}'`}
+            onPress={() => addCard(card.front, card.back)}
+          />
+        ))}
       </View>
-    </View>
+      <Button title="Clear Database" onPress={clearDatabase} />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
