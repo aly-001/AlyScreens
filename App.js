@@ -8,6 +8,18 @@ import FlashcardTest from "./app/screens/FlashcardTest";
 
 const Stack = createStackNavigator();
 
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <BooksProvider>
+//         <AppNavigator />
+//       </BooksProvider>
+//     </NavigationContainer>
+//   );
+// }
+
 export default function App() {
-  return <FlashcardTest />;
+  return(
+    <FlashcardTest/>
+  )
 }
