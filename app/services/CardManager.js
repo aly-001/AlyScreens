@@ -83,7 +83,6 @@ const generateAndSaveImage = async (word, innerContext, outerContext, imageID) =
   }
 };
 
-
 const generateAndSaveAudioWord = async (word, audioWordID) => {
   try {
     // Generate speech using OpenAI API

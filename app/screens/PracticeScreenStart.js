@@ -5,8 +5,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
+  StatusBar,
 } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import ScreenHeader from "../components/ScreenHeader";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
@@ -16,19 +17,32 @@ import PracticeStartButton from "../components/PracticeStartButton";
 import { useFlashcards } from "../context/FlashcardContext";
 
 export default function PracticeScreenStart() {
-  const { stats, getNextCard, initializeDatabase,  newCards, learningCards, dueCards } = useFlashcards();
+  const {
+    stats,
+    getNextCard,
+    initializeDatabase,
+    newCards,
+    learningCards,
+    dueCards,
+  } = useFlashcards();
   const navigation = useNavigation();
 
   const handleRefresh = async () => {
     try {
       await initializeDatabase();
     } catch (error) {
-      console.error('Database initialization error:', error);
+      console.error("Database initialization error:", error);
     }
-  }
+  };
+
+  useEffect(() =>{
+    console.log(newCards.length);
+    console.log(learningCards.length);
+    console.log(dueCards.length);
+  },[])
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       handleRefresh();
     });
     return unsubscribe;
@@ -41,43 +55,61 @@ export default function PracticeScreenStart() {
 
   return (
     <View style={styles.superContainer}>
+      <StatusBar hidden={false} />
       <Screen>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <View style={styles.headerContainer}>
             <ScreenHeader text="Practice" />
           </View>
           <View style={styles.wordBoxContainer}>
-            <WordBox 
-              words={newCards.map(card => ({ id: card.id, word: card.front }))} 
-              color={colors.newWords} 
-              title="New" 
+            <WordBox
+              words={newCards.map((card) => ({
+                id: card.id,
+                word: card.front,
+              }))}
+              color={colors.newWords}
+              title="New"
             />
           </View>
           <View style={styles.wordBoxContainer}>
             <WordBox
-              words={learningCards.map(card => ({ id: card.id, word: card.front }))}
+              words={learningCards.map((card) => ({
+                id: card.id,
+                word: card.front,
+              }))}
               color={colors.learnWords}
               title="Learn"
             />
           </View>
           <View style={styles.wordBoxContainer}>
-            <WordBox 
-              words={dueCards.map(card => ({ id: card.id, word: card.front }))} 
-              color={colors.dueWords} 
-              title="Due" 
+            <WordBox
+              words={dueCards.map((card) => ({
+                id: card.id,
+                word: card.front,
+              }))}
+              color={colors.dueWords}
+              title="Due"
             />
           </View>
-          <View style={styles.startBoxContainer}>
+          {newCards.length === 0 &&
+          learningCards.length === 0 &&
+          dueCards.length === 0 ? (
+            <View style={styles.startBoxContainer}>
+                <PracticeStartButton text="Start" deactivated={true} />
+            </View>
+          ) : (
+            
             <TouchableOpacity activeOpacity={0.5} onPress={startReview}>
-              <PracticeStartButton text="Start" />
+            <View style={styles.startBoxContainer}>
+                <PracticeStartButton text="Start" deactivated={false} />
+            </View>
             </TouchableOpacity>
-          </View>
+          )}
         </ScrollView>
       </Screen>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   superContainer: {

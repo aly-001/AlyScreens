@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as FileSystem from 'expo-file-system';
 import { Audio } from 'expo-av';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import colors from "../config/colors";
 import PracticeStatsFooter from "../components/PracticeStatsFooter";
 import PracticeRatingTab from "../components/PracticeRatingTab";
@@ -20,8 +21,30 @@ import { useFlashcards } from "../context/FlashcardContext";
 
 const { width, height } = Dimensions.get("window");
 
-export default function PracticeScreenDef({ navigation }) {
+export default function PracticeScreenDef() {
   const [imageUri, setImageUri] = useState(null);
+  const [displayedCard, setDisplayedCard] = useState(null);
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const { currentCard, submitReview, getNextCard, stats } = useFlashcards();
+  const isNavigatingRef = useRef(false);
+
+  useEffect(() => {
+    if (isFocused && !isNavigatingRef.current) {
+      setDisplayedCard(currentCard);
+    }
+  }, [currentCard, isFocused]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('transitionEnd', () => {
+      if (isNavigatingRef.current) {
+        setDisplayedCard(currentCard);
+        isNavigatingRef.current = false;
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, currentCard]);
 
   useEffect(() => {
     async function setupAudio() {
@@ -43,23 +66,11 @@ export default function PracticeScreenDef({ navigation }) {
     setupAudio();
   }, []);
 
-  const { currentCard, submitReview, getNextCard, stats } = useFlashcards();
-
-  const handleReview = (rating) => {
-    submitReview(rating);
-    const nextCard = getNextCard();
-    if (nextCard) {
-      navigation.navigate("Word");
-    } else {
-      navigation.navigate("PracticeStart");
-    }
-  };
-
   useEffect(() => {
     async function loadImage() {
-      if (currentCard && currentCard.back) {
+      if (displayedCard && displayedCard.back) {
         try {
-          const backData = JSON.parse(currentCard.back[0]);
+          const backData = JSON.parse(displayedCard.back[0]);
           const imageFileName = backData.imageID + '.png';
           const imagePath = `${FileSystem.documentDirectory}images/${imageFileName}`;
           
@@ -69,8 +80,7 @@ export default function PracticeScreenDef({ navigation }) {
           } else {
             setImageUri(null);
           }
-          console.log("imimimimimimimimimimimimimimimimimimimimimimimimimimim")
-          console.log("image effect hook reloaded")
+          console.log("Image effect hook reloaded");
         } catch (error) {
           console.error("Error loading image:", error);
           setImageUri(null);
@@ -79,18 +89,27 @@ export default function PracticeScreenDef({ navigation }) {
     }
 
     loadImage();
-  }, [currentCard]);
+  }, [displayedCard]);
 
+  const handleReview = (rating) => {
+    submitReview(rating);
+    const nextCard = getNextCard();
+    if (nextCard) {
+      isNavigatingRef.current = true;
+      navigation.navigate("Word", { fromDef: true });
+    } else {
+      navigation.navigate("PracticeStart");
+    }
+  };
 
-  const handleAudioWordPress = async () => {
-    if (currentCard && currentCard.back) {
+  const handleAudioPress = async (audioType) => {
+    if (displayedCard && displayedCard.back) {
       try {
-        const backData = JSON.parse(currentCard.back[0]);
-        const audioFileName = backData.audioWordID + '.mp3';
+        const backData = JSON.parse(displayedCard.back[0]);
+        const audioFileName = backData[audioType === 'word' ? 'audioWordID' : 'audioContextID'] + '.mp3';
         const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
         console.log("Audio path:", audioPath);
 
-        // Check if file exists
         const fileInfo = await FileSystem.getInfoAsync(audioPath);
         if (!fileInfo.exists) {
           console.error("Audio file does not exist:", audioPath);
@@ -109,7 +128,6 @@ export default function PracticeScreenDef({ navigation }) {
         const playbackStatus = await sound.playAsync();
         console.log("Playback status:", playbackStatus);
 
-        // Wait for the audio to finish
         sound.setOnPlaybackStatusUpdate(async (status) => {
           if (status.didJustFinish) {
             console.log("Audio finished playing");
@@ -121,55 +139,13 @@ export default function PracticeScreenDef({ navigation }) {
       }
     }
   };
-
-  const handleAudioContextPress = async () => {
-    if (currentCard && currentCard.back) {
-      try {
-        const backData = JSON.parse(currentCard.back[0]);
-        const audioFileName = backData.audioContextID + '.mp3';
-        const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
-        console.log("Audio path:", audioPath);
-
-        // Check if file exists
-        const fileInfo = await FileSystem.getInfoAsync(audioPath);
-        if (!fileInfo.exists) {
-          console.error("Audio file does not exist:", audioPath);
-          return;
-        }
-        console.log("Audio file size:", fileInfo.size, "bytes");
-
-        console.log("Creating sound object...");
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: audioPath },
-          { shouldPlay: false }
-        );
-        console.log("Sound object created");
-
-        console.log("Playing audio...");
-        const playbackStatus = await sound.playAsync();
-        console.log("Playback status:", playbackStatus);
-
-        // Wait for the audio to finish
-        sound.setOnPlaybackStatusUpdate(async (status) => {
-          if (status.didJustFinish) {
-            console.log("Audio finished playing");
-            await sound.unloadAsync();
-          }
-        });
-      } catch (error) {
-        console.error("Error in audio playback:", error);
-      }
-    }
-  };
-
 
   const renderCardContent = () => {
-    if (!currentCard) return <Text>No card available</Text>;
+    if (!displayedCard) return <Text>No card available</Text>;
 
     let backData;
     try {
-      backData = JSON.parse(currentCard.back[0]);
-      console.log(currentCard.back[0]);
+      backData = JSON.parse(displayedCard.back[0]);
     } catch (error) {
       console.error("Error parsing card data:", error);
       return <Text>Error: Could not parse card data</Text>;
@@ -205,32 +181,30 @@ export default function PracticeScreenDef({ navigation }) {
     );
   };
 
-  const grey = false; // You can change this to true to test the grey area
-
   return (
     <SafeAreaView style={styles.safeArea}>
-    <StatusBar hidden={true} />
-    <View style={styles.superContainer}>
-      {imageUri ? (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      ) : (
-        <Image
-          source={require("../../assets/empty.jpg")}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      )}
+      <StatusBar hidden={true} />
+      <View style={styles.superContainer}>
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        ) : (
+          <Image
+            source={require("../../assets/empty.jpg")}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        )}
         <View style={styles.container}>
           {renderCardContent()}
           <View style={styles.audio}>
-            <TouchableOpacity onPress={handleAudioWordPress} activeOpacity={.8}>
+            <TouchableOpacity onPress={() => handleAudioPress('word')} activeOpacity={.8}>
               <PracticeAudio />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleAudioContextPress} activeOpacity={.8}>
+            <TouchableOpacity onPress={() => handleAudioPress('context')} activeOpacity={.8}>
               <PracticeAudio />
             </TouchableOpacity>
           </View>
