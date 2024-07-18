@@ -1,9 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { DolphinSR } from "../../lib/index";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const useVirtualDate = () => {
+  const [virtualDate, setVirtualDate] = useState(new Date());
+
+  useEffect(() => {
+    const loadVirtualDate = async () => {
+      const storedDate = await AsyncStorage.getItem('virtualDate');
+      if (storedDate) {
+        setVirtualDate(new Date(storedDate));
+      }
+    };
+    loadVirtualDate();
+  }, []);
+
+  const advanceTime = useCallback(async (days) => {
+    const newDate = new Date(virtualDate.getTime() + days * 24 * 60 * 60 * 1000);
+    setVirtualDate(newDate);
+    await AsyncStorage.setItem('virtualDate', newDate.toISOString());
+  }, [virtualDate]);
+
+  const resetToCurrentTime = useCallback(async () => {
+    const currentDate = new Date();
+    setVirtualDate(currentDate);
+    await AsyncStorage.setItem('virtualDate', currentDate.toISOString());
+  }, []);
+
+  return [virtualDate, advanceTime, resetToCurrentTime];
+};
 
 const FlashcardTest = () => {
+  const [virtualDate, advanceTime, resetToCurrentTime] = useVirtualDate();
   const [db, setDb] = useState(null);
   const [dolphinSR, setDolphinSR] = useState(null);
   const [currentCard, setCurrentCard] = useState(null);
@@ -21,6 +51,15 @@ const FlashcardTest = () => {
     initializeDatabase();
   }, []);
 
+  useEffect(() => {
+    if (dolphinSR) {
+      dolphinSR._currentDateGetter = () => virtualDate;
+      dolphinSR._rebuild();
+      updateStats(dolphinSR);
+      getNextCard(dolphinSR);
+    }
+  }, [virtualDate]);
+
   const initializeDatabase = async () => {
     try {
       const database = await SQLite.openDatabaseAsync('flashcards.db');
@@ -31,7 +70,7 @@ const FlashcardTest = () => {
         CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
       `);
 
-      const dolphinSRInstance = new DolphinSR();
+      const dolphinSRInstance = new DolphinSR(() => virtualDate);
       setDolphinSR(dolphinSRInstance);
       await loadDeck(database, dolphinSRInstance);
     } catch (error) {
@@ -53,9 +92,9 @@ const FlashcardTest = () => {
       dolphinSRInstance.addMasters(...loadedMasters);
       dolphinSRInstance.addReviews(...loadedReviews);
 
-      // console.log('Loaded deck:', dolphinSRInstance.summary());
-      // console.log('Masters:', loadedMasters);
-      // console.log('Reviews:', loadedReviews);
+      console.log('Loaded deck:', dolphinSRInstance.summary());
+      console.log('Masters:', loadedMasters);
+      console.log('Reviews:', loadedReviews);
 
       updateStats(dolphinSRInstance);
       getNextCard(dolphinSRInstance);
@@ -140,7 +179,7 @@ const FlashcardTest = () => {
       `);
       
       setCurrentCard(null);
-      const newDolphinSR = new DolphinSR();
+      const newDolphinSR = new DolphinSR(() => virtualDate);
       setDolphinSR(newDolphinSR);
       updateStats(newDolphinSR);
     } catch (error) {
@@ -155,9 +194,9 @@ const FlashcardTest = () => {
   };
 
   const flashcards = [
-    { front: '猫', back: 'cat' },
-    { front: '犬', back: 'dog' },
-    { front: '本', back: 'book' },
+    { front: 'Flashcard Test Jul 16 - 1', back: 'Back 1' },
+    { front: 'Flashcard Test Jul 16 - 2', back: 'Back 2' },
+    { front: 'Flashcard Test Jul 16 - 3', back: 'Back 3' },
     { front: '水', back: 'water' },
     { front: '食べる', back: 'to eat' },
     { front: '行く', back: 'to go' },
@@ -171,6 +210,7 @@ const FlashcardTest = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Text>Current Virtual Date: {virtualDate.toDateString()}</Text>
       <Text style={styles.statsText}>
         New: {stats.new}, Learning: {stats.learning}, Young: {stats.later}, Due: {stats.due}
       </Text>
@@ -194,6 +234,17 @@ const FlashcardTest = () => {
           />
         ))}
       </View>
+      <View style={styles.timeControlContainer}>
+        <Button 
+          title="Advance Time by 3 Days" 
+          onPress={() => advanceTime(3)}
+        />
+        <Button 
+          title="Reset to Current Time" 
+          onPress={resetToCurrentTime}
+        />
+      </View>
+      <Button title="Clear Database" onPress={clearDatabase} />
     </ScrollView>
   );
 };
@@ -221,6 +272,12 @@ const styles = StyleSheet.create({
   addCardContainer: {
     marginTop: 20,
     alignItems: 'center',
+  },
+  timeControlContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 20,
   },
 });
 

@@ -1,27 +1,64 @@
-import { View, StyleSheet, Text, Dimensions, Image, SafeAreaView, StatusBar } from "react-native";
 import React from "react";
+import { View, StyleSheet, Text, Dimensions, Image, SafeAreaView, StatusBar } from "react-native";
 import colors from "../config/colors";
 import PracticeStatsFooter from "../components/PracticeStatsFooter";
 import PracticeRatingTab from "../components/PracticeRatingTab";
 import PracticeDividerLine from "../components/PracticeDividerLine";
 import PracticeAudio from "../components/PracticeAudio";
+import { useFlashcards } from "../context/FlashcardContext";
 
 const { width, height } = Dimensions.get("window");
 
-export default function PracticeScreenWord({
-  definition,
-  word,
-  context,
-  contextDef,
-  statsLearn,
-  statsNew,
-  statsDue,
-  onSelectDifficulty,
-}) {
-  const handleRatingPress = (rating) => {
-    if (onSelectDifficulty) {
-      onSelectDifficulty(rating);
+export default function PracticeScreenDef({ navigation }) {
+  const { currentCard, submitReview, getNextCard, stats } = useFlashcards();
+
+  const handleReview = (rating) => {
+    submitReview(rating);
+    const nextCard = getNextCard();
+    if (nextCard) {
+      navigation.navigate('Word');
+    } else {
+      navigation.navigate('PracticeStart');
     }
+  };
+
+  const renderCardContent = () => {
+    if (!currentCard) return <Text>No card available</Text>;
+
+    let backData;
+    try {
+      backData = JSON.parse(currentCard.back[0]);
+      console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++")
+      console.log(currentCard.back[0]);
+    } catch (error) {
+      console.error('Error parsing card data:', error);
+      return <Text>Error: Could not parse card data</Text>;
+    }
+
+    if (!backData || typeof backData !== 'object') {
+      console.error('Invalid card data format');
+      return <Text>Error: Invalid card data format</Text>;
+    }
+
+    return (
+      <>
+        <View style={styles.wordContainer}>
+          <Text style={styles.word}>{backData.word || 'N/A'}</Text>
+        </View>
+        <View style={styles.defContainer}>
+          <Text style={styles.def}>{backData.wordDef || 'N/A'}</Text>
+        </View>
+        <View style={styles.dividerLine}>
+          <PracticeDividerLine width="100%" height={2} color={colors.utilityGreyUltraLight} />
+        </View>
+        <View style={styles.contextContainer}>
+          <Text style={styles.context}>{backData.context || 'N/A'}</Text>
+        </View>
+        <View style={styles.defContainer}>
+          <Text style={styles.contextDef}>{backData.contextDef || 'N/A'}</Text>
+        </View>
+      </>
+    );
   };
 
   const grey = false; // You can change this to true to test the grey area
@@ -34,49 +71,35 @@ export default function PracticeScreenWord({
           <View style={styles.greyArea} />
         ) : (
           <Image 
-            source={require('../../assets/composait.webp')} 
+            source={require('../../assets/empty.jpg')} 
             style={styles.image}
             resizeMode="cover"
           />
         )}
         <View style={styles.container}>
-          <View style={styles.wordContainer}>
-            <Text style={styles.word}>{word}</Text>
-          </View>
-          <View style={styles.defContainer}>
-            <Text style={styles.def}>{definition}</Text>
-          </View>
-          <View style={styles.dividerLine}>
-            <PracticeDividerLine width="100%" height={2} color={colors.utilityGreyUltraLight} />
-          </View>
-          <View style={styles.contextContainer}>
-            <Text style={styles.context}>{context}</Text>
-          </View>
-          <View style={styles.defContainer}>
-            <Text style={styles.contextDef}>{contextDef}</Text>
-          </View>
+          {renderCardContent()}
           <View style={styles.audio}>
             <PracticeAudio />
           </View>
           <View style={styles.footer}>
             <PracticeStatsFooter
-              newCount={statsNew}
-              learnCount={statsLearn}
-              dueCount={statsDue}
+              newCount={stats.new}
+              learnCount={stats.learning}
+              dueCount={stats.due}
             />
           </View>
           <View style={styles.allTabsContainer}>
             <View style={styles.tabContainer}>
-              <PracticeRatingTab rating="Again" onPress={handleRatingPress} />
+              <PracticeRatingTab rating="Again" onPress={() => handleReview('again')} />
             </View>
             <View style={styles.tabContainer}>
-              <PracticeRatingTab rating="Hard" onPress={handleRatingPress} />
+              <PracticeRatingTab rating="Hard" onPress={() => handleReview('hard')} />
             </View>
             <View style={styles.tabContainer}>
-              <PracticeRatingTab rating="Good" onPress={handleRatingPress} />
+              <PracticeRatingTab rating="Good" onPress={() => handleReview('good')} />
             </View>
             <View style={styles.tabContainer}>
-              <PracticeRatingTab rating="Easy" onPress={handleRatingPress} />
+              <PracticeRatingTab rating="Easy" onPress={() => handleReview('easy')} />
             </View>
           </View>
         </View>

@@ -25,6 +25,7 @@ import BookHiddenFooter from "../components/BookHiddenFooter";
 import { TabBarVisibilityContext } from "../navigation/TabBarVisibilityContext"; // Adjust the import path as needed
 import { addCard } from "../services/CardManager";
 
+
 const duration = 300; // Animation duration
 
 const BookHeader = ({ bookTitle, style }) => (
@@ -155,6 +156,7 @@ export default function ReadScreen() {
           // Optionally, you can update some state to show an error message
           // For example: setCardAddError('Failed to add new card. Please try again.');
         });
+      
     }
   };
 

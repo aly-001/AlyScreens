@@ -1,68 +1,70 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import ScreenHeader from "../components/ScreenHeader";
-
 import Screen from "../components/Screen";
 import colors from "../config/colors";
 import layout from "../config/layout";
 import WordBox from "../components/WordBox";
 import PracticeStartButton from "../components/PracticeStartButton";
+import { useFlashcards } from "../context/FlashcardContext";
 
-// some random words that could be defined words from a book
-const newWords = [
-  { id: 1, word: "Pourpre" },
-  { id: 2, word: "Composait" },
-];
+export default function PracticeScreenStart() {
+  const { stats, getNextCard, initializeDatabase, newCards, learningCards, dueCards } = useFlashcards();
+  const navigation = useNavigation();
 
-const learnWords = [
-  { id: 1, word: "Éblouissant" },
-  { id: 2, word: "Vengeance" },
-  { id: 3, word: "Trésor" },
-  { id: 4, word: "Château d'If" },
-  { id: 5, word: "Intrigue" },
-  { id: 6, word: "Honneur" },
-  { id: 7, word: "Conspiration" },
-  { id: 8, word: "Duel" },
-  { id: 9, word: "Aristocrate" },
-  { id: 10, word: "Emprisonnement" },
-  { id: 11, word: "Rédemption" },
-  { id: 12, word: "Mascarade" }
-];
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      initializeDatabase();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
-const dueWords = [
-  { id: 1, word: "Éphémère" },
-  { id: 2, word: "Mélancolie" },
-  { id: 3, word: "Subterfuge" }
-];
+  const startReview = () => {
+    getNextCard();
+    navigation.navigate("Word");
+  };
 
-export default function HomeScreen({}) {
   return (
     <View style={styles.superContainer}>
       <Screen>
         <ScrollView contentContainerStyle={styles.contentContainer}>
+          <Text style={styles.statsText}>
+            New: {stats.new}, Learning: {stats.learning}, Young: {stats.later},
+            Due: {stats.due}
+          </Text>
           <View style={styles.headerContainer}>
             <ScreenHeader text="Practice" />
           </View>
           <View style={styles.wordBoxContainer}>
-            <WordBox words={newWords} color={colors.newWords} title="New" />
+            <WordBox 
+              words={newCards.map(card => ({ id: card.id, word: card.front }))} 
+              color={colors.newWords} 
+              title="New" 
+            />
           </View>
           <View style={styles.wordBoxContainer}>
             <WordBox
-              words={learnWords}
+              words={learningCards.map(card => ({ id: card.id, word: card.front }))}
               color={colors.learnWords}
               title="Learn"
             />
           </View>
-
           <View style={styles.wordBoxContainer}>
-            <WordBox words={dueWords} color={colors.dueWords} title="Due" />
+            <WordBox 
+              words={dueCards.map(card => ({ id: card.id, word: card.front }))} 
+              color={colors.dueWords} 
+              title="Due" 
+            />
           </View>
-
           <View style={styles.startBoxContainer}>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={() => console.log("Pressed")}
-            >
+            <TouchableOpacity activeOpacity={0.5} onPress={startReview}>
               <PracticeStartButton text="Start" />
             </TouchableOpacity>
           </View>
@@ -71,6 +73,7 @@ export default function HomeScreen({}) {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   superContainer: {
@@ -89,11 +92,15 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   wordBoxContainer: {
-    paddingHorizontal: layout.margins.homeScreenWidgets -15,
-    marginBottom: (layout.margins.homeScreenWidgets),
+    paddingHorizontal: layout.margins.homeScreenWidgets - 15,
+    marginBottom: layout.margins.homeScreenWidgets,
   },
   startBoxContainer: {
     paddingHorizontal: layout.margins.homeScreenWidgets - 15,
     marginTop: 140,
+  },
+  statsText: {
+    fontSize: 16,
+    marginBottom: 10,
   },
 });

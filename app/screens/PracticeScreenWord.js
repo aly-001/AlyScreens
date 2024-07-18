@@ -1,39 +1,63 @@
-import { View, StyleSheet, Text, SafeAreaView, StatusBar } from "react-native";
 import React from "react";
+import { View, StyleSheet, Text, SafeAreaView, StatusBar, Button } from "react-native";
 import colors from "../config/colors";
 import PracticeStatsFooter from "../components/PracticeStatsFooter";
 import PracticeDividerLine from "../components/PracticeDividerLine";
+import { useFlashcards } from "../context/FlashcardContext";
 
-export default function PracticeScreenWord({
-  word,
-  context,
-  statsLearn,
-  statsNew,
-  statsDue,
-}) {
+export default function PracticeScreenWord({ navigation }) {
+  const { currentCard, stats } = useFlashcards();
+
+  const renderCardContent = () => {
+    if (!currentCard) return <Text>No more cards available</Text>;
+
+    let frontData;
+    try {
+      frontData = JSON.parse(currentCard.front[0]);
+    } catch (error) {
+      console.error('Error parsing card data:', error);
+      return <Text>Error: Could not parse card data</Text>;
+    }
+
+    console.log('Parsed front data:', frontData);
+
+    if (!frontData || typeof frontData !== 'object') {
+      console.error('Invalid card data format');
+      return <Text>Error: Invalid card data format</Text>;
+    }
+
+    return (
+      <>
+        <View style={styles.wordContainer}>
+          <Text style={styles.word}>{frontData.word || 'N/A'}</Text>
+        </View>
+        <View style={styles.dividerLine}>
+          <PracticeDividerLine width="100%" height={2} color={colors.utilityGreyUltraLight} />
+        </View>
+        <View style={styles.contextContainer}>
+          <Text style={styles.context}>{frontData.context || 'N/A'}</Text>
+        </View>
+      </>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <View style={styles.superContainer}>
         <View style={styles.container}>
-          <View style={styles.wordContainer}>
-            <Text style={styles.word}>{word}</Text>
-          </View>
-          <View style={styles.dividerLine}>
-            <PracticeDividerLine width="100%" height={2} color={colors.utilityGreyUltraLight} />
-          </View>
-          <View style={styles.contextContainer}>
-            <Text style={styles.context}>{context}</Text>
-          </View>
+          {renderCardContent()}
           <View style={styles.footer}>
             <PracticeStatsFooter
-              newCount={statsNew}
-              learnCount={statsLearn}
-              dueCount={statsDue}
+              newCount={stats.new}
+              learnCount={stats.learning}
+              dueCount={stats.due}
             />
           </View>
+        <Button title="Show Definition" onPress={() => navigation.navigate('Def')} />
         </View>
       </View>
+
     </SafeAreaView>
   );
 }
@@ -69,7 +93,7 @@ const styles = StyleSheet.create({
   footer: {
     position: "absolute",
     alignSelf: "center",
-    bottom: 20,
+    bottom: 60,
   },
   dividerLine: {
     marginVertical: 50,

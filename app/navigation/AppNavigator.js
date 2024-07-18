@@ -9,6 +9,9 @@ import colors from "../config/colors";
 import { TabBarVisibilityProvider, TabBarVisibilityContext } from "./TabBarVisibilityContext";
 import HomeNavigator from "./HomeNavigator";
 import ReadNavigator from "./ReadNavigator";
+import FlashcardTest2 from "../screens/FlashcardTest2";
+import FlashcardTest from "../screens/FlashcardTest";
+import PracticeNavigator from "./PracticeNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -61,7 +64,7 @@ const AppNavigator = () => {
               />
               <Tab.Screen
                 name="Practice"
-                component={PracticeScreenStart}
+                component={PracticeNavigator}
                 options={{
                   tabBarIcon: ({ focused }) => (
                     <View style={styles.iconContainer}>

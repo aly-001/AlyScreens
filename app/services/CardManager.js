@@ -1,44 +1,54 @@
 import * as SQLite from 'expo-sqlite';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: "sk-proj-5auFOzAUeUREckxZsroCT3BlbkFJCu9rISeIc0pBqiMyrM6W",
+});
+
+async function callLLM(prompt) {
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
+    });
+    return completion.choices[0].message.content;
+  } catch (error) {
+    console.error("Error calling LLM: ", error);
+    return null;
+  }
+}
+
+const summarizeContext = async(word, innerContext) =>{
+  const prompt = `I’ve got two variables: word, innerContext. Your job is to summarize innerContext. For example, word: “éclairée” innerContext: “connaissance. C'était une grande salle éclairée par cinq ou six fenêtres, au-de”. You need to answer: “Une grande salle éclairée par cinq ou six fenêtres.”  Note that your final answer should include the word. Here are the variables: word: ${word}, innerContext: ${innerContext}`;
+  return callLLM(prompt);
+}
 
 const generateWordDef = async (word, innerContext, outerContext) => {
-  const wordDef = "DEFINITION of " + word;
-  return wordDef;
+  const prompt = `Give the translation of ${word} given the inner context "${innerContext}" and the outer context "${outerContext}". Please respond in English. You can give a few definitions if relevant but in general your answer shouldn't be more than 3 words.`;
+  return callLLM(prompt);
 }
 
-const generateContextDef = async (word, innerContext, outerContext) => {
-  const contextDef = "DEFINITION of " + innerContext;
-  return contextDef;
+const generateContextDef = async (word, summarizedContext, outerContext) => {
+  const prompt = `Give a short (no more than 20 words and no less than 3 words) translation of the phrase "${summarizedContext}" focusing on the word "${word}". Additional context: ${outerContext}. Please respond in English.`;
+  return callLLM(prompt);
 }
 
-const generateAndSaveImage = async (word, innerContext, outerContext, imageID) => {
-  // to simulate the image generation process, log after about 5 seconds
-  return new Promise((resolve, reject) => {
+const simulateMediaGeneration = (name, delay) => 
+  new Promise((resolve) => {
     setTimeout(() => {
-      console.log("Image generated and saved");
+      console.log(`${name} generated and saved`);
       resolve();
-    }, 5000);
+    }, delay);
   });
-}
 
-const generateAndSaveAudioWord = async (word, languageTag, audioWordID) => {
-  // to simulate the audio generation process, log after about 3 seconds
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log("Audio word generated and saved");
-      resolve();
-    }, 3000);
-  });
-}
+const generateAndSaveImage = (word, innerContext, outerContext, imageID) => 
+  simulateMediaGeneration("Image", 5000);
 
-const generateAndSaveAudioContext = async (innerContext, languageTag, audioContextID) => {
-  // to simulate the audio generation process, log after about 3 seconds
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log("Audio context generated and saved");
-      resolve();
-    }, 3500);
-  });
-}
+const generateAndSaveAudioWord = (word, languageTag, audioWordID) => 
+  simulateMediaGeneration("Audio word", 3000);
+
+const generateAndSaveAudioContext = (innerContext, languageTag, audioContextID) => 
+  simulateMediaGeneration("Audio context", 3500);
 
 const generateId = () => {
   const timestamp = Date.now().toString(36);
@@ -69,29 +79,27 @@ export const addCard = async (word, innerContext, outerContext, languageTag) => 
     const imageID = `${flashcardID}-image`;
     const audioWordID = `${flashcardID}-audio-word`;
     const audioContextID = `${flashcardID}-audio-context`;
-  
-    const wordDefPromise = generateWordDef(word, innerContext, outerContext);
-    const contextDefPromise = generateContextDef(word, innerContext, outerContext);
-    const imagePromise = generateAndSaveImage(word, innerContext, outerContext, imageID);
-    const audioWordPromise = generateAndSaveAudioWord(word, languageTag, audioWordID);
-    const audioContextPromise = generateAndSaveAudioContext(innerContext, languageTag, audioContextID);
 
-    const [wordDef, contextDef] = await Promise.all([wordDefPromise, contextDefPromise]);
+    // Summarize context first
+    const summarizedContext = await summarizeContext(word, innerContext);
+    console.log('Summarized context:', summarizedContext);
 
-    const cardData = {
-      word,
-      context: innerContext,
-      wordDef,
-      contextDef,
-      imageID,
-      audioWordID,
-      audioContextID
-    };
+    // Then generate definitions using the summarized context
+    const [wordDef, contextDef] = await Promise.all([
+      generateWordDef(word, innerContext, outerContext),
+      generateContextDef(word, summarizedContext, outerContext)
+    ]);
+
+    console.log('Word definition:', wordDef);
+    console.log('Context definition:', contextDef);
+
+    const cardDataFront = { word, context: summarizedContext };
+    const cardDataBack = { word, context: summarizedContext, wordDef, contextDef, imageID, audioWordID, audioContextID };
 
     const newCard = {
       id: flashcardID,
       combinations: [{ front: [0], back: [1] }],
-      fields: [JSON.stringify(cardData)]
+      fields: [JSON.stringify(cardDataFront), JSON.stringify(cardDataBack)]
     };
 
     await db.runAsync(
@@ -99,13 +107,18 @@ export const addCard = async (word, innerContext, outerContext, languageTag) => 
       [newCard.id, JSON.stringify(newCard)]
     );
 
-    Promise.all([imagePromise, audioWordPromise, audioContextPromise])
-      .then(() => {
-        console.log('All media generated successfully');
-      })
-      .catch(error => {
-        console.error('Error generating media:', error);
-      });
+    console.log('Card added to database:', newCard);
+
+    // Start media generation after card is added to database
+    Promise.all([
+      generateAndSaveImage(word, summarizedContext, outerContext, imageID),
+      generateAndSaveAudioWord(word, languageTag, audioWordID),
+      generateAndSaveAudioContext(summarizedContext, languageTag, audioContextID)
+    ]).then(() => {
+      console.log('All media generated successfully');
+    }).catch(error => {
+      console.error('Error generating media:', error);
+    });
 
     return newCard;
   } catch (error) {
@@ -113,7 +126,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag) => 
     throw new Error('Failed to add new card: ' + error.message);
   } finally {
     if (db) {
-      db.closeAsync();
+      await db.closeAsync();
     }
   }
 };
