@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 
 const audioDirectory = `${FileSystem.documentDirectory}audio/`;
+const imageDirectory = `${FileSystem.documentDirectory}images/`;
 
 const listDirectoryContents = async (directory) => {
   try {
@@ -26,9 +27,18 @@ const clearAudioDiectory = async () => {
   }
 };
 
+const clearImageDiectory = async () => {
+  try {
+    await FileSystem.deleteAsync(imageDirectory, { idempotent: true });
+    console.log(`Cleared image directory at: ${imageDirectory}`);
+  } catch (error) {
+    console.error("Error clearing image directory:", error);
+  }
+};
+
 const listAudioDirectory = async () => {
   await listDirectoryContents(audioDirectory);
 }
 
 // export both functions for use in the app
-export { listAudioDirectory, clearAudioDiectory };
+export { listAudioDirectory, clearAudioDiectory, clearImageDiectory };

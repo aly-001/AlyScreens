@@ -2,7 +2,7 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { DolphinSR } from "../../lib/index";
-import { clearAudioDiectory, listAudioDirectory } from '../services/MediaSurfer';
+import { clearAudioDiectory, listAudioDirectory, clearImageDiectory } from '../services/MediaSurfer';
 
 const FlashcardContext = createContext();
 
@@ -48,6 +48,7 @@ export const FlashcardProvider = ({ children }) => {
       // clearDatabase(database); 
       // console.log('Database cleared');
       // clearAudioDiectory();
+      // clearImageDiectory();
 
       const dolphinSRInstance = new DolphinSR();
       setDolphinSR(dolphinSRInstance);

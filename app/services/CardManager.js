@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { Audio } from 'expo-av';
 import OpenAI from 'openai';
 
@@ -35,47 +36,52 @@ const generateContextDef = async (word, summarizedContext, outerContext) => {
   return callLLM(prompt);
 }
 
-const simulateMediaGeneration = (name, delay) => 
-  new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`${name} generated and saved`);
-      resolve();
-    }, delay);
-  });
+const generateAndSaveImage = async (word, innerContext, outerContext, imageID) => {
+  try {
+    // Generate image using DALL-E API
+    const response = await openai.images.generate({
+      model: "dall-e-3",
+      prompt: `${innerContext} ${word} ${outerContext}`,
+      n: 1,
+      size: "1024x1024",
+    });
 
-  const generateAndSaveImage = async (word, innerContext, outerContext, imageID) => {
-    try {
-      // Generate image using DALL-E API
-      const response = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: `${innerContext} ${word} ${outerContext}`,
-        n: 1,
-        size: "1024x1024",
-      });
-  
-      const imageUrl = response.data[0].url;
-  
-      // Download the image
-      const imageResponse = await fetch(imageUrl);
-      const imageArrayBuffer = await imageResponse.arrayBuffer();
-  
-      // Define the directory and file path
-      const directory = `${FileSystem.documentDirectory}images/`;
-      const filePath = `${directory}${imageID}.png`;
-  
-      // Ensure the directory exists
-      await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
-  
-      // Write the file
-      await FileSystem.writeAsStringAsync(filePath, arrayBufferToBase64(imageArrayBuffer), { encoding: FileSystem.EncodingType.Base64 });
-  
-      console.log(`Image file saved at: ${filePath}`);
-      return filePath;
-    } catch (error) {
-      console.error("Error generating or saving image:", error);
-      throw error;
-    }
-  };
+    const imageUrl = response.data[0].url;
+
+    // Download and crop the image
+    const manipResult = await ImageManipulator.manipulateAsync(
+      imageUrl,
+      [
+        { crop: {
+          originX: 112, // (1024 - 800) / 2
+          originY: 256, // (1024 - 512) / 2
+          width: 800,
+          height: 512
+        }}
+      ],
+      { format: 'png' }
+    );
+
+    // Define the directory and file path
+    const directory = `${FileSystem.documentDirectory}images/`;
+    const filePath = `${directory}${imageID}.png`;
+
+    // Ensure the directory exists
+    await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+
+    // Write the file
+    await FileSystem.copyAsync({
+      from: manipResult.uri,
+      to: filePath
+    });
+
+    console.log(`Cropped image file saved at: ${filePath}`);
+    return filePath;
+  } catch (error) {
+    console.error("Error generating, cropping, or saving image:", error);
+    throw error;
+  }
+};
 
 
 const generateAndSaveAudioWord = async (word, audioWordID) => {
@@ -156,42 +162,55 @@ const generateId = () => {
   return `${timestamp}-${randomPart}`;
 };
 
-const initializeDatabase = async () => {
-  try {
-    const db = await SQLite.openDatabaseAsync('flashcards.db');
-    await db.execAsync(`
-      CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
-      CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
-    `);
-    return db;
-  } catch (error) {
-    console.error('Database initialization error:', error);
-    throw error;
+class DatabaseManager {
+  constructor() {
+    this.db = null;
   }
-};
+
+  async getConnection() {
+    if (!this.db) {
+      this.db = await SQLite.openDatabaseAsync('flashcards.db');
+      await this.db.execAsync(`
+        CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
+        CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
+      `);
+    }
+    return this.db;
+  }
+
+  async closeConnection() {
+    if (this.db) {
+      await this.db.closeAsync();
+      this.db = null;
+    }
+  }
+}
+
+export const dbManager = new DatabaseManager();
 
 export const addCard = async (word, innerContext, outerContext, languageTag) => {
-  let db;
+  const db = await dbManager.getConnection();
+  const flashcardID = generateId();
+  const imageID = `${flashcardID}-image`;
+  const audioWordID = `${flashcardID}-audio-word`;
+  const audioContextID = `${flashcardID}-audio-context`;
+
   try {
-    db = await initializeDatabase();
-
-    const flashcardID = generateId();
-    const imageID = `${flashcardID}-image`;
-    const audioWordID = `${flashcardID}-audio-word`;
-    const audioContextID = `${flashcardID}-audio-context`;
-
-    // Summarize context first
+    // Start media generation early and in parallel
+    
+    // Perform LLM operations (these can also be parallelized if they're independent)
     const summarizedContext = await summarizeContext(word, innerContext);
-    console.log('Summarized context:', summarizedContext);
 
-    // Then generate definitions using the summarized context
+    const mediaPromises = [
+      generateAndSaveImage(word, innerContext, outerContext, imageID),
+      generateAndSaveAudioWord(word, audioWordID),
+      generateAndSaveAudioContext(summarizedContext, audioContextID)
+    ];
+
     const [wordDef, contextDef] = await Promise.all([
       generateWordDef(word, innerContext, outerContext),
       generateContextDef(word, summarizedContext, outerContext)
     ]);
-
-    // console.log('Word definition:', wordDef);
-    // console.log('Context definition:', contextDef);
 
     const cardDataFront = { word, context: summarizedContext };
     const cardDataBack = { word, context: summarizedContext, wordDef, contextDef, imageID, audioWordID, audioContextID };
@@ -202,31 +221,24 @@ export const addCard = async (word, innerContext, outerContext, languageTag) => 
       fields: [JSON.stringify(cardDataFront), JSON.stringify(cardDataBack)]
     };
 
+    // Database operation
     await db.runAsync(
       'INSERT INTO masters (id, data) VALUES (?, ?)',
       [newCard.id, JSON.stringify(newCard)]
     );
 
-    console.log('Card added to database:', newCard);
+    // Wait for media generation to complete
+    await Promise.all(mediaPromises);
 
-    // Start media generation after card is added to database
-    Promise.all([
-      generateAndSaveImage(word, summarizedContext, outerContext, imageID),
-      generateAndSaveAudioWord(word, audioWordID),
-      generateAndSaveAudioContext(summarizedContext, audioContextID)
-    ]).then(() => {
-      console.log('All media generated successfully');
-    }).catch(error => {
-      console.error('Error generating media:', error);
-    });
-
+    console.log('Card added successfully and all media generated');
     return newCard;
   } catch (error) {
     console.error('Error adding card:', error);
     throw new Error('Failed to add new card: ' + error.message);
-  } finally {
-    if (db) {
-      await db.closeAsync();
-    }
   }
+};
+
+// Use this when your app is closing or you're done with database operations
+export const cleanupDatabase = async () => {
+  await dbManager.closeConnection();
 };

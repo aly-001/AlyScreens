@@ -69,6 +69,8 @@ export default function PracticeScreenDef({ navigation }) {
           } else {
             setImageUri(null);
           }
+          console.log("imimimimimimimimimimimimimimimimimimimimimimimimimimim")
+          console.log("image effect hook reloaded")
         } catch (error) {
           console.error("Error loading image:", error);
           setImageUri(null);
