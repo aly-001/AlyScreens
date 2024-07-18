@@ -1,4 +1,6 @@
 import * as SQLite from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
+import { Audio } from 'expo-av';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
@@ -44,8 +46,47 @@ const simulateMediaGeneration = (name, delay) =>
 const generateAndSaveImage = (word, innerContext, outerContext, imageID) => 
   simulateMediaGeneration("Image", 5000);
 
-const generateAndSaveAudioWord = (word, languageTag, audioWordID) => 
-  simulateMediaGeneration("Audio word", 3000);
+
+const generateAndSaveAudioWord = async (word, audioWordID) => {
+  try {
+    // Generate speech using OpenAI API
+    const response = await openai.audio.speech.create({
+      model: "tts-1",
+      voice: "alloy",
+      input: word,
+    });
+
+    // Get the audio data as an ArrayBuffer
+    const audioData = await response.arrayBuffer();
+
+    // Define the directory and file path
+    const directory = `${FileSystem.documentDirectory}audio/`;
+    const filePath = `${directory}${audioWordID}.mp3`;
+
+    // Ensure the directory exists
+    await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+
+    // Write the file
+    await FileSystem.writeAsStringAsync(filePath, arrayBufferToBase64(audioData), { encoding: FileSystem.EncodingType.Base64 });
+
+    console.log(`Audio file saved at: ${filePath}`);
+    return filePath;
+  } catch (error) {
+    console.error("Error generating or saving audio:", error);
+    throw error;
+  }
+};
+
+// Helper function to convert ArrayBuffer to Base64
+function arrayBufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
 
 const generateAndSaveAudioContext = (innerContext, languageTag, audioContextID) => 
   simulateMediaGeneration("Audio context", 3500);
@@ -112,7 +153,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag) => 
     // Start media generation after card is added to database
     Promise.all([
       generateAndSaveImage(word, summarizedContext, outerContext, imageID),
-      generateAndSaveAudioWord(word, languageTag, audioWordID),
+      generateAndSaveAudioWord(word, audioWordID),
       generateAndSaveAudioContext(summarizedContext, languageTag, audioContextID)
     ]).then(() => {
       console.log('All media generated successfully');

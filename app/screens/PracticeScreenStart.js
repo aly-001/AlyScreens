@@ -16,12 +16,20 @@ import PracticeStartButton from "../components/PracticeStartButton";
 import { useFlashcards } from "../context/FlashcardContext";
 
 export default function PracticeScreenStart() {
-  const { stats, getNextCard, initializeDatabase, newCards, learningCards, dueCards } = useFlashcards();
+  const { stats, getNextCard, initializeDatabase,  newCards, learningCards, dueCards } = useFlashcards();
   const navigation = useNavigation();
+
+  const handleRefresh = async () => {
+    try {
+      await initializeDatabase();
+    } catch (error) {
+      console.error('Database initialization error:', error);
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      initializeDatabase();
+      handleRefresh();
     });
     return unsubscribe;
   }, [navigation]);
@@ -35,10 +43,6 @@ export default function PracticeScreenStart() {
     <View style={styles.superContainer}>
       <Screen>
         <ScrollView contentContainerStyle={styles.contentContainer}>
-          <Text style={styles.statsText}>
-            New: {stats.new}, Learning: {stats.learning}, Young: {stats.later},
-            Due: {stats.due}
-          </Text>
           <View style={styles.headerContainer}>
             <ScreenHeader text="Practice" />
           </View>

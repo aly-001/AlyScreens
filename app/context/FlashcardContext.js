@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { DolphinSR } from "../../lib/index";
+import { clearAudioDiectory, listAudioDirectory } from '../services/MediaSurfer';
 
 const FlashcardContext = createContext();
 
@@ -29,6 +30,11 @@ export const FlashcardProvider = ({ children }) => {
 
 
   const initializeDatabase = async () => {
+    // if (db && dolphinSR) {
+    //   console.log('Database already initialized');
+    //   return;
+    // }
+    listAudioDirectory();
     try {
       const database = await SQLite.openDatabaseAsync('flashcards.db');
       setDb(database);
@@ -37,8 +43,11 @@ export const FlashcardProvider = ({ children }) => {
         CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
         CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
       `);
-
-      // clearDatabase(database);
+      
+      // ***DON'T TOUCH THIS***
+      // clearDatabase(database); 
+      // console.log('Database cleared');
+      // clearAudioDiectory();
 
       const dolphinSRInstance = new DolphinSR();
       setDolphinSR(dolphinSRInstance);
@@ -69,6 +78,15 @@ export const FlashcardProvider = ({ children }) => {
     }
   };
 
+  const updateWords = (dolphinSRInstance) => {
+    const newCards = dolphinSRInstance.getNewCards().map(processCard).filter(Boolean);
+    const learningCards = dolphinSRInstance.getLearningCards().map(processCard).filter(Boolean);
+    const dueCards = dolphinSRInstance.getDueCards().map(processCard).filter(Boolean);
+    
+    setNewCards(newCards);
+    setLearningCards(learningCards);
+    setDueCards(dueCards);
+  };
 
   const loadDeck = async (database, dolphinSRInstance) => {
     try {
@@ -84,16 +102,11 @@ export const FlashcardProvider = ({ children }) => {
       dolphinSRInstance.addMasters(...loadedMasters);
       dolphinSRInstance.addReviews(...loadedReviews);
       
-      updateStats(dolphinSRInstance);
+      // updateStats(dolphinSRInstance);
       getNextCard(dolphinSRInstance);
-      
-      const newCards = dolphinSRInstance.getNewCards().map(processCard).filter(Boolean);
-      const learningCards = dolphinSRInstance.getLearningCards().map(processCard).filter(Boolean);
-      const dueCards = dolphinSRInstance.getDueCards().map(processCard).filter(Boolean);
-      
-      setNewCards(newCards);
-      setLearningCards(learningCards);
-      setDueCards(dueCards);
+      updateWords(dolphinSRInstance);
+
+      setStats(dolphinSRInstance.summary());
       
       console.log('New Cards:', newCards);
       console.log('Learning Cards:', learningCards);
@@ -104,10 +117,12 @@ export const FlashcardProvider = ({ children }) => {
     }
   };
 
-  const updateStats = (dolphinSRInstance) => {
-    const currentStats = dolphinSRInstance.summary();
-    setStats(currentStats);
-  };
+  const updateStats = useCallback(() => {
+    if (dolphinSR) {
+      const currentStats = dolphinSR.summary();
+      setStats(currentStats);
+    }
+  }, [dolphinSR]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -151,6 +166,7 @@ export const FlashcardProvider = ({ children }) => {
         [timeStamp, JSON.stringify(review)]
       );
       updateStats(dolphinSR);
+      updateWords(dolphinSR);
       getNextCard(dolphinSR);
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -192,6 +208,7 @@ export const FlashcardProvider = ({ children }) => {
       newCards,
       learningCards,
       dueCards,
+      updateStats,
     }}>
       {children}
     </FlashcardContext.Provider>
