@@ -21,6 +21,8 @@ import { useFlashcards } from "../context/FlashcardContext";
 const { width, height } = Dimensions.get("window");
 
 export default function PracticeScreenDef({ navigation }) {
+  const [imageUri, setImageUri] = useState(null);
+
   useEffect(() => {
     async function setupAudio() {
       try {
@@ -52,6 +54,31 @@ export default function PracticeScreenDef({ navigation }) {
       navigation.navigate("PracticeStart");
     }
   };
+
+  useEffect(() => {
+    async function loadImage() {
+      if (currentCard && currentCard.back) {
+        try {
+          const backData = JSON.parse(currentCard.back[0]);
+          const imageFileName = backData.imageID + '.png';
+          const imagePath = `${FileSystem.documentDirectory}images/${imageFileName}`;
+          
+          const fileInfo = await FileSystem.getInfoAsync(imagePath);
+          if (fileInfo.exists) {
+            setImageUri(imagePath);
+          } else {
+            setImageUri(null);
+          }
+        } catch (error) {
+          console.error("Error loading image:", error);
+          setImageUri(null);
+        }
+      }
+    }
+
+    loadImage();
+  }, [currentCard]);
+
 
   const handleAudioWordPress = async () => {
     if (currentCard && currentCard.back) {
@@ -133,6 +160,7 @@ export default function PracticeScreenDef({ navigation }) {
     }
   };
 
+
   const renderCardContent = () => {
     if (!currentCard) return <Text>No card available</Text>;
 
@@ -179,17 +207,21 @@ export default function PracticeScreenDef({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar hidden={true} />
-      <View style={styles.superContainer}>
-        {grey ? (
-          <View style={styles.greyArea} />
-        ) : (
-          <Image
-            source={require("../../assets/empty.jpg")}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        )}
+    <StatusBar hidden={true} />
+    <View style={styles.superContainer}>
+      {imageUri ? (
+        <Image
+          source={{ uri: imageUri }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      ) : (
+        <Image
+          source={require("../../assets/empty.jpg")}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      )}
         <View style={styles.container}>
           {renderCardContent()}
           <View style={styles.audio}>
