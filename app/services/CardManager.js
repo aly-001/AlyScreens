@@ -43,8 +43,39 @@ const simulateMediaGeneration = (name, delay) =>
     }, delay);
   });
 
-const generateAndSaveImage = (word, innerContext, outerContext, imageID) => 
-  simulateMediaGeneration("Image", 5000);
+  const generateAndSaveImage = async (word, innerContext, outerContext, imageID) => {
+    try {
+      // Generate image using DALL-E API
+      const response = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: `${innerContext} ${word} ${outerContext}`,
+        n: 1,
+        size: "1024x1024",
+      });
+  
+      const imageUrl = response.data[0].url;
+  
+      // Download the image
+      const imageResponse = await fetch(imageUrl);
+      const imageArrayBuffer = await imageResponse.arrayBuffer();
+  
+      // Define the directory and file path
+      const directory = `${FileSystem.documentDirectory}images/`;
+      const filePath = `${directory}${imageID}.png`;
+  
+      // Ensure the directory exists
+      await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+  
+      // Write the file
+      await FileSystem.writeAsStringAsync(filePath, arrayBufferToBase64(imageArrayBuffer), { encoding: FileSystem.EncodingType.Base64 });
+  
+      console.log(`Image file saved at: ${filePath}`);
+      return filePath;
+    } catch (error) {
+      console.error("Error generating or saving image:", error);
+      throw error;
+    }
+  };
 
 
 const generateAndSaveAudioWord = async (word, audioWordID) => {
@@ -53,7 +84,7 @@ const generateAndSaveAudioWord = async (word, audioWordID) => {
     const response = await openai.audio.speech.create({
       model: "tts-1",
       voice: "alloy",
-      input: word,
+      input: `. ${word}!!`,
     });
 
     // Get the audio data as an ArrayBuffer
@@ -62,6 +93,36 @@ const generateAndSaveAudioWord = async (word, audioWordID) => {
     // Define the directory and file path
     const directory = `${FileSystem.documentDirectory}audio/`;
     const filePath = `${directory}${audioWordID}.mp3`;
+
+    // Ensure the directory exists
+    await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
+
+    // Write the file
+    await FileSystem.writeAsStringAsync(filePath, arrayBufferToBase64(audioData), { encoding: FileSystem.EncodingType.Base64 });
+
+    console.log(`Audio file saved at: ${filePath}`);
+    return filePath;
+  } catch (error) {
+    console.error("Error generating or saving audio:", error);
+    throw error;
+  }
+};
+
+const generateAndSaveAudioContext = async (context, audioContextID) => {
+  try {
+    // Generate speech using OpenAI API
+    const response = await openai.audio.speech.create({
+      model: "tts-1",
+      voice: "alloy",
+      input: context,
+    });
+
+    // Get the audio data as an ArrayBuffer
+    const audioData = await response.arrayBuffer();
+
+    // Define the directory and file path
+    const directory = `${FileSystem.documentDirectory}audio/`;
+    const filePath = `${directory}${audioContextID}.mp3`;
 
     // Ensure the directory exists
     await FileSystem.makeDirectoryAsync(directory, { intermediates: true });
@@ -88,8 +149,6 @@ function arrayBufferToBase64(buffer) {
   return btoa(binary);
 }
 
-const generateAndSaveAudioContext = (innerContext, languageTag, audioContextID) => 
-  simulateMediaGeneration("Audio context", 3500);
 
 const generateId = () => {
   const timestamp = Date.now().toString(36);
@@ -131,8 +190,8 @@ export const addCard = async (word, innerContext, outerContext, languageTag) => 
       generateContextDef(word, summarizedContext, outerContext)
     ]);
 
-    console.log('Word definition:', wordDef);
-    console.log('Context definition:', contextDef);
+    // console.log('Word definition:', wordDef);
+    // console.log('Context definition:', contextDef);
 
     const cardDataFront = { word, context: summarizedContext };
     const cardDataBack = { word, context: summarizedContext, wordDef, contextDef, imageID, audioWordID, audioContextID };
@@ -154,7 +213,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag) => 
     Promise.all([
       generateAndSaveImage(word, summarizedContext, outerContext, imageID),
       generateAndSaveAudioWord(word, audioWordID),
-      generateAndSaveAudioContext(summarizedContext, languageTag, audioContextID)
+      generateAndSaveAudioContext(summarizedContext, audioContextID)
     ]).then(() => {
       console.log('All media generated successfully');
     }).catch(error => {

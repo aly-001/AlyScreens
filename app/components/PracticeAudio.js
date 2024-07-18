@@ -19,7 +19,11 @@ const PracticeAudio = () => {
       <TouchableOpacity style={styles.playButton}>
         <MaterialCommunityIcons name="play" size={34} color={colors.utilityGrey} />
       </TouchableOpacity>
-      <Svg height="60" width="200">
+    </View>
+  );
+};
+
+{/* <Svg height="60" width="200">
         {barHeights3.map((height, index) => (
           <Rect
             key={index}
@@ -32,10 +36,7 @@ const PracticeAudio = () => {
             fill={colors.utilityGreyLight}
           />
         ))}
-      </Svg>
-    </View>
-  );
-};
+      </Svg> */}
 
 const styles = StyleSheet.create({
   container: {
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
   },
   playButton: {
     marginRight: 10,
+    marginBottom: 5,
   },
 });
 

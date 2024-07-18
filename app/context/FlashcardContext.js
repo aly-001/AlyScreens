@@ -34,7 +34,7 @@ export const FlashcardProvider = ({ children }) => {
     //   console.log('Database already initialized');
     //   return;
     // }
-    listAudioDirectory();
+    // listAudioDirectory();
     try {
       const database = await SQLite.openDatabaseAsync('flashcards.db');
       setDb(database);

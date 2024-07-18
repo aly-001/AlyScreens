@@ -93,6 +93,46 @@ export default function PracticeScreenDef({ navigation }) {
     }
   };
 
+  const handleAudioContextPress = async () => {
+    if (currentCard && currentCard.back) {
+      try {
+        const backData = JSON.parse(currentCard.back[0]);
+        const audioFileName = backData.audioContextID + '.mp3';
+        const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
+        console.log("Audio path:", audioPath);
+
+        // Check if file exists
+        const fileInfo = await FileSystem.getInfoAsync(audioPath);
+        if (!fileInfo.exists) {
+          console.error("Audio file does not exist:", audioPath);
+          return;
+        }
+        console.log("Audio file size:", fileInfo.size, "bytes");
+
+        console.log("Creating sound object...");
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: audioPath },
+          { shouldPlay: false }
+        );
+        console.log("Sound object created");
+
+        console.log("Playing audio...");
+        const playbackStatus = await sound.playAsync();
+        console.log("Playback status:", playbackStatus);
+
+        // Wait for the audio to finish
+        sound.setOnPlaybackStatusUpdate(async (status) => {
+          if (status.didJustFinish) {
+            console.log("Audio finished playing");
+            await sound.unloadAsync();
+          }
+        });
+      } catch (error) {
+        console.error("Error in audio playback:", error);
+      }
+    }
+  };
+
   const renderCardContent = () => {
     if (!currentCard) return <Text>No card available</Text>;
 
@@ -100,7 +140,6 @@ export default function PracticeScreenDef({ navigation }) {
     try {
       backData = JSON.parse(currentCard.back[0]);
       console.log(currentCard.back[0]);
-      // backData.audioWordID + '.mp3'
     } catch (error) {
       console.error("Error parsing card data:", error);
       return <Text>Error: Could not parse card data</Text>;
@@ -155,6 +194,9 @@ export default function PracticeScreenDef({ navigation }) {
           {renderCardContent()}
           <View style={styles.audio}>
             <TouchableOpacity onPress={handleAudioWordPress} activeOpacity={.8}>
+              <PracticeAudio />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleAudioContextPress} activeOpacity={.8}>
               <PracticeAudio />
             </TouchableOpacity>
           </View>
