@@ -45,18 +45,15 @@ const generateAndSaveImage = async (word, innerContext, outerContext, imageID) =
       n: 1,
       size: "1024x1024",
     });
-
     const imageUrl = response.data[0].url;
 
-    // Download and crop the image
+    // Download and resize the image
     const manipResult = await ImageManipulator.manipulateAsync(
       imageUrl,
       [
-        { crop: {
-          originX: 112, // (1024 - 800) / 2
-          originY: 256, // (1024 - 512) / 2
-          width: 800,
-          height: 512
+        { resize: {
+          width: 800, // Half of the original width
+          height: 700, // Half of the original height
         }}
       ],
       { format: 'png' }
@@ -75,10 +72,10 @@ const generateAndSaveImage = async (word, innerContext, outerContext, imageID) =
       to: filePath
     });
 
-    console.log(`Cropped image file saved at: ${filePath}`);
+    console.log(`Resized image file saved at: ${filePath}`);
     return filePath;
   } catch (error) {
-    console.error("Error generating, cropping, or saving image:", error);
+    console.error("Error generating, resizing, or saving image:", error);
     throw error;
   }
 };
