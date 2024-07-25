@@ -1,7 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
-import { Audio } from 'expo-av';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({

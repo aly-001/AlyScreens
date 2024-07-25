@@ -1,4 +1,7 @@
 export const injectedScript = `
+  let intervalId;
+  let wordCount = 0;
+
   function wrapNode(node, wordList) {
     if (node.nodeType === Node.TEXT_NODE) {
       let words = node.textContent.split(/(\\s+|--|–|—)/); // Split by whitespace, capturing the spaces
@@ -46,7 +49,7 @@ export const injectedScript = `
         doc.body.classList.add('long-press-listener-added');
 
         let timer;
-        doc.body.addEventListener('touchstart', function(event) {
+        doc.body.addEventListener('touchstart', function handleTouchStart(event) {
           const targetElement = event.target;
           if (targetElement.tagName === 'SPAN') {
             timer = setTimeout(() => {
@@ -79,13 +82,18 @@ export const injectedScript = `
           }
         });
 
-        doc.body.addEventListener('touchend', function() {
+        doc.body.addEventListener('touchend', function handleTouchEnd() {
           clearTimeout(timer); // Clear the timer if touch ends before 300ms
         });
 
-        doc.body.addEventListener('touchmove', function() {
+        doc.body.addEventListener('touchmove', function handleTouchMove() {
           clearTimeout(timer); // Clear the timer if the user moves their finger
         });
+
+        // Store references to event listeners for cleanup
+        doc.body.touchStartListener = handleTouchStart;
+        doc.body.touchEndListener = handleTouchEnd;
+        doc.body.touchMoveListener = handleTouchMove;
       }
     }
   }
@@ -107,9 +115,33 @@ export const injectedScript = `
     }
   }
 
-  setInterval(() => {
+  function cleanup() {
+    clearInterval(intervalId);
+    const iframe = document.querySelector("iframe");
+    if (iframe) {
+      const doc = iframe.contentWindow.document;
+      if (doc.body.classList.contains('long-press-listener-added')) {
+        doc.body.removeEventListener('touchstart', doc.body.touchStartListener);
+        doc.body.removeEventListener('touchend', doc.body.touchEndListener);
+        doc.body.removeEventListener('touchmove', doc.body.touchMoveListener);
+        doc.body.classList.remove('long-press-listener-added');
+      }
+      if (doc.body.classList.contains('words-wrapped')) {
+        doc.body.classList.remove('words-wrapped');
+      }
+    }
+  }
+
+  intervalId = setInterval(() => {
     applyCustomStyles();
     wrapWordsInSpans();
     addLongPressListener();
-  }, 0000);
+  }, 1000);
+
+  // Listen for cleanup message
+  window.addEventListener('message', (event) => {
+    if (event.data === 'cleanup') {
+      cleanup();
+    }
+  });
 `;

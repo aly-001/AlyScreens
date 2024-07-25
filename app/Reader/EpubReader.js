@@ -8,8 +8,8 @@ export default function EpubReader({ uri, handleWebViewMessage }) {
   return (
     <View style={styles.readerContainer}>
       <Reader
-        injectedJavascript={injectedScript}
         src={uri}
+        injectedJavascript={injectedScript}
         fileSystem={useFileSystem}
         initialLocation="epubcfi(/6/14!/4/2/12/2[c002p0005]/1:160)"
         onWebViewMessage={(message) => {
@@ -19,6 +19,7 @@ export default function EpubReader({ uri, handleWebViewMessage }) {
           console.log("location", message.location);
           handleWebViewMessage(message);
         }}
+        onReady={(reader) => console.log(reader)}
       />
     </View>
   );
@@ -31,5 +32,6 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingHorizontal: 20,
     paddingBottom: 0,
+    minHeight: 640,
   },
 });
