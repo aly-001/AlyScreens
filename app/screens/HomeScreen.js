@@ -46,11 +46,19 @@ export default function HomeScreen() {
           </View>
           <View style={styles.topWidgetContainer}>
             <StatBox header="All" value={books.length} valueColor="green" />
-            <StatBox header="Learning" value={books.filter(book => book.status < 100).length} valueColor="blue" />
-            <StatBox header="Mature" value={books.filter(book => book.status === 100).length} valueColor="red" />
+            <StatBox
+              header="Learning"
+              value={books.filter((book) => book.status < 100).length}
+              valueColor="blue"
+            />
+            <StatBox
+              header="Mature"
+              value={books.filter((book) => book.status === 100).length}
+              valueColor="red"
+            />
           </View>
           <TouchableWithoutFeedback
-            onPress={() => navigation.navigate('Library')}
+            onPress={() => navigation.navigate("Library")}
           >
             <View style={styles.libraryContainer}>
               <MyLibrary books={books} onBookPress={handleBookPress} />
@@ -80,6 +88,7 @@ export default function HomeScreen() {
                   {...props}
                 />
               )}
+              onPress={() => navigation.navigate("Config")}
             />
           </View>
         </ScrollView>

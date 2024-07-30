@@ -1,25 +1,25 @@
-import { View, StyleSheet, Text } from "react-native";
-import React from "react";
-import WidgetHeader from "./WidgetHeader";
-import layout from "../config/layout";
+import React from 'react';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import WidgetHeader from './WidgetHeader';
+import layout from '../config/layout';
 
-export default function BottomWidget({ header, IconComponent, iconColor="#000" }) {
+export default function BottomWidget({ header, IconComponent, iconColor = '#000', onPress }) {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       <WidgetHeader text={header} />
       <View style={styles.iconContainer}>
         {IconComponent && <IconComponent />}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: layout.margins.homeScreenWidgets/2,
+    marginHorizontal: layout.margins.homeScreenWidgets / 2,
     height: 190,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: layout.borderRadius.homeScreenWidgets,
     shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
     shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
@@ -29,11 +29,10 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-   },
-
-   icon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
     alignItems: 'center',
     justifyContent: 'center',
     fontFamily: 'Arial',

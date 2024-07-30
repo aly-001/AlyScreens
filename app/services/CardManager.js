@@ -2,6 +2,7 @@ import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import OpenAI from 'openai';
+import { useSettingsContext } from '../context/useSettingsContext';
 
 const openai = new OpenAI({
   apiKey: "sk-proj-5auFOzAUeUREckxZsroCT3BlbkFJCu9rISeIc0pBqiMyrM6W",
@@ -138,7 +139,6 @@ const generateAndSaveAudioContext = async (context, audioContextID) => {
     throw error;
   }
 };
-
 // Helper function to convert ArrayBuffer to Base64
 function arrayBufferToBase64(buffer) {
   let binary = '';
@@ -149,7 +149,6 @@ function arrayBufferToBase64(buffer) {
   }
   return btoa(binary);
 }
-
 
 const generateId = () => {
   const timestamp = Date.now().toString(36);
@@ -183,49 +182,65 @@ class DatabaseManager {
 
 export const dbManager = new DatabaseManager();
 
-export const addCard = async (word, innerContext, outerContext, languageTag) => {
+export const addCard = async (word, innerContext, outerContext, languageTag, settings) => {
   const db = await dbManager.getConnection();
   const flashcardID = generateId();
   const imageID = `${flashcardID}-image`;
   const audioWordID = `${flashcardID}-audio-word`;
   const audioContextID = `${flashcardID}-audio-context`;
-
   try {
     // Start media generation early and in parallel
+    console.log("SETTINGS", settings);
+    const summarizedContext = await summarizeContext(word, innerContext);
+    
+    const mediaPromises = [];
+    if (settings.generateImage) {
+      mediaPromises.push(generateAndSaveImage(word, innerContext, outerContext, imageID));
+    }
+    if (settings.generateAudioWord) {
+      mediaPromises.push(generateAndSaveAudioWord(word, audioWordID, languageTag));
+    }
+    if (settings.generateAudioContext) {
+      mediaPromises.push(generateAndSaveAudioContext(summarizedContext, audioContextID, languageTag));
+    }
     
     // Perform LLM operations (these can also be parallelized if they're independent)
-    const summarizedContext = await summarizeContext(word, innerContext);
-
-    const mediaPromises = [
-      generateAndSaveImage(word, innerContext, outerContext, imageID),
-      generateAndSaveAudioWord(word, audioWordID),
-      generateAndSaveAudioContext(summarizedContext, audioContextID)
-    ];
-
     const [wordDef, contextDef] = await Promise.all([
       generateWordDef(word, innerContext, outerContext),
       generateContextDef(word, summarizedContext, outerContext)
     ]);
-
+    
     const cardDataFront = { word, context: summarizedContext };
-    const cardDataBack = { word, context: summarizedContext, wordDef, contextDef, imageID, audioWordID, audioContextID };
-
+    const cardDataBack = { 
+      word, 
+      context: summarizedContext, 
+      wordDef, 
+      contextDef, 
+      imageID: settings.generateImage ? imageID : null,
+      audioWordID: settings.generateAudioWord ? audioWordID : null,
+      audioContextID: settings.generateAudioContext ? audioContextID : null
+    };
+    
     const newCard = {
       id: flashcardID,
       combinations: [{ front: [0], back: [1] }],
       fields: [JSON.stringify(cardDataFront), JSON.stringify(cardDataBack)]
     };
-
+    
     // Database operation
     await db.runAsync(
       'INSERT INTO masters (id, data) VALUES (?, ?)',
       [newCard.id, JSON.stringify(newCard)]
     );
-
+    
     // Wait for media generation to complete
-    await Promise.all(mediaPromises);
-
-    console.log('Card added successfully and all media generated');
+    if (mediaPromises.length > 0) {
+      await Promise.all(mediaPromises);
+      console.log('Card added successfully and all selected media generated');
+    } else {
+      console.log('Card added successfully (no media generated)');
+    }
+    
     return newCard;
   } catch (error) {
     console.error('Error adding card:', error);

@@ -7,61 +7,49 @@ import { injectedScript } from "./injectedScript";
 
 export default function EpubReader({ uri, handleWebViewMessage }) {
   const { injectJavascript } = useReader();
-  const [isReady, setIsReady] = useState(false);
-  const timerRef = useRef(null);
+// Temporary solution to fade and fall the functions every swipe, but 
+// eventually will need to figure out how to call it only when the
+// iframe content changes
+const handleCallFunctions = () => {
+  injectJavascript(`
+    setTimeout(() => {
+      const createWhiteBackground = () => {
+        const whiteScreen = document.createElement('div');
+        whiteScreen.style.position = 'fixed';
+        whiteScreen.style.top = 0;
+        whiteScreen.style.left = 0;
+        whiteScreen.style.width = '100%';
+        whiteScreen.style.height = '100%';
+        whiteScreen.style.backgroundColor = 'white';
+        whiteScreen.style.zIndex = 1000;
+        document.body.appendChild(whiteScreen);
+        return whiteScreen;
+      };
 
-  const handleCallFunctions = () => {
-    injectJavascript(`
+      // Function to apply fade out effect
+      const applyFadeOut = (element) => {
+        element.style.transition = 'background-color 300ms';
+        element.style.backgroundColor = 'transparent';
+        setTimeout(() => {
+          document.body.removeChild(element);
+        }, 400);
+      };
+
+      const whiteScreen = createWhiteBackground();
       setTimeout(() => {
-        applyCustomStyles();
-        wrapWordsInSpans();
-        addLongPressListener();
+        
+      applyCustomStyles();
+      wrapWordsInSpans();
+      addLongPressListener();
+      applyFadeOut(whiteScreen);
       }, 100);
-    `);
-  };
-
-  useEffect(() => {
-    console.log("isReady updated:", isReady);
-  }, [isReady]);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      setIsReady(false);
-      return () => {
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
-        }
-      };
-    }, [])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
-      console.log("effect hook called");
-      timerRef.current = setTimeout(() => {
-        console.log("timer is ticking");
-        if (!isReady) {
-          Alert.alert(
-            "Reader Not Ready",
-            "The reader is taking longer than expected to load. Please restart your device.",
-            [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-          );
-        } else {
-          console.log("Timer test passed");
-        }
-      }, 2000);
-
-      return () => {
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
-        }
-      };
-    }, [isReady])
-  );
+      
+    }, 0);
+  `);
+};
 
   const handleOnReady = () => {
-    console.log("Reader is ready!");
-    setIsReady(true);
+    console.log("Ready");
     handleCallFunctions();
   };
 
@@ -81,6 +69,9 @@ export default function EpubReader({ uri, handleWebViewMessage }) {
         }}
         onReady={handleOnReady}
         onSwipeLeft={handleCallFunctions}
+        onSwipeRight={handleCallFunctions}
+        onRendered={() => console.log("rendered")}
+        onLocationsReady={() => console.log("locations ready")}
       />
     </View>
   );

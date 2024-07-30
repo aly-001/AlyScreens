@@ -25,6 +25,8 @@ import BookHiddenFooter from "../components/BookHiddenFooter";
 import { TabBarVisibilityContext } from "../navigation/TabBarVisibilityContext"; // Adjust the import path as needed
 import { addCard } from "../services/CardManager";
 
+import { useSettingsContext } from "../context/useSettingsContext";
+
 
 const duration = 300; // Animation duration
 
@@ -49,7 +51,7 @@ const BookHeader = ({ bookTitle, style }) => (
 );
 
 export default function ReadScreen() {
-  const navigation = useNavigation();
+  const settings = useSettingsContext().settings;
   const route = useRoute();
   const isFocused = useIsFocused();
   const { setIsTabBarVisible } = useContext(TabBarVisibilityContext);
@@ -145,7 +147,7 @@ export default function ReadScreen() {
       const { innerContext, outerContext } = message;
       
       // Call addCard without awaiting
-      addCard(capitalizedWord, innerContext, outerContext, 'en')
+      addCard(capitalizedWord, innerContext, outerContext, 'en', settings)
         .then(() => {
           console.log('Card added successfully');
           // Optionally, you can update some state here to reflect the new card
