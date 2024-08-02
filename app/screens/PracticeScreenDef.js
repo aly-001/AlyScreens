@@ -106,28 +106,34 @@ export default function PracticeScreenDef() {
     if (displayedCard && displayedCard.back) {
       try {
         const backData = JSON.parse(displayedCard.back[0]);
-        const audioFileName = backData[audioType === 'word' ? 'audioWordID' : 'audioContextID'] + '.mp3';
-        const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
-        console.log("Audio path:", audioPath);
-
-        const fileInfo = await FileSystem.getInfoAsync(audioPath);
-        if (!fileInfo.exists) {
-          console.error("Audio file does not exist:", audioPath);
+        const audioID = backData[audioType === 'word' ? 'audioWordID' : 'audioContextID'];
+  
+        // If audioID is null, exit the function peacefully
+        if (audioID === null) {
+          console.log(`No audio available for ${audioType}`);
           return;
         }
+  
+        const audioFileName = `${audioID}.mp3`;
+        const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
+        console.log("Audio path:", audioPath);
+  
+        const fileInfo = await FileSystem.getInfoAsync(audioPath);
+        if (!fileInfo.exists) {
+          console.log(`Audio file does not exist for ${audioType}: ${audioPath}`);
+          return;
+        }
+  
         console.log("Audio file size:", fileInfo.size, "bytes");
-
         console.log("Creating sound object...");
         const { sound } = await Audio.Sound.createAsync(
           { uri: audioPath },
           { shouldPlay: false }
         );
         console.log("Sound object created");
-
         console.log("Playing audio...");
         const playbackStatus = await sound.playAsync();
         console.log("Playback status:", playbackStatus);
-
         sound.setOnPlaybackStatusUpdate(async (status) => {
           if (status.didJustFinish) {
             console.log("Audio finished playing");
@@ -135,7 +141,7 @@ export default function PracticeScreenDef() {
           }
         });
       } catch (error) {
-        console.error("Error in audio playback:", error);
+        console.log(`Error in audio playback for ${audioType}:`, error.message);
       }
     }
   };
@@ -192,8 +198,7 @@ export default function PracticeScreenDef() {
             resizeMode="cover"
           />
         ) : (
-          <Image
-            source={require("../../assets/empty.jpg")}
+          <View
             style={styles.image}
             resizeMode="cover"
           />

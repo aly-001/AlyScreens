@@ -189,36 +189,39 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
   const audioWordID = `${flashcardID}-audio-word`;
   const audioContextID = `${flashcardID}-audio-context`;
   try {
-    // Start media generation early and in parallel
     console.log("SETTINGS", settings);
     const summarizedContext = await summarizeContext(word, innerContext);
     
     const mediaPromises = [];
-    if (settings.generateImage) {
+    if (settings.flashcardsBackImage) {
       mediaPromises.push(generateAndSaveImage(word, innerContext, outerContext, imageID));
     }
-    if (settings.generateAudioWord) {
+    if (settings.flashcardsBackAudio) {
       mediaPromises.push(generateAndSaveAudioWord(word, audioWordID, languageTag));
     }
-    if (settings.generateAudioContext) {
+    if (settings.flashcardsBackContextAudio) {
       mediaPromises.push(generateAndSaveAudioContext(summarizedContext, audioContextID, languageTag));
     }
     
-    // Perform LLM operations (these can also be parallelized if they're independent)
-    const [wordDef, contextDef] = await Promise.all([
-      generateWordDef(word, innerContext, outerContext),
-      generateContextDef(word, summarizedContext, outerContext)
+    // Perform LLM operations
+    const [wordDef, contextDef ] = await Promise.all([
+      settings.flashcardsBackWordTranslation ? generateWordDef(word, innerContext, outerContext) : null,
+      settings.flashcardsBackContextTranslation ? generateContextDef(word, summarizedContext, outerContext) : null,
     ]);
     
-    const cardDataFront = { word, context: summarizedContext };
+    const cardDataFront = {
+      word: settings.flashcardsFrontWord ? word : null,
+      context: settings.flashcardsFrontContext ? summarizedContext : null,
+    };
+    
     const cardDataBack = { 
-      word, 
-      context: summarizedContext, 
-      wordDef, 
-      contextDef, 
-      imageID: settings.generateImage ? imageID : null,
-      audioWordID: settings.generateAudioWord ? audioWordID : null,
-      audioContextID: settings.generateAudioContext ? audioContextID : null
+      word: settings.flashcardsBackWord ? word : null, 
+      context: settings.flashcardsBackContext ? summarizedContext : null, 
+      wordDef: settings.flashcardsBackWordTranslation ? wordDef : null, 
+      contextDef: settings.flashcardsBackContextTranslation ? contextDef : null, 
+      imageID: settings.flashcardsBackImage ? imageID : null,
+      audioWordID: settings.flashcardsBackAudio ? audioWordID : null,
+      audioContextID: settings.flashcardsBackContextAudio ? audioContextID : null,
     };
     
     const newCard = {
