@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import defaultPrompts from "../config/defaultPrompts.json";
+import { getImagePrompt, setImagePrompt } from '../services/ImagePromptService';
 
 const useSettings = () => {
   const [settings, setSettings] = useState({
@@ -20,6 +22,7 @@ const useSettings = () => {
     flashcardsBackImage: false,
     flashcardsBackGrammar: false,
     languageTag: 'en-US',
+    imagePrompt: defaultPrompts.defaultImagePrompt,
   });
 
   useEffect(() => {
@@ -30,11 +33,19 @@ const useSettings = () => {
     try {
       const storedSettings = await AsyncStorage.getItem('userSettings');
       if (storedSettings) {
+        const parsedSettings = JSON.parse(storedSettings);
         setSettings(prevSettings => ({
           ...prevSettings,
-          ...JSON.parse(storedSettings)
+          ...parsedSettings
         }));
       }
+      
+      // Load image prompt separately
+      const imagePrompt = await getImagePrompt();
+      setSettings(prevSettings => ({
+        ...prevSettings,
+        imagePrompt
+      }));
     } catch (error) {
       console.error('Error loading settings:', error);
     }
@@ -45,6 +56,11 @@ const useSettings = () => {
       const updatedSettings = { ...settings, ...newSettings };
       await AsyncStorage.setItem('userSettings', JSON.stringify(updatedSettings));
       setSettings(updatedSettings);
+
+      // If imagePrompt is being updated, save it separately
+      if (newSettings.imagePrompt) {
+        await setImagePrompt(newSettings.imagePrompt);
+      }
     } catch (error) {
       console.error('Error saving settings:', error);
     }

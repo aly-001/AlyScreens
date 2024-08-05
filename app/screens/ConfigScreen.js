@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,12 +6,15 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  TextInput,
+  SafeAreaView,
 } from "react-native";
 import { useSettingsContext } from "../context/useSettingsContext";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const ConfigScreen = () => {
   const { settings, updateSettings } = useSettingsContext();
+  const [tempImagePrompt, setTempImagePrompt] = useState(settings.imagePrompt);
 
   const toggleSetting = (setting) => {
     let newSettings = { [setting]: !settings[setting] };
@@ -67,66 +70,103 @@ const ConfigScreen = () => {
     </View>
   );
 
+  const handleSaveImagePrompt = () => {
+    updateSettings({ imagePrompt: tempImagePrompt });
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>OpenAI Key</Text>
-          <TouchableOpacity
-            onPress={() => {
-              /* Handle edit */
-            }}
-          >
-            <Icon name="edit" size={24} color="#007AFF" />
-          </TouchableOpacity>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Image Generation</Text>
+          <View style={styles.promptInputContainer}>
+            <TextInput
+              style={styles.promptInput}
+              multiline
+              numberOfLines={4}
+              value={tempImagePrompt}
+              onChangeText={setTempImagePrompt}
+              placeholder="Enter image generation prompt"
+            />
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={handleSaveImagePrompt}
+            >
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Translation Popup</Text>
-        {renderSwitch("Translation", "translationPopupTranslation")}
-        {renderSwitch("Audio", "translationPopupAudio")}
-        {renderSwitch("Grammar", "translationPopupGrammar")}
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Flashcards</Text>
-        {renderSwitch("Enable Flashcards", "flashcardsEnabled")}
-
-        <View style={styles.subsection}>
-          <Text style={styles.subsectionTitle}>Front</Text>
-          {renderFlashcardSwitch("Word", "flashcardsFrontWord")}
-          {renderFlashcardSwitch("Context", "flashcardsFrontContext")}
-          {renderFlashcardSwitch("Grammar", "flashcardsFrontGrammar")}
+        
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>OpenAI Key</Text>
+            <TouchableOpacity
+              onPress={() => {
+                /* Handle edit */
+              }}
+            >
+              <Icon name="edit" size={24} color="#007AFF" />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <View style={styles.subsection}>
-          <Text style={styles.subsectionTitle}>Back</Text>
-          {renderFlashcardSwitch("Word", "flashcardsBackWord")}
-          {renderFlashcardSwitch(
-            "Word Translation",
-            "flashcardsBackWordTranslation"
-          )}
-          {renderFlashcardSwitch("Context", "flashcardsBackContext")}
-          {renderFlashcardSwitch(
-            "Context Translation",
-            "flashcardsBackContextTranslation"
-          )}
-          {renderFlashcardSwitch("Audio", "flashcardsBackAudio")}
-          {renderFlashcardSwitch("Context Audio", "flashcardsBackContextAudio")}
-          {renderFlashcardSwitch("Image", "flashcardsBackImage")}
-          {renderFlashcardSwitch("Grammar", "flashcardsBackGrammar")}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Translation Popup</Text>
+          {renderSwitch("Translation", "translationPopupTranslation")}
+          {renderSwitch("Audio", "translationPopupAudio")}
+          {renderSwitch("Grammar", "translationPopupGrammar")}
         </View>
-      </View>
-    </ScrollView>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Flashcards</Text>
+          {renderSwitch("Enable Flashcards", "flashcardsEnabled")}
+
+          <View style={styles.subsection}>
+            <Text style={styles.subsectionTitle}>Front</Text>
+            {renderFlashcardSwitch("Word", "flashcardsFrontWord")}
+            {renderFlashcardSwitch("Context", "flashcardsFrontContext")}
+            {renderFlashcardSwitch("Grammar", "flashcardsFrontGrammar")}
+          </View>
+
+          <View style={styles.subsection}>
+            <Text style={styles.subsectionTitle}>Back</Text>
+            {renderFlashcardSwitch("Word", "flashcardsBackWord")}
+            {renderFlashcardSwitch(
+              "Word Translation",
+              "flashcardsBackWordTranslation"
+            )}
+            {renderFlashcardSwitch("Context", "flashcardsBackContext")}
+            {renderFlashcardSwitch(
+              "Context Translation",
+              "flashcardsBackContextTranslation"
+            )}
+            {renderFlashcardSwitch("Audio", "flashcardsBackAudio")}
+            {renderFlashcardSwitch("Context Audio", "flashcardsBackContextAudio")}
+            {renderFlashcardSwitch("Image", "flashcardsBackImage")}
+            {renderFlashcardSwitch("Grammar", "flashcardsBackGrammar")}
+          </View>
+        </View>
+
+        
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    padding: 16,
     backgroundColor: "#f5f5f5",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    padding: 16,
   },
   section: {
     marginBottom: 24,
@@ -168,6 +208,28 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
+  },
+  promptInputContainer: {
+    marginTop: 8,
+  },
+  promptInput: {
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 4,
+    padding: 8,
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    padding: 10,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  saveButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 

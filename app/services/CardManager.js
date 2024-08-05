@@ -2,7 +2,6 @@ import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import OpenAI from 'openai';
-import { useSettingsContext } from '../context/useSettingsContext';
 
 const openai = new OpenAI({
   apiKey: "sk-proj-5auFOzAUeUREckxZsroCT3BlbkFJCu9rISeIc0pBqiMyrM6W",
@@ -36,12 +35,13 @@ const generateContextDef = async (word, summarizedContext, outerContext) => {
   return callLLM(prompt);
 }
 
-const generateAndSaveImage = async (word, innerContext, outerContext, imageID) => {
+const generateAndSaveImage = async (word, innerContext, outerContext, imageID, imagePrompt) => {
   try {
+    console.log(imagePrompt);
     // Generate image using DALL-E API
     const response = await openai.images.generate({
       model: "dall-e-3",
-      prompt: `${innerContext} ${word} ${outerContext}`,
+      prompt: `make a picture about ${word} in the context of ${innerContext} and ${outerContext}. do it in the following style: ${imagePrompt}`,
       n: 1,
       size: "1024x1024",
     });
@@ -194,7 +194,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
     
     const mediaPromises = [];
     if (settings.flashcardsBackImage) {
-      mediaPromises.push(generateAndSaveImage(word, innerContext, outerContext, imageID));
+      mediaPromises.push(generateAndSaveImage(word, innerContext, outerContext, imageID, settings.imagePrompt));
     }
     if (settings.flashcardsBackAudio) {
       mediaPromises.push(generateAndSaveAudioWord(word, audioWordID, languageTag));
