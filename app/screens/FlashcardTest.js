@@ -92,9 +92,9 @@ const FlashcardTest = () => {
       dolphinSRInstance.addMasters(...loadedMasters);
       dolphinSRInstance.addReviews(...loadedReviews);
 
-      console.log('Loaded deck:', dolphinSRInstance.summary());
-      console.log('Masters:', loadedMasters);
-      console.log('Reviews:', loadedReviews);
+      // console.log('Loaded deck:', dolphinSRInstance.summary());
+      // console.log('Masters:', loadedMasters);
+      // console.log('Reviews:', loadedReviews);
 
       updateStats(dolphinSRInstance);
       getNextCard(dolphinSRInstance);

@@ -12,44 +12,12 @@ export default function EpubReader({ uri, handleWebViewMessage }) {
 // iframe content changes
 const handleCallFunctions = () => {
   injectJavascript(`
-    setTimeout(() => {
-      const createWhiteBackground = () => {
-        const whiteScreen = document.createElement('div');
-        whiteScreen.style.position = 'fixed';
-        whiteScreen.style.top = 0;
-        whiteScreen.style.left = 0;
-        whiteScreen.style.width = '100%';
-        whiteScreen.style.height = '100%';
-        whiteScreen.style.backgroundColor = 'white';
-        whiteScreen.style.zIndex = 1000;
-        document.body.appendChild(whiteScreen);
-        return whiteScreen;
-      };
-
-      // Function to apply fade out effect
-      const applyFadeOut = (element) => {
-        element.style.transition = 'background-color 300ms';
-        element.style.backgroundColor = 'transparent';
-        setTimeout(() => {
-          document.body.removeChild(element);
-        }, 400);
-      };
-
-      const whiteScreen = createWhiteBackground();
-      setTimeout(() => {
-        
-      applyCustomStyles();
-      wrapWordsInSpans();
-      addLongPressListener();
-      applyFadeOut(whiteScreen);
-      }, 100);
-      
-    }, 0);
+    window.runFunctionsForOneMinute();
   `);
 };
 
   const handleOnReady = () => {
-    console.log("Ready");
+    // console.log("Ready");
     handleCallFunctions();
   };
 
@@ -61,10 +29,11 @@ const handleCallFunctions = () => {
         fileSystem={useFileSystem}
         initialLocation="epubcfi(/6/14!/4/2/12/2[c002p0005]/1:160)"
         onWebViewMessage={(message) => {
-          console.log("word", message.word);
-          console.log("innerContext", message.innerContext);
-          console.log("outerContext", message.outerContext);
-          console.log("location", message.location);
+          // console.log("message", message);
+          // console.log("word", message.word);
+          // console.log("innerContext", message.innerContext);
+          // console.log("outerContext", message.outerContext);
+          // console.log("location", message.location);
           handleWebViewMessage(message);
         }}
         onReady={handleOnReady}

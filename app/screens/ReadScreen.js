@@ -178,7 +178,7 @@ export default function ReadScreen() {
                 fileSystem={useFileSystem}
                 handleWebViewMessage={handleWebViewMessage}
               />
-              <DefinitionPopup
+              {/* <DefinitionPopup
                 location={location}
                 visible={popupVisible}
                 onClose={handleClosePopup}
@@ -189,7 +189,7 @@ export default function ReadScreen() {
                 finished={finished}
                 started={started}
                 onToggleCheck={handleToggle}
-              />
+              /> */}
               <LocationPointer location={location} visible={popupVisible} />
             </ReaderProvider>
           </View>

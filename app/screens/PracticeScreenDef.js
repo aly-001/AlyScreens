@@ -49,7 +49,7 @@ export default function PracticeScreenDef() {
   useEffect(() => {
     async function setupAudio() {
       try {
-        console.log("Setting up audio...");
+        // console.log("Setting up audio...");
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
           playsInSilentModeIOS: true,
@@ -57,7 +57,7 @@ export default function PracticeScreenDef() {
           staysActiveInBackground: false,
           playThroughEarpieceAndroid: false
         });
-        console.log("Audio setup complete");
+        // console.log("Audio setup complete");
       } catch (error) {
         console.error("Error setting up audio:", error);
       }
@@ -80,7 +80,7 @@ export default function PracticeScreenDef() {
           } else {
             setImageUri(null);
           }
-          console.log("Image effect hook reloaded");
+          // console.log("Image effect hook reloaded");
         } catch (error) {
           console.error("Error loading image:", error);
           setImageUri(null);
@@ -116,7 +116,7 @@ export default function PracticeScreenDef() {
   
         const audioFileName = `${audioID}.mp3`;
         const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
-        console.log("Audio path:", audioPath);
+        // console.log("Audio path:", audioPath);
   
         const fileInfo = await FileSystem.getInfoAsync(audioPath);
         if (!fileInfo.exists) {
@@ -124,19 +124,19 @@ export default function PracticeScreenDef() {
           return;
         }
   
-        console.log("Audio file size:", fileInfo.size, "bytes");
-        console.log("Creating sound object...");
+        // console.log("Audio file size:", fileInfo.size, "bytes");
+        // console.log("Creating sound object...");
         const { sound } = await Audio.Sound.createAsync(
           { uri: audioPath },
           { shouldPlay: false }
         );
-        console.log("Sound object created");
+        // console.log("Sound object created");
         console.log("Playing audio...");
         const playbackStatus = await sound.playAsync();
-        console.log("Playback status:", playbackStatus);
+        // console.log("Playback status:", playbackStatus);
         sound.setOnPlaybackStatusUpdate(async (status) => {
           if (status.didJustFinish) {
-            console.log("Audio finished playing");
+            // console.log("Audio finished playing");
             await sound.unloadAsync();
           }
         });

@@ -109,9 +109,9 @@ export const FlashcardProvider = ({ children }) => {
 
       setStats(dolphinSRInstance.summary());
       
-      console.log('New Cards:', newCards);
-      console.log('Learning Cards:', learningCards);
-      console.log('Due Cards:', dueCards);
+      // console.log('New Cards:', newCards);
+      // console.log('Learning Cards:', learningCards);
+      // console.log('Due Cards:', dueCards);
     } catch (error) {
       console.error('Load deck error:', error);
       console.error('Error stack:', error.stack);

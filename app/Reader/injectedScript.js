@@ -1,4 +1,6 @@
 export const injectedScript = `
+  let intervalId = null;
+
   function wrapNode(node, wordList) {
     if (node.nodeType === Node.TEXT_NODE) {
       let words = node.textContent.split(/(\\s+|--|–|—)/); // Split by whitespace, capturing the spaces
@@ -105,5 +107,32 @@ export const injectedScript = `
       \`;
       doc.head.appendChild(style);
     }
+  }
+
+  function runFunctionsForOneMinute() {
+    // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "rerunning functions for 10s"}));
+
+    // Clear any existing interval
+    if (intervalId !== null) {
+      clearInterval(intervalId);
+      // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "existing interval cleared"}));
+    }
+
+    // Set up a new interval
+    // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "calling functions every 10ms"}));
+ 
+    intervalId = setInterval(() => {
+      applyCustomStyles();
+      wrapWordsInSpans();
+      addLongPressListener();
+      // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "...functions called"}));
+    }, 50);
+
+    // Stop the interval after one minute
+    setTimeout(() => {
+      clearInterval(intervalId);
+      intervalId = null;
+      // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "interval cleared after 10 seconds"}));
+    }, 10000); // 10 seconds
   }
 `;

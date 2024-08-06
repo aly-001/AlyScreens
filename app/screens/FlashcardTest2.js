@@ -68,8 +68,8 @@ const FlashcardTest = () => {
       dolphinSRInstance.addReviews(...loadedReviews);
 
       // console.log('Loaded deck:', dolphinSRInstance.summary());
-      console.log('Masters:', loadedMasters);
-      console.log('Reviews:', loadedReviews);
+      // console.log('Masters:', loadedMasters);
+      // console.log('Reviews:', loadedReviews);
 
       updateStats(dolphinSRInstance);
       getNextCard(dolphinSRInstance);
@@ -86,13 +86,13 @@ const FlashcardTest = () => {
   const getNextCard = (dolphinSRInstance) => {
     try {
       const nextCard = dolphinSRInstance.nextCard();
-      console.log('Next card from DolphinSR:', nextCard);
+      // console.log('Next card from DolphinSR:', nextCard);
       
       if (nextCard) {
         setCurrentCard(nextCard);
         setShowingFront(true);
       } else {
-        console.log('No more cards available');
+        // console.log('No more cards available');
         setCurrentCard(null);
       }
       
@@ -134,7 +134,7 @@ const FlashcardTest = () => {
   const renderCardContent = () => {
     if (!currentCard) return <Text>No more cards available</Text>;
   
-    console.log('Current card:', currentCard);
+    // console.log('Current card:', currentCard);
   
     let frontData, backData;
     try {
@@ -145,8 +145,8 @@ const FlashcardTest = () => {
       return <Text>Error: Could not parse card data</Text>;
     }
   
-    console.log('Parsed front data:', frontData);
-    console.log('Parsed back data:', backData);
+    // console.log('Parsed front data:', frontData);
+    // console.log('Parsed back data:', backData);
   
     if (!frontData || typeof frontData !== 'object' || !backData || typeof backData !== 'object') {
       console.error('Invalid card data format');

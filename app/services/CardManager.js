@@ -37,7 +37,7 @@ const generateContextDef = async (word, summarizedContext, outerContext) => {
 
 const generateAndSaveImage = async (word, innerContext, outerContext, imageID, imagePrompt) => {
   try {
-    console.log(imagePrompt);
+    // console.log(imagePrompt);
     // Generate image using DALL-E API
     const response = await openai.images.generate({
       model: "dall-e-3",
@@ -132,7 +132,7 @@ const generateAndSaveAudioContext = async (context, audioContextID) => {
     // Write the file
     await FileSystem.writeAsStringAsync(filePath, arrayBufferToBase64(audioData), { encoding: FileSystem.EncodingType.Base64 });
 
-    console.log(`Audio file saved at: ${filePath}`);
+    // console.log(`Audio file saved at: ${filePath}`);
     return filePath;
   } catch (error) {
     console.error("Error generating or saving audio:", error);
@@ -189,7 +189,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
   const audioWordID = `${flashcardID}-audio-word`;
   const audioContextID = `${flashcardID}-audio-context`;
   try {
-    console.log("SETTINGS", settings);
+    // console.log("SETTINGS", settings);
     const summarizedContext = await summarizeContext(word, innerContext);
     
     const mediaPromises = [];
@@ -239,7 +239,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
     // Wait for media generation to complete
     if (mediaPromises.length > 0) {
       await Promise.all(mediaPromises);
-      console.log('Card added successfully and all selected media generated');
+      // console.log('Card added successfully and all selected media generated');
     } else {
       console.log('Card added successfully (no media generated)');
     }

@@ -16,7 +16,7 @@ export default function CheckMark({ added, finished, started, checkDelay}) {
       }, checkDelay);
     }
     // pretty log of all state variables
-    console.log({ "added": added, "finished": finished, "defFinished": defFinished });
+    // console.log({ "added": added, "finished": finished, "defFinished": defFinished });
     return () => clearTimeout(timer);
   }, [added, finished, checkDelay]);
 

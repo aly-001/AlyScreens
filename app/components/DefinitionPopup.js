@@ -75,9 +75,9 @@ const DefinitionPopup = ({
   const updateDirection = (newDirection) => {
     setDirection((prevDirection) => {
       if (prevDirection !== newDirection) {
-        console.log("New Direction:", newDirection);
-        console.log("Position:", { top: location.top, left: location.left });
-        console.log("Screen:", { width, height });
+        // console.log("New Direction:", newDirection);
+        // console.log("Position:", { top: location.top, left: location.left });
+        // console.log("Screen:", { width, height });
       }
       return newDirection;
     });
