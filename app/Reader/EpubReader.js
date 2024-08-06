@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { Reader, useReader } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
-import { useFocusEffect } from "@react-navigation/native";
 import { injectedScript } from "./injectedScript";
 
 export default function EpubReader({ uri, handleWebViewMessage }) {

@@ -1,3 +1,4 @@
 {
-  "defaultImagePrompt": "Black and white, kaleidascope"
+  "defaultImagePrompt": "Black and white, kaleidascope",
+  "defaultGrammarPrompt": "The entire explanation has to be less than 10 words and involve an anteater"
 }

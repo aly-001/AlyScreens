@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
-  ActivityIndicator,
   TouchableWithoutFeedback,
   Dimensions,
 } from "react-native";
@@ -13,29 +12,29 @@ import { Ionicons } from "@expo/vector-icons";
 
 import fonts from "../config/fonts";
 import colors from "../config/colors";
-import CheckMark from "./CheckMark";
 import Pointer from "./Pointer";
-import PulsatingCircles from "./PulsatingCircles";
+import { useSettingsContext } from "../context/useSettingsContext";
+import LoadingText from "./LoadingText";
 
 const { width, height } = Dimensions.get("window");
 
 const DefinitionPopup = ({
-  added,
   visible,
   onClose,
   word,
   definition,
   isLoading,
   location,
-  onToggleCheck,
-  started,
   finished,
-
+  currentGrammar,
+  grammarLoading,
 }) => {
   const [addText, setAddText] = useState("");
   const [direction, setDirection] = useState("D");
   const [locationTop, setLocationTop] = useState(0);
   const [locationLeft, setLocationLeft] = useState(0);
+
+  const settings = useSettingsContext().settings;
 
   useEffect(() => {
     if (visible) {
@@ -137,7 +136,6 @@ const DefinitionPopup = ({
       animationType="fade"
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        
         <View style={styles.centeredView}>
           <View
             style={[
@@ -170,14 +168,13 @@ const DefinitionPopup = ({
                   ]}
                 >
                   <ModalHeader word={word} onClose={onClose} />
-                  <ModalContent isLoading={isLoading} definition={definition} />
-                  <ModalFooter
-                    added={added}
-                    started={started}
-                    finished={finished}
-                    onToggleCheck={onToggleCheck}
-                    addText={addText}
-                  />
+                  {settings.translationPopupGrammar && (
+                    <ModalGram
+                      grammarLoading={grammarLoading}
+                      currentGrammar={currentGrammar}
+                    />
+                  )}
+                  <ModalDef isLoading={isLoading} definition={definition} />
                   <View
                     style={[
                       styles.pointerContainer,
@@ -219,11 +216,19 @@ const ModalHeader = ({ word, onClose }) => (
   </View>
 );
 
-const ModalContent = ({ isLoading, definition }) => (
-  <View style={styles.content}>
+const ModalDef = ({ isLoading, definition }) => (
+  <View
+    style={[
+      styles.content,
+      { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+    ]}
+  >
     {isLoading ? (
       <View style={styles.loadingContainer}>
-        <PulsatingCircles />
+        <LoadingText
+          text="Loading translation..."
+          barColor={colors.translationPopup.translationModuleShade}
+        />
       </View>
     ) : (
       <Text style={styles.definitionText}>{definition}</Text>
@@ -231,23 +236,24 @@ const ModalContent = ({ isLoading, definition }) => (
   </View>
 );
 
-const ModalFooter = ({ added, started, finished, onToggleCheck, addText }) => (
-  <View style={styles.footer}>
-    <TouchableOpacity
-      onPress={onToggleCheck}
-      activeOpacity={1}
-      style={{ flexDirection: "row" }}
-    >
-      <CheckMark
-        added={added}
-        started={started}
-        finished={finished}
-        checkDelay={300}
-      />
-      <View style={styles.footerTextContainer}>
-        <Text style={styles.footerText}>{addText}</Text>
+// modal gram essentially the same as modal def
+const ModalGram = ({ grammarLoading, currentGrammar }) => (
+  <View
+    style={[
+      styles.content,
+      { backgroundColor: colors.translationPopup.grammarModuleShade },
+    ]}
+  >
+    {grammarLoading ? (
+      <View style={styles.loadingContainer}>
+        <LoadingText
+          text="Loading grammar..."
+          barColor={colors.translationPopup.grammarModuleShade}
+        />
       </View>
-    </TouchableOpacity>
+    ) : (
+      <Text style={styles.definitionText}>{currentGrammar}</Text>
+    )}
   </View>
 );
 
@@ -346,11 +352,11 @@ const styles = StyleSheet.create({
     right: width * (3.75 / 6.25) - 30,
   },
   highlight: {
-    position: 'absolute',
+    position: "absolute",
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'rgba(255, 255, 0, 0.3)',
+    backgroundColor: "rgba(255, 255, 0, 0.3)",
     zIndex: 1,
   },
 });

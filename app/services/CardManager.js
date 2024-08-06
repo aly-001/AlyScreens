@@ -2,23 +2,11 @@ import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import OpenAI from 'openai';
+import { callLLM } from './LLMManager';
 
 const openai = new OpenAI({
   apiKey: "sk-proj-5auFOzAUeUREckxZsroCT3BlbkFJCu9rISeIc0pBqiMyrM6W",
 });
-
-async function callLLM(prompt) {
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [{ role: "user", content: prompt }],
-    });
-    return completion.choices[0].message.content;
-  } catch (error) {
-    console.error("Error calling LLM: ", error);
-    return null;
-  }
-}
 
 const summarizeContext = async(word, innerContext) =>{
   const prompt = `I’ve got two variables: word, innerContext. Your job is to summarize innerContext. For example, word: “éclairée” innerContext: “connaissance. C'était une grande salle éclairée par cinq ou six fenêtres, au-de”. You need to answer: “Une grande salle éclairée par cinq ou six fenêtres.”  Note that your final answer should include the word. Here are the variables: word: ${word}, innerContext: ${innerContext}`;

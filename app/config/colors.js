@@ -4,7 +4,7 @@ export default {
   utilityBlueLight: "#8489B3",
   utilityBlueUltraLight: "#B8BACE",
   utilityBlueCrazyLight: "#EEEFF5",
-  
+
   utilityGrey: "#2E2E2E",
   utilityGreyLight: "#A6A6A6",
   utilityGreyUltraLight: "#CDCDCD",
@@ -30,7 +30,7 @@ export default {
     easy: "#2E2E2E",
   },
 
-  inactiveGrey: 'rgba(128, 128, 128, 1)', // Semi-transparent grey
+  inactiveGrey: "rgba(128, 128, 128, 1)", // Semi-transparent grey
 
   homeScreenBackground: "#F1F1F5",
   homeScreenIcon: "#e7e6ea",
@@ -38,6 +38,12 @@ export default {
   widgetHeader: "#808080",
   defHeader: "#3F3F3F",
   defText: "#4C4C4C",
+
+  translationPopup: {
+    grammarModuleShade: "#90EE90",
+    translationModuleShade: "#9ACD32",
+  },
+
   book: {
     // Brianna's colors:
     pinkRed: "#D15A6C",

@@ -8,7 +8,7 @@ import {
   StatusBar,
   Animated,
 } from "react-native";
-import { useNavigation, useRoute, useIsFocused } from "@react-navigation/native";
+import { useRoute, useIsFocused } from "@react-navigation/native";
 import { ReaderProvider } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -77,6 +77,8 @@ export default function ReadScreen() {
     handleWebViewMessageDefinition,
     handleClosePopup,
     handleToggle,
+    currentGrammar,
+    grammarLoading,
   } = useDefinitionManager();
 
   const headerAnimation = useRef(new Animated.Value(0)).current;
@@ -178,7 +180,7 @@ export default function ReadScreen() {
                 fileSystem={useFileSystem}
                 handleWebViewMessage={handleWebViewMessage}
               />
-              {/* <DefinitionPopup
+              <DefinitionPopup
                 location={location}
                 visible={popupVisible}
                 onClose={handleClosePopup}
@@ -189,7 +191,9 @@ export default function ReadScreen() {
                 finished={finished}
                 started={started}
                 onToggleCheck={handleToggle}
-              /> */}
+                currentGrammar={currentGrammar}
+                grammarLoading={grammarLoading}
+              />
               <LocationPointer location={location} visible={popupVisible} />
             </ReaderProvider>
           </View>

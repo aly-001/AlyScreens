@@ -23,6 +23,7 @@ const useSettings = () => {
     flashcardsBackGrammar: false,
     languageTag: 'en-US',
     imagePrompt: defaultPrompts.defaultImagePrompt,
+    grammarPrompt: defaultPrompts.defaultGrammarPrompt,
   });
 
   useEffect(() => {
