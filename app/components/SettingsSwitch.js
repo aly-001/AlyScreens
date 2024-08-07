@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
+import { View, Text, Switch, StyleSheet, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import colors from '../config/colors';
 
-const SettingSwitch = ({ label, value, onValueChange, disabled = false }) => {
+const SettingSwitch = ({ label, value, onValueChange, disabled = false, onEdit }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
-      <Switch
-        value={value}
-        onValueChange={onValueChange}
-        disabled={disabled}
-      />
+      <View style={styles.controlsContainer}>
+        {onEdit && (
+          <TouchableOpacity onPress={onEdit} style={styles.editButton}>
+            <Feather name="edit-2" size={20} color={colors.appleBlue} />
+          </TouchableOpacity>
+        )}
+        <Switch
+          value={value}
+          onValueChange={onValueChange}
+          disabled={disabled}
+        />
+      </View>
     </View>
   );
 };
@@ -24,6 +33,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
+  },
+  controlsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  editButton: {
+    marginRight: 10,
   },
 });
 

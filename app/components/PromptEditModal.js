@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text, TouchableOpacity, Modal } from 'react-native';
-import { useSettingsContext } from '../../context/useSettingsContext';
-import colors from '../../config/colors';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, StyleSheet, Text, TouchableOpacity, Modal, Button } from 'react-native';
+import { useSettingsContext} from "../context/useSettingsContext";
+import colors from '../config/colors';
+import { Divider } from 'react-native-paper';
 
-const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt }) => {
-  const { updateSettings } = useSettingsContext();
-  const [prompt, setPrompt] = useState(initialPrompt);
+const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPromptPart, onReset}) => {
+  const { settings, updateSettings } = useSettingsContext();
+  const [prompt, setPrompt] = useState(settings[promptType] || '');
+
+  useEffect(() => {
+    setPrompt(settings[promptType] || '');
+  }, [settings, promptType]);
 
   const handleSave = () => {
     updateSettings({ [promptType]: prompt });
@@ -14,14 +19,16 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt }) => {
 
   return (
     <Modal
-      animationType="slide"
       transparent={true}
       visible={isVisible}
       onRequestClose={onClose}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalTitle}>{`Edit ${promptType} Prompt`}</Text>
+          <View style={styles.greyPartContainer}>
+
+          <Text style={styles.greyPromptPart}>{greyPromptPart}</Text>
+          </View>
           <TextInput
             style={styles.input}
             value={prompt}
@@ -29,9 +36,13 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt }) => {
             multiline
             placeholder={`Enter ${promptType} prompt`}
           />
+          <View style={{alignSelf: "flex-start"}}>
+
+            <Button title="Reset"  onPress={onReset}/>
+          </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancel</Text>
+            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleSave}>
               <Text style={styles.buttonText}>Save</Text>
@@ -48,21 +59,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   modalView: {
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 15,
     padding: 35,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
     width: '80%',
   },
   modalTitle: {
@@ -73,11 +76,8 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 100,
-    borderColor: 'gray',
-    borderWidth: 1,
     borderRadius: 5,
-    padding: 10,
-    textAlignVertical: 'top',
+     textAlignVertical: 'top',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.appleBlue,
     borderRadius: 5,
-    padding: 10,
+    paddingVertical: 10,
     elevation: 2,
     flex: 1,
     marginHorizontal: 5,
@@ -98,6 +98,30 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  cancelButton: {
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: colors.appleBlue,
+    paddingVertical: 10,
+    elevation: 2,
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  cancelButtonText: {
+    color: colors.appleBlue, 
+
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  greyPromptPart: {
+    opacity: .8,
+    color: colors.utilityGrey,
+    fontStyle: 'italic',
+  },
+  greyPartContainer:{
+    alignSelf: "flex-start",
+    marginBottom: 15  
+  }
 });
 
 export default PromptEditModal;

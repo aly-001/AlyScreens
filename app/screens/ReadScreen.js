@@ -79,6 +79,10 @@ export default function ReadScreen() {
     handleToggle,
     currentGrammar,
     grammarLoading,
+    currentModuleA,
+    moduleALoading,
+    currentModuleB,
+    moduleBLoading,
     audioBase64,
     audioLoading,
   } = useDefinitionManager();
@@ -197,6 +201,10 @@ export default function ReadScreen() {
                 grammarLoading={grammarLoading}
                 audioBase64={audioBase64}
                 audioLoading={audioLoading}
+                currentModuleA={currentModuleA}
+                moduleALoading={moduleALoading}
+                currentModuleB={currentModuleB}
+                moduleBLoading={moduleBLoading}
               />
               <LocationPointer location={location} visible={popupVisible} />
             </ReaderProvider>

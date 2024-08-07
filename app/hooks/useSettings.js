@@ -9,6 +9,7 @@ const useSettings = () => {
     translationPopupTranslation: true,
     translationPopupAudio: false,
     translationPopupGrammar: false,
+    translationPopupModuleA: false,
     flashcardsEnabled: true,
     flashcardsFrontWord: true,
     flashcardsFrontContext: true,
@@ -24,6 +25,8 @@ const useSettings = () => {
     languageTag: 'en-US',
     imagePrompt: defaultPrompts.defaultImagePrompt,
     grammarPrompt: defaultPrompts.defaultGrammarPrompt,
+    moduleAPrompt: defaultPrompts.defaultModuleAPrompt,
+    moduleBPrompt: defaultPrompts.defaultModuleBPrompt,
   });
 
   useEffect(() => {

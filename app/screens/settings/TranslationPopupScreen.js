@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSettingsContext } from '../../context/useSettingsContext';
 import SettingSwitch from '../../components/SettingsSwitch';
 import colors from '../../config/colors';
 import { Divider } from 'react-native-paper';
+import PromptEditModal from '../../components/PromptEditModal';
+import defaultPrompts from '../../config/defaultPrompts.json';
 
 const TranslationPopupScreen = () => {
   const { settings, updateSettings } = useSettingsContext();
+  const [isGrammarModalVisible, setIsGrammarModalVisible] = useState(false);
+  const [isModuleAModalVisible, setIsModuleAModalVisible] = useState(false);
+  const [isModuleBModalVisible, setIsModuleBModalVisible] = useState(false);
 
   const toggleSetting = (setting) => {
     updateSettings({ [setting]: !settings[setting] });
@@ -15,26 +20,65 @@ const TranslationPopupScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.group}>
-      <SettingSwitch
-        label="Translation"
-        disabled={true}
-        value={settings.translationPopupTranslation}
-        onValueChange={() => toggleSetting('translationPopupTranslation')}
-      />
-      <Divider />
-      <SettingSwitch
-        label="Audio"
-        value={settings.translationPopupAudio}
-        onValueChange={() => toggleSetting('translationPopupAudio')}
-      />
-      <Divider />
-      <SettingSwitch
-        label="Grammar"
-        value={settings.translationPopupGrammar}
-        onValueChange={() => toggleSetting('translationPopupGrammar')}
-      />
+        <SettingSwitch
+          label="Translation"
+          disabled={true}
+          value={settings.translationPopupTranslation}
+          onValueChange={() => toggleSetting('translationPopupTranslation')}
+        />
+        <Divider />
+        <SettingSwitch
+          label="Audio"
+          value={settings.translationPopupAudio}
+          onValueChange={() => toggleSetting('translationPopupAudio')}
+        />
+        <Divider />
+        <SettingSwitch
+          label="Grammar"
+          value={settings.translationPopupGrammar}
+          onValueChange={() => toggleSetting('translationPopupGrammar')}
+          onEdit={() => setIsGrammarModalVisible(true)}
+        />
+        <Divider />
+        <SettingSwitch
+          label="Custom Module A"
+          value={settings.translationPopupModuleA}
+          onValueChange={() => toggleSetting('translationPopupModuleA')}
+          onEdit={() => setIsModuleAModalVisible(true)}
+        />
+        <Divider />
+        <SettingSwitch
+          label="Custom Module B"
+          value={settings.translationPopupModuleB}
+          onValueChange={() => toggleSetting('translationPopupModuleB')}
+          onEdit={() => setIsModuleBModalVisible(true)}
+        />
       </View>
       
+      <PromptEditModal
+        isVisible={isGrammarModalVisible}
+        onClose={() => setIsGrammarModalVisible(false)}
+        promptType="grammarPrompt"
+        initialPrompt={settings.grammarPrompt}
+        greyPromptPart={'Give a grammar explanation of *word* in the context of *context*.'}
+        onReset={() => updateSettings({ grammarPrompt: defaultPrompts.defaultGrammarPrompt })}
+      />
+     <PromptEditModal
+        isVisible={isModuleAModalVisible}
+        onClose={() => setIsModuleAModalVisible(false)}
+        promptType="moduleAPrompt"
+        initialPrompt={settings.moduleAPrompt}
+        greyPromptPart={'Use *word* in the context of *context*.'}
+        onReset={() => updateSettings({ moduleAPrompt: defaultPrompts.defaultModuleAPrompt })}
+      /> 
+      <PromptEditModal
+        isVisible={isModuleBModalVisible}
+        onClose={() => setIsModuleBModalVisible(false)}
+        promptType="moduleBPrompt"
+        initialPrompt={settings.moduleBPrompt}
+        greyPromptPart={'Use *word* in the context of *context*.'}
+        onReset={() => updateSettings({ moduleBPrompt: defaultPrompts.defaultModuleBPrompt })}
+      /> 
     </View>
   );
 };

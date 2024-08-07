@@ -43,6 +43,8 @@ export default {
   translationPopup: {
     grammarModuleShade: "#90EE90",
     translationModuleShade: "#ffffff",
+    moduleAModuleShade: "#FFA07A",
+    moduleBModuleShade: "#FFD700",
   },
 
   book: {

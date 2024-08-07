@@ -34,6 +34,10 @@ const DefinitionPopup = ({
   grammarLoading,
   audioBase64,
   audioLoading,
+  moduleALoading,
+  currentModuleA,
+  moduleBLoading,
+  currentModuleB,
 }) => {
   const [addText, setAddText] = useState("");
   const [direction, setDirection] = useState("D");
@@ -186,6 +190,18 @@ const DefinitionPopup = ({
                       currentGrammar={currentGrammar}
                     />
                   )}
+                  {settings.translationPopupModuleA && (
+                    <ModalModuleA
+                      moduleALoading={moduleALoading}
+                      currentModuleA={currentModuleA}
+                    />
+                  )}
+                  {settings.translationPopupModuleB && (
+                    <ModalModuleB
+                      moduleBLoading={moduleBLoading}
+                      currentModuleB={currentModuleB}
+                    />
+                  )}
                   <ModalDef isLoading={isLoading} definition={definition} />
 
                   <View
@@ -307,6 +323,48 @@ const ModalGram = ({ grammarLoading, currentGrammar }) => (
       </View>
     ) : (
       <Text style={styles.definitionText}>{currentGrammar}</Text>
+    )}
+  </View>
+);
+
+const ModalModuleA = ({ moduleALoading, currentModuleA }) => (
+  <View
+    style={[
+      styles.content,
+      { backgroundColor: colors.translationPopup.moduleAModuleShade },
+    ]}
+  >
+    {moduleALoading ? (
+      <View style={styles.loadingContainer}>
+        <LoadingText
+
+          text="Loading custom module A..."
+          barColor={colors.translationPopup.moduleAModuleShade}
+        />
+      </View>
+    ) : (
+      <Text style={styles.definitionText}>{currentModuleA}</Text>
+    )}
+  </View>
+);
+
+const ModalModuleB = ({ moduleBLoading, currentModuleB }) => (
+  <View
+    style={[
+      styles.content,
+      { backgroundColor: colors.translationPopup.moduleBModuleShade },
+    ]}
+  >
+    {moduleBLoading ? (
+      <View style={styles.loadingContainer}>
+        <LoadingText
+
+          text="Loading custom module B..."
+          barColor={colors.translationPopup.moduleBModuleShade}
+        />
+      </View>
+    ) : (
+      <Text style={styles.definitionText}>{currentModuleB}</Text>
     )}
   </View>
 );

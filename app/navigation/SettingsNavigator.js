@@ -73,11 +73,6 @@ const CustomDrawerContent = (props) => {
           isSelected={currentRouteName === 'Flashcard Media'}
         />
         <Divider />
-        <DrawerItem
-          label="Prompt Engineering"
-          onPress={() => props.navigation.navigate('Prompt Engineering')}
-          isSelected={currentRouteName === 'Prompt Engineering'}
-        />
       </View>
     </DrawerContentScrollView>
   );
@@ -100,7 +95,6 @@ const TabletNavigator = () => (
     <Drawer.Screen name="LLM Key" component={LLMKeyScreen} />
     <Drawer.Screen name="Translation Popup" component={TranslationPopupScreen} />
     <Drawer.Screen name="Flashcard Media" component={FlashcardMediaScreen} />
-    <Drawer.Screen name="Prompt Engineering" component={PromptEngineeringScreen} />
   </Drawer.Navigator>
 );
 
@@ -110,7 +104,6 @@ const PhoneNavigator = () => (
     <Stack.Screen name="LLM Key" component={LLMKeyScreen} />
     <Stack.Screen name="Translation Popup" component={TranslationPopupScreen} />
     <Stack.Screen name="Flashcard Media" component={FlashcardMediaScreen} />
-    <Stack.Screen name="Prompt Engineering" component={PromptEngineeringScreen} />
   </Stack.Navigator>
 );
 

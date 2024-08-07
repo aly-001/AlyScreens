@@ -1,4 +1,6 @@
 {
   "defaultImagePrompt": "Black and white, kaleidascope",
-  "defaultGrammarPrompt": "The entire explanation has to be less than 10 words and involve an anteater"
+  "defaultGrammarPrompt": "The entire explanation has to be less than 10 words and involve an anteater",
+  "defaultModuleAPrompt": "Write a 10-word story about *word*. The story needs to involve an elephant.",
+  "defaultModuleBPrompt": "Explain what's going on in the book in 10 words or less."
 }
