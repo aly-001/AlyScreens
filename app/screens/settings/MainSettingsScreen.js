@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import colors from '../../config/colors';
 
 const MainSettingsScreen = ({ navigation }) => {
   return (
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.homeScreenBackground,
     padding: 15,
     borderRadius: 5,
     marginBottom: 10,

@@ -11,6 +11,7 @@ export default {
   utilityGrayCrazyLight: "#F1F1F5",
 
   appleBlue: "#007AFF",
+  appleBlueShade: "#007AFF",
 
   newWords: "#447a83",
   learnWords: "#D15A6C",

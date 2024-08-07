@@ -17,11 +17,10 @@ const SettingSwitch = ({ label, value, onValueChange, disabled = false }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    height: 48,
   },
   label: {
     fontSize: 16,

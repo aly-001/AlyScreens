@@ -1,8 +1,10 @@
 // FlashcardMediaScreen.js
-import React from 'react';
-import { View, StyleSheet, Text, ScrollView } from 'react-native';
-import { useSettingsContext } from '../../context/useSettingsContext';
-import SettingSwitch from '../../components/SettingsSwitch';
+import React from "react";
+import { View, StyleSheet, Text, ScrollView } from "react-native";
+import { useSettingsContext } from "../../context/useSettingsContext";
+import SettingSwitch from "../../components/SettingsSwitch";
+import colors from "../../config/colors";
+import { Divider } from "react-native-paper";
 
 const FlashcardMediaScreen = () => {
   const { settings, updateSettings } = useSettingsContext();
@@ -11,13 +13,13 @@ const FlashcardMediaScreen = () => {
     let newSettings = { [setting]: !settings[setting] };
 
     const contextSettings = {
-      flashcardsFrontContext: ['flashcardsFrontContextTranslation'],
-      flashcardsBackContext: ['flashcardsBackContextTranslation'],
+      flashcardsFrontContext: ["flashcardsFrontContextTranslation"],
+      flashcardsBackContext: ["flashcardsBackContextTranslation"],
     };
 
     Object.entries(contextSettings).forEach(([context, dependents]) => {
       if (setting === context && !newSettings[setting]) {
-        dependents.forEach(dependent => newSettings[dependent] = false);
+        dependents.forEach((dependent) => (newSettings[dependent] = false));
       }
       if (dependents.includes(setting) && newSettings[setting]) {
         newSettings[context] = true;
@@ -39,40 +41,84 @@ const FlashcardMediaScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <SettingSwitch
-        label="Enable Flashcards"
-        value={settings.flashcardsEnabled}
-        onValueChange={() => toggleSetting('flashcardsEnabled')}
-      />
-      
-      <Text style={styles.sectionTitle}>Front</Text>
-      {renderSwitch("Word", "flashcardsFrontWord")}
-      {renderSwitch("Context", "flashcardsFrontContext")}
-      {renderSwitch("Grammar", "flashcardsFrontGrammar")}
-      
-      <Text style={styles.sectionTitle}>Back</Text>
-      {renderSwitch("Word", "flashcardsBackWord")}
-      {renderSwitch("Word Translation", "flashcardsBackWordTranslation")}
-      {renderSwitch("Context", "flashcardsBackContext")}
-      {renderSwitch("Context Translation", "flashcardsBackContextTranslation")}
-      {renderSwitch("Audio", "flashcardsBackAudio")}
-      {renderSwitch("Context Audio", "flashcardsBackContextAudio")}
-      {renderSwitch("Image", "flashcardsBackImage")}
-      {renderSwitch("Grammar", "flashcardsBackGrammar")}
+      <View style={styles.group}>
+        <SettingSwitch
+          label="Enable Flashcards"
+          value={settings.flashcardsEnabled}
+          onValueChange={() => toggleSetting("flashcardsEnabled")}
+        />
+      </View>
+
+      <View style={[styles.group, {marginTop: 30}]}>
+        <View style={styles.description}>
+          <Text style={styles.descriptionText}>FRONT</Text>
+        </View>
+        {renderSwitch("Word", "flashcardsFrontWord")}
+        <Divider />
+        {renderSwitch("Context", "flashcardsFrontContext")}
+        <Divider />
+        {renderSwitch("Grammar", "flashcardsFrontGrammar")}
+        
+      </View>
+
+      <View style={[styles.group, {marginTop: 15}]}>
+      <View style={styles.description}>
+          <Text style={styles.descriptionText}>BACK</Text>
+        </View>
+        {renderSwitch("Word", "flashcardsBackWord")}
+        <Divider />
+        {renderSwitch("Word Translation", "flashcardsBackWordTranslation")}
+        <Divider />
+        {renderSwitch("Context", "flashcardsBackContext")}
+        <Divider />
+        {renderSwitch(
+          "Context Translation",
+          "flashcardsBackContextTranslation"
+        )}
+        <Divider />
+        {renderSwitch("Audio", "flashcardsBackAudio")}
+        <Divider />
+        {renderSwitch("Context Audio", "flashcardsBackContextAudio")}
+        <Divider />
+        {renderSwitch("Image", "flashcardsBackImage")}
+        <Divider />
+        {renderSwitch("Grammar", "flashcardsBackGrammar")}
+      </View>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 40,
     flex: 1,
-    padding: 20,
+    backgroundColor: colors.homeScreenBackground,
+  },
+  group: {
+    backgroundColor: "white",
+    marginHorizontal: 20,
+    marginBottom: 45,
+    borderRadius: 10,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 20,
     marginBottom: 10,
+  },
+  description: {
+    flex: 1,
+    position: "absolute",
+    top: -22,
+    left: 15,
+    opacity: 0.6,
+  },
+  footer: {
+    flex: 1,
+    position: "absolute",
+    bottom: -22,
+    left: 15,
+    opacity: 0.5,
   },
 });
 
