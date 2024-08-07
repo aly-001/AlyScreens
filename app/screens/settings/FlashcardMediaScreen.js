@@ -35,7 +35,7 @@ const FlashcardMediaScreen = () => {
       label={label}
       value={settings[setting]}
       onValueChange={() => toggleSetting(setting)}
-      disabled={!settings.flashcardsEnabled}
+      disabled={!settings.flashcardsEnabled || label === "Word" || label === "Word Translation"}
     />
   );
 

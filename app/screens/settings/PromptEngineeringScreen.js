@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSettingsContext } from '../../context/useSettingsContext';
 import colors from '../../config/colors';
+import { Divider } from 'react-native-paper';
 
 const PromptEngineeringScreen = () => {
   const { settings, updateSettings } = useSettingsContext();
@@ -30,6 +31,8 @@ const PromptEngineeringScreen = () => {
       <View style={styles.description}>
           <Text style={styles.descriptionText}>IMAGE</Text>
         </View>
+        <Text style={styles.greyedOutDescription}>Make a picture of *word* in the context of *context*. Do it in this style:</Text>
+
         {renderInput(
           "Image Generation Prompt",
           imagePrompt,
@@ -42,6 +45,7 @@ const PromptEngineeringScreen = () => {
       <View style={styles.description}>
           <Text style={styles.descriptionText}>GRAMMAR</Text>
         </View>
+        <Text style={styles.greyedOutDescription}>Give a grammar explanation of *word* in the context of *context*.</Text>
         {renderInput(
           "Grammar Prompt",
           grammarPrompt,
@@ -77,8 +81,6 @@ const styles = StyleSheet.create({
     color: colors.utilityGrey,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
     padding: 10,
     borderRadius: 5,
     height: 100,
@@ -102,6 +104,10 @@ const styles = StyleSheet.create({
     left: 15,
     opacity: 0.6,
   },
+  greyedOutDescription:{
+    color: "grey",
+    fontStyle: "italic",
+  }
 });
 
 export default PromptEngineeringScreen;

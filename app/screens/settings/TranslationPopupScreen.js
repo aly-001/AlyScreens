@@ -17,6 +17,7 @@ const TranslationPopupScreen = () => {
       <View style={styles.group}>
       <SettingSwitch
         label="Translation"
+        disabled={true}
         value={settings.translationPopupTranslation}
         onValueChange={() => toggleSetting('translationPopupTranslation')}
       />
