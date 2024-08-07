@@ -14,193 +14,161 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 const ConfigScreen = () => {
   const { settings, updateSettings } = useSettingsContext();
-  const [tempImagePrompt, setTempImagePrompt] = useState(settings.imagePrompt);
+  const [tempPrompts, setTempPrompts] = useState({
+    imagePrompt: settings.imagePrompt,
+    grammarPrompt: settings.grammarPrompt,
+  });
+
+  const handlePromptChange = (promptType, value) => {
+    setTempPrompts(prev => ({ ...prev, [promptType]: value }));
+  };
+
+  const handleSavePrompt = (promptType) => {
+    updateSettings({ [promptType]: tempPrompts[promptType] });
+  };
 
   const toggleSetting = (setting) => {
     let newSettings = { [setting]: !settings[setting] };
 
-    // If turning off context, also turn off context translation
-    if (setting === 'flashcardsFrontContext' && !newSettings[setting]) {
-      newSettings['flashcardsFrontContextTranslation'] = false;
-    }
-    if (setting === 'flashcardsBackContext' && !newSettings[setting]) {
-      newSettings['flashcardsBackContextTranslation'] = false;
-    }
+    const contextSettings = {
+      flashcardsFrontContext: ['flashcardsFrontContextTranslation'],
+      flashcardsBackContext: ['flashcardsBackContextTranslation'],
+    };
 
-    // If turning on context translation, ensure context is on
-    if (setting === 'flashcardsFrontContextTranslation' && newSettings[setting]) {
-      newSettings['flashcardsFrontContext'] = true;
-    }
-    if (setting === 'flashcardsBackContextTranslation' && newSettings[setting]) {
-      newSettings['flashcardsBackContext'] = true;
-    }
+    Object.entries(contextSettings).forEach(([context, dependents]) => {
+      if (setting === context && !newSettings[setting]) {
+        dependents.forEach(dependent => newSettings[dependent] = false);
+      }
+      if (dependents.includes(setting) && newSettings[setting]) {
+        newSettings[context] = true;
+      }
+    });
 
     updateSettings(newSettings);
   };
 
-  // Function to render a flashcard-related switch
-  const renderFlashcardSwitch = (label, setting) => (
-    <View style={styles.settingItem}>
+  const renderSwitch = (label, setting, disabled = false) => (
+    <View key={setting} style={styles.settingItem}>
       <Text>{label}</Text>
       <Switch
         value={settings[setting]}
         onValueChange={() => toggleSetting(setting)}
-        disabled={
-          !settings.flashcardsEnabled ||
-          setting === "flashcardsFrontWord" ||
-          setting === "flashcardsBackWord" ||
-          setting === "translationPopupGrammar" ||
-          setting === "flashcardsFrontGrammar" ||
-          setting === "flashcardsBackGrammar" ||
-          (setting === "flashcardsFrontContextTranslation" && !settings.flashcardsFrontContext) ||
-          (setting === "flashcardsBackContextTranslation" && !settings.flashcardsBackContext)
-        }
+        disabled={disabled}
       />
     </View>
   );
 
-  // Function to render a regular switch
-  const renderSwitch = (label, setting) => (
-    <View style={styles.settingItem}>
-      <Text>{label}</Text>
-      <Switch
-        value={settings[setting]}
-        onValueChange={() => toggleSetting(setting)}
+  const renderPromptInput = (promptType, label) => (
+    <View key={promptType} style={styles.promptInputContainer}>
+      <Text style={styles.promptLabel}>{label}</Text>
+      <TextInput
+        style={styles.promptInput}
+        multiline
+        numberOfLines={4}
+        value={tempPrompts[promptType]}
+        onChangeText={(value) => handlePromptChange(promptType, value)}
+        placeholder={`Enter ${promptType}`}
       />
+      <TouchableOpacity
+        style={styles.saveButton}
+        onPress={() => handleSavePrompt(promptType)}
+      >
+        <Text style={styles.saveButtonText}>{`Save ${label}`}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+  
+  const renderSection = (title, content) => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {content}
     </View>
   );
 
-  const handleSaveImagePrompt = () => {
-    updateSettings({ imagePrompt: tempImagePrompt });
-  };
+  const flashcardSwitches = [
+    { label: "Word", setting: "flashcardsFrontWord" },
+    { label: "Context", setting: "flashcardsFrontContext" },
+    { label: "Grammar", setting: "flashcardsFrontGrammar" },
+  ];
+
+  const backFlashcardSwitches = [
+    { label: "Word", setting: "flashcardsBackWord" },
+    { label: "Word Translation", setting: "flashcardsBackWordTranslation" },
+    { label: "Context", setting: "flashcardsBackContext" },
+    { label: "Context Translation", setting: "flashcardsBackContextTranslation" },
+    { label: "Audio", setting: "flashcardsBackAudio" },
+    { label: "Context Audio", setting: "flashcardsBackContextAudio" },
+    { label: "Image", setting: "flashcardsBackImage" },
+    { label: "Grammar", setting: "flashcardsBackGrammar" },
+  ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollViewContent}
-      >
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Image Generation</Text>
-          <View style={styles.promptInputContainer}>
-            <TextInput
-              style={styles.promptInput}
-              multiline
-              numberOfLines={4}
-              value={tempImagePrompt}
-              onChangeText={setTempImagePrompt}
-              placeholder="Enter image generation prompt"
-            />
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={handleSaveImagePrompt}
-            >
-              <Text style={styles.saveButtonText}>Save</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        
-        <View style={styles.section}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+        {renderSection("Prompt Engineering", (
+          <>
+            {renderPromptInput("imagePrompt", "Image Generation Prompt")}
+            {renderPromptInput("grammarPrompt", "Grammar Prompt")}
+          </>
+        ))}
+
+        {renderSection("OpenAI Key", (
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>OpenAI Key</Text>
-            <TouchableOpacity
-              onPress={() => {
-                /* Handle edit */
-              }}
-            >
+            <TouchableOpacity onPress={() => {/* Handle edit */}}>
               <Icon name="edit" size={24} color="#007AFF" />
             </TouchableOpacity>
           </View>
-        </View>
+        ))}
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Translation Popup</Text>
-          {renderSwitch("Translation", "translationPopupTranslation")}
-          {renderSwitch("Audio", "translationPopupAudio")}
-          {renderSwitch("Grammar", "translationPopupGrammar")}
-        </View>
+        {renderSection("Translation Popup", (
+          <>
+            {renderSwitch("Translation", "translationPopupTranslation")}
+            {renderSwitch("Audio", "translationPopupAudio")}
+            {renderSwitch("Grammar", "translationPopupGrammar")}
+          </>
+        ))}
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Flashcards</Text>
-          {renderSwitch("Enable Flashcards", "flashcardsEnabled")}
-
-          <View style={styles.subsection}>
-            <Text style={styles.subsectionTitle}>Front</Text>
-            {renderFlashcardSwitch("Word", "flashcardsFrontWord")}
-            {renderFlashcardSwitch("Context", "flashcardsFrontContext")}
-            {renderFlashcardSwitch("Grammar", "flashcardsFrontGrammar")}
-          </View>
-
-          <View style={styles.subsection}>
-            <Text style={styles.subsectionTitle}>Back</Text>
-            {renderFlashcardSwitch("Word", "flashcardsBackWord")}
-            {renderFlashcardSwitch(
-              "Word Translation",
-              "flashcardsBackWordTranslation"
-            )}
-            {renderFlashcardSwitch("Context", "flashcardsBackContext")}
-            {renderFlashcardSwitch(
-              "Context Translation",
-              "flashcardsBackContextTranslation"
-            )}
-            {renderFlashcardSwitch("Audio", "flashcardsBackAudio")}
-            {renderFlashcardSwitch("Context Audio", "flashcardsBackContextAudio")}
-            {renderFlashcardSwitch("Image", "flashcardsBackImage")}
-            {renderFlashcardSwitch("Grammar", "flashcardsBackGrammar")}
-          </View>
-        </View>
-
-        
+        {renderSection("Flashcards", (
+          <>
+            {renderSwitch("Enable Flashcards", "flashcardsEnabled")}
+            <View style={styles.subsection}>
+              <Text style={styles.subsectionTitle}>Front</Text>
+              {flashcardSwitches.map(({ label, setting }) => 
+                renderSwitch(label, setting, !settings.flashcardsEnabled)
+              )}
+            </View>
+            <View style={styles.subsection}>
+              <Text style={styles.subsectionTitle}>Back</Text>
+              {backFlashcardSwitches.map(({ label, setting }) => 
+                renderSwitch(label, setting, !settings.flashcardsEnabled)
+              )}
+            </View>
+          </>
+        ))}
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    padding: 16,
-  },
+  safeArea: { flex: 1, backgroundColor: "#f5f5f5" },
+  scrollView: { flex: 1 },
+  scrollViewContent: { flexGrow: 1, padding: 16 },
   section: {
     marginBottom: 24,
     backgroundColor: "#ffffff",
     borderRadius: 8,
     padding: 16,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 5,
   },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-  subsection: {
-    marginTop: 16,
-    marginLeft: 16,
-  },
-  subsectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
+  sectionHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 12 },
+  subsection: { marginTop: 16, marginLeft: 16 },
+  subsectionTitle: { fontSize: 16, fontWeight: "600", marginBottom: 8 },
   settingItem: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -209,9 +177,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
   },
-  promptInputContainer: {
-    marginTop: 8,
-  },
+  promptInputContainer: { marginTop: 8 },
+  promptLabel: { fontSize: 16, fontWeight: '600', marginBottom: 8 },
   promptInput: {
     borderWidth: 1,
     borderColor: '#e0e0e0',
@@ -227,10 +194,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
-  saveButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-  },
+  saveButtonText: { color: '#ffffff', fontWeight: 'bold' },
 });
 
 export default ConfigScreen;

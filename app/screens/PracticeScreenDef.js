@@ -9,9 +9,9 @@ import {
   StatusBar,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import * as FileSystem from 'expo-file-system';
-import { Audio } from 'expo-av';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import * as FileSystem from "expo-file-system";
+import { Audio } from "expo-av";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import colors from "../config/colors";
 import PracticeStatsFooter from "../components/PracticeStatsFooter";
 import PracticeRatingTab from "../components/PracticeRatingTab";
@@ -36,7 +36,7 @@ export default function PracticeScreenDef() {
   }, [currentCard, isFocused]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('transitionEnd', () => {
+    const unsubscribe = navigation.addListener("transitionEnd", () => {
       if (isNavigatingRef.current) {
         setDisplayedCard(currentCard);
         isNavigatingRef.current = false;
@@ -55,14 +55,14 @@ export default function PracticeScreenDef() {
           playsInSilentModeIOS: true,
           shouldDuckAndroid: true,
           staysActiveInBackground: false,
-          playThroughEarpieceAndroid: false
+          playThroughEarpieceAndroid: false,
         });
         // console.log("Audio setup complete");
       } catch (error) {
         console.error("Error setting up audio:", error);
       }
     }
-    
+
     setupAudio();
   }, []);
 
@@ -71,9 +71,9 @@ export default function PracticeScreenDef() {
       if (displayedCard && displayedCard.back) {
         try {
           const backData = JSON.parse(displayedCard.back[0]);
-          const imageFileName = backData.imageID + '.png';
+          const imageFileName = backData.imageID + ".png";
           const imagePath = `${FileSystem.documentDirectory}images/${imageFileName}`;
-          
+
           const fileInfo = await FileSystem.getInfoAsync(imagePath);
           if (fileInfo.exists) {
             setImageUri(imagePath);
@@ -106,37 +106,35 @@ export default function PracticeScreenDef() {
     if (displayedCard && displayedCard.back) {
       try {
         const backData = JSON.parse(displayedCard.back[0]);
-        const audioID = backData[audioType === 'word' ? 'audioWordID' : 'audioContextID'];
-  
+        const audioID =
+          backData[audioType === "word" ? "audioWordID" : "audioContextID"];
+
         // If audioID is null, exit the function peacefully
         if (audioID === null) {
           console.log(`No audio available for ${audioType}`);
           return;
         }
-  
+
         const audioFileName = `${audioID}.mp3`;
         const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
         // console.log("Audio path:", audioPath);
-  
+
         const fileInfo = await FileSystem.getInfoAsync(audioPath);
         if (!fileInfo.exists) {
-          console.log(`Audio file does not exist for ${audioType}: ${audioPath}`);
+          console.log(
+            `Audio file does not exist for ${audioType}: ${audioPath}`
+          );
           return;
         }
-  
-        // console.log("Audio file size:", fileInfo.size, "bytes");
-        // console.log("Creating sound object...");
+
         const { sound } = await Audio.Sound.createAsync(
           { uri: audioPath },
           { shouldPlay: false }
         );
-        // console.log("Sound object created");
         console.log("Playing audio...");
         const playbackStatus = await sound.playAsync();
-        // console.log("Playback status:", playbackStatus);
         sound.setOnPlaybackStatusUpdate(async (status) => {
           if (status.didJustFinish) {
-            // console.log("Audio finished playing");
             await sound.unloadAsync();
           }
         });
@@ -168,6 +166,14 @@ export default function PracticeScreenDef() {
           <Text style={styles.word}>{backData.word || "N/A"}</Text>
         </View>
         <View style={styles.defContainer}>
+          <Text
+            style={[
+              styles.def,
+              { backgroundColor: colors.translationPopup.grammarModuleShade },
+            ]}
+          >
+            {backData.grammarExplanation || "N/A"}
+          </Text>
           <Text style={styles.def}>{backData.wordDef || "N/A"}</Text>
         </View>
         <View style={styles.dividerLine}>
@@ -198,18 +204,21 @@ export default function PracticeScreenDef() {
             resizeMode="cover"
           />
         ) : (
-          <View
-            style={styles.image}
-            resizeMode="cover"
-          />
+          <View style={styles.image} resizeMode="cover" />
         )}
         <View style={styles.container}>
           {renderCardContent()}
           <View style={styles.audio}>
-            <TouchableOpacity onPress={() => handleAudioPress('word')} activeOpacity={.8}>
+            <TouchableOpacity
+              onPress={() => handleAudioPress("word")}
+              activeOpacity={0.8}
+            >
               <PracticeAudio />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleAudioPress('context')} activeOpacity={.8}>
+            <TouchableOpacity
+              onPress={() => handleAudioPress("context")}
+              activeOpacity={0.8}
+            >
               <PracticeAudio />
             </TouchableOpacity>
           </View>

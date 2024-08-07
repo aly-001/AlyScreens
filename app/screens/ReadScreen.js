@@ -79,6 +79,8 @@ export default function ReadScreen() {
     handleToggle,
     currentGrammar,
     grammarLoading,
+    audioBase64,
+    audioLoading,
   } = useDefinitionManager();
 
   const headerAnimation = useRef(new Animated.Value(0)).current;
@@ -193,6 +195,8 @@ export default function ReadScreen() {
                 onToggleCheck={handleToggle}
                 currentGrammar={currentGrammar}
                 grammarLoading={grammarLoading}
+                audioBase64={audioBase64}
+                audioLoading={audioLoading}
               />
               <LocationPointer location={location} visible={popupVisible} />
             </ReaderProvider>

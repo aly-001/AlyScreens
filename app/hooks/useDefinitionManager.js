@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { WEBSOCKET_URL, API_KEY } from '../config/constants';
-import { callLLM } from '../services/LLMManager';
+import { callLLM, generateAudio } from '../services/LLMManager';
 import { useSettingsContext } from '../context/useSettingsContext';
 
 export default function useDefinitionManager() {
@@ -18,6 +18,9 @@ export default function useDefinitionManager() {
   const [grammarLoading, setGrammarLoading] = useState(false);
   const [grammarFinished, setGrammarFinished] = useState(false);
   const [currentGrammar, setCurrentGrammar] = useState('');
+  const [audioData, setAudioData] = useState(null);
+  const [audioBase64, setAudioBase64] = useState(null);
+  const [audioLoading, setAudioLoading] = useState(false);
 
   useEffect(() => {
     connectWebSocket();
@@ -69,12 +72,15 @@ export default function useDefinitionManager() {
 
   const handleWebViewMessageDefinition = async (message) => {
     setGrammarFinished(false);
-    setGrammarStarted(true);
-    setGrammarLoading(true);
+    setGrammarStarted(false);
+    setGrammarLoading(false);
     setAdded(true);
     setCurrentDefinition('');
     setFinished(false);
     setStarted(true);
+    setAudioData(null);
+    setCurrentGrammar('');
+    setAudioLoading(false);
     console.log("Started");
     const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
     const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
@@ -83,6 +89,9 @@ export default function useDefinitionManager() {
   
     setPopupVisible(true);
     setIsLoading(true);
+
+    // Create an array to hold all the promises
+    const promises = [];
 
     // Start the WebSocket request for the definition
     if (ws && ws.readyState === WebSocket.OPEN) {
@@ -97,18 +106,49 @@ export default function useDefinitionManager() {
       setIsLoading(false);
     }
 
-    // Start the parallel grammar LLM request
-    const grammarPrompt = `Give a grammar explanation of the word "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
-    try {
-      const grammarResponse = await callLLM(grammarPrompt);
-      setCurrentGrammar(grammarResponse);
-      setGrammarFinished(true);
-    } catch (error) {
-      console.error('Error fetching grammar explanation:', error);
-      Alert.alert('Error', 'Unable to fetch grammar explanation. Please try again.');
-    } finally {
-      setGrammarLoading(false);
+    // Start the parallel grammar LLM request only if translationPopupGrammar is true
+    if (settings.translationPopupGrammar) {
+      setGrammarStarted(true);
+      setGrammarLoading(true);
+      const grammarPrompt = `Give a grammar explanation of the word "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
+      console.log(" ");
+      console.log(" ");
+      console.log("_____________________________________________________________")
+      console.log("Grammar Prompt:", grammarPrompt);
+      const grammarPromise = callLLM(grammarPrompt)
+        .then(grammarResponse => {
+          setCurrentGrammar(grammarResponse);
+          setGrammarFinished(true);
+        })
+        .catch(error => {
+          console.error('Error fetching grammar explanation:', error);
+          Alert.alert('Error', 'Unable to fetch grammar explanation. Please try again.');
+        })
+        .finally(() => {
+          setGrammarLoading(false);
+        });
+      promises.push(grammarPromise);
     }
+
+    // Generate audio if enabled in settings
+    if (settings.translationPopupAudio) {
+      setAudioLoading(true);
+      const audioPromise = generateAudio(capitalizedWord)
+        .then(audio => {
+          setAudioBase64(audio);
+        })
+        .catch(error => {
+          console.error('Error generating audio:', error);
+          Alert.alert('Error', 'Unable to generate audio. Please try again.');
+        })
+        .finally(() => {
+          setAudioLoading(false);
+        });
+      promises.push(audioPromise);
+    }
+
+    // Wait for all promises to resolve
+    await Promise.all(promises);
   };
 
   const handleClosePopup = () => {
@@ -118,6 +158,7 @@ export default function useDefinitionManager() {
     setCurrentGrammar('');
     setGrammarFinished(false);
     setGrammarStarted(false);
+    setAudioData(null);
   };
 
   const handleToggle = () => {
@@ -138,6 +179,8 @@ export default function useDefinitionManager() {
     grammarLoading,
     grammarFinished,
     currentGrammar,
+    audioBase64,
+    audioLoading,
     handleWebViewMessageDefinition,
     handleClosePopup,
     handleToggle,

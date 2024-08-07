@@ -8,6 +8,7 @@ const openai = new OpenAI({
   apiKey: "sk-proj-5auFOzAUeUREckxZsroCT3BlbkFJCu9rISeIc0pBqiMyrM6W",
 });
 
+
 const summarizeContext = async(word, innerContext) =>{
   const prompt = `I’ve got two variables: word, innerContext. Your job is to summarize innerContext. For example, word: “éclairée” innerContext: “connaissance. C'était une grande salle éclairée par cinq ou six fenêtres, au-de”. You need to answer: “Une grande salle éclairée par cinq ou six fenêtres.”  Note that your final answer should include the word. Here are the variables: word: ${word}, innerContext: ${innerContext}`;
   return callLLM(prompt);
@@ -20,6 +21,10 @@ const generateWordDef = async (word, innerContext, outerContext) => {
 
 const generateContextDef = async (word, summarizedContext, outerContext) => {
   const prompt = `Give a short (no more than 20 words and no less than 3 words) translation of the phrase "${summarizedContext}" focusing on the word "${word}". Additional context: ${outerContext}. Please respond in English.`;
+  return callLLM(prompt);
+}
+
+const generateGrammarExplanation = async (word, innerContext, outerContext, prompt) => {
   return callLLM(prompt);
 }
 
@@ -177,7 +182,6 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
   const audioWordID = `${flashcardID}-audio-word`;
   const audioContextID = `${flashcardID}-audio-context`;
   try {
-    // console.log("SETTINGS", settings);
     const summarizedContext = await summarizeContext(word, innerContext);
     
     const mediaPromises = [];
@@ -190,11 +194,13 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
     if (settings.flashcardsBackContextAudio) {
       mediaPromises.push(generateAndSaveAudioContext(summarizedContext, audioContextID, languageTag));
     }
-    
+   
+    const grammarPrompt = `Give a grammar explanation of the word "${word}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
     // Perform LLM operations
-    const [wordDef, contextDef ] = await Promise.all([
+    const [wordDef, contextDef, grammarExplanation] = await Promise.all([
       settings.flashcardsBackWordTranslation ? generateWordDef(word, innerContext, outerContext) : null,
       settings.flashcardsBackContextTranslation ? generateContextDef(word, summarizedContext, outerContext) : null,
+      settings.flashcardsBackGrammar ? generateGrammarExplanation(word, innerContext, outerContext, grammarPrompt) : null,
     ]);
     
     const cardDataFront = {
@@ -206,6 +212,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
       word: settings.flashcardsBackWord ? word : null, 
       context: settings.flashcardsBackContext ? summarizedContext : null, 
       wordDef: settings.flashcardsBackWordTranslation ? wordDef : null, 
+      grammarExplanation: settings.flashcardsBackGrammar ? grammarExplanation : null,
       contextDef: settings.flashcardsBackContextTranslation ? contextDef : null, 
       imageID: settings.flashcardsBackImage ? imageID : null,
       audioWordID: settings.flashcardsBackAudio ? audioWordID : null,
@@ -227,7 +234,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
     // Wait for media generation to complete
     if (mediaPromises.length > 0) {
       await Promise.all(mediaPromises);
-      // console.log('Card added successfully and all selected media generated');
+      console.log('Card added successfully and all selected media generated');
     } else {
       console.log('Card added successfully (no media generated)');
     }

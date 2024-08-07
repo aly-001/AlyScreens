@@ -9,12 +9,16 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
 
 import fonts from "../config/fonts";
 import colors from "../config/colors";
 import Pointer from "./Pointer";
 import { useSettingsContext } from "../context/useSettingsContext";
+
 import LoadingText from "./LoadingText";
+import { useAudioPlayer } from "../hooks/useAudioPlayer";
 
 const { width, height } = Dimensions.get("window");
 
@@ -28,6 +32,8 @@ const DefinitionPopup = ({
   finished,
   currentGrammar,
   grammarLoading,
+  audioBase64,
+  audioLoading,
 }) => {
   const [addText, setAddText] = useState("");
   const [direction, setDirection] = useState("D");
@@ -168,6 +174,12 @@ const DefinitionPopup = ({
                   ]}
                 >
                   <ModalHeader word={word} onClose={onClose} />
+                  {settings.translationPopupAudio && (
+                    <ModalAudio
+                      audioBase64={audioBase64}
+                      audioLoading={audioLoading}
+                    />
+                  )}
                   {settings.translationPopupGrammar && (
                     <ModalGram
                       grammarLoading={grammarLoading}
@@ -175,6 +187,7 @@ const DefinitionPopup = ({
                     />
                   )}
                   <ModalDef isLoading={isLoading} definition={definition} />
+
                   <View
                     style={[
                       styles.pointerContainer,
@@ -236,6 +249,47 @@ const ModalDef = ({ isLoading, definition }) => (
   </View>
 );
 
+const ModalAudio = ({ audioBase64, audioLoading }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { playSound, stopSound } = useAudioPlayer(audioBase64);
+
+  const handlePlayPress = async () => {
+    if (isPlaying) {
+      await stopSound();
+      setIsPlaying(false);
+    } else {
+      setIsPlaying(true);
+      await playSound();
+      setIsPlaying(false);
+    }
+  };
+
+  return (
+    <View
+      style={[
+        styles.content,
+        { backgroundColor: colors.translationPopup.translationModuleShade },
+      ]}
+    >
+      {audioLoading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingText
+            text="Loading audio..."
+            barColor={colors.translationPopup.translationModuleShade}
+          />
+        </View>
+      ) : (
+        <TouchableOpacity onPress={handlePlayPress} disabled={!audioBase64}>
+          <Ionicons
+            name="play"
+            size={28}
+            color={audioBase64 ? colors.utilityGrey : colors.disabledGrey}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
 // modal gram essentially the same as modal def
 const ModalGram = ({ grammarLoading, currentGrammar }) => (
   <View

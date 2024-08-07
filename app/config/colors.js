@@ -41,7 +41,7 @@ export default {
 
   translationPopup: {
     grammarModuleShade: "#90EE90",
-    translationModuleShade: "#9ACD32",
+    translationModuleShade: "#ffffff",
   },
 
   book: {
