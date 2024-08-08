@@ -50,7 +50,7 @@ export default function useDefinitionManager() {
     const promises = [];
 
     // Start the LLM request for the definition
-    const definitionPrompt = `Give a translation to english of the word "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". Provide a tiny explanation of what's going on in the book. Keep it short. Your entire response shouldn't be more than 50 words, and paragraphs shouln't be more than 15 or so words. The explanation really shouldn't be more than 10 words, and make sure that it has to do with the original word, and not just explaining the book plot. Avoid referring to the title of the book, even if you know it. You're part of an e-reader, so don't say things like "sure" or "cetainly" or "I can help with that". Just give the translation and the explanation. For the translation, you don't have to say, "in english" or "to english" or "in the context of". Just give the translation.`;
+    const definitionPrompt = `Give a translation of the word "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.translationPrompt}`;
     
     const definitionPromise = callLLM(definitionPrompt)
       .then((definitionResponse) => {

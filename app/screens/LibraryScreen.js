@@ -143,6 +143,11 @@ const LibraryScreen = () => {
           <TouchableOpacity onPress={handleUpload} style={styles.button}>
           <Text style={styles.buttonText}>Upload</Text>
         </TouchableOpacity>
+        <View style={{paddingHorizontal: 45}}>
+
+        <Text style={{opacity: .5}}>PDF support is coming soon!</Text> 
+        <Text style={{opacity: .5}}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
+        </View>
           </View>
         </ScrollView>
       </Screen>

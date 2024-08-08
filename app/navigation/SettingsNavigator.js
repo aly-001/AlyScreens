@@ -54,7 +54,7 @@ const CustomDrawerContent = (props) => {
       </View>
       <View style={styles.drawerGroup}>
         <DrawerItem
-          label="LLM Key"
+          label="Configure AI Key"
           onPress={() => props.navigation.navigate('LLM Key')}
           isSelected={currentRouteName === 'LLM Key'}
         />
@@ -72,7 +72,6 @@ const CustomDrawerContent = (props) => {
           onPress={() => props.navigation.navigate('Flashcard Media')}
           isSelected={currentRouteName === 'Flashcard Media'}
         />
-        <Divider />
       </View>
     </DrawerContentScrollView>
   );

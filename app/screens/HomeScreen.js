@@ -78,7 +78,7 @@ export default function HomeScreen() {
               )}
             />
             <BottomWidget
-              header="Config"
+              header="Settings"
               IconComponent={(props) => (
                 <FontAwesome6
                   name="gear"

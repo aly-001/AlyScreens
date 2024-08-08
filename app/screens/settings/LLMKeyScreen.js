@@ -4,8 +4,8 @@ import colors from '../../config/colors';
 
 export default function LLMKeyScreen({}) {
   return (
-    <View style={styles.container}>
-      <Text style={{fontWeight: 500, color:  colors.utilityGreyLight}}>LLM Key Screen</Text>
+    <View>
+      <Text>Head over to https://platform.openai.com/api-keys to get your key</Text>
     </View>
   );
 }

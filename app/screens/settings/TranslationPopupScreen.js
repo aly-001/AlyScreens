@@ -12,6 +12,7 @@ const TranslationPopupScreen = () => {
   const [isGrammarModalVisible, setIsGrammarModalVisible] = useState(false);
   const [isModuleAModalVisible, setIsModuleAModalVisible] = useState(false);
   const [isModuleBModalVisible, setIsModuleBModalVisible] = useState(false);
+  const [isTranslationModalVisible, setIsTranslationModalVisible] = useState(false);
 
   const toggleSetting = (setting) => {
     updateSettings({ [setting]: !settings[setting] });
@@ -25,6 +26,7 @@ const TranslationPopupScreen = () => {
           disabled={true}
           value={settings.translationPopupTranslation}
           onValueChange={() => toggleSetting('translationPopupTranslation')}
+          onEdit={() => setIsTranslationModalVisible(true)}
         />
         <Divider />
         <SettingSwitch
@@ -78,7 +80,15 @@ const TranslationPopupScreen = () => {
         initialPrompt={settings.moduleBPrompt}
         greyPromptPart={'Use *word* in the context of *context*.'}
         onReset={() => updateSettings({ moduleBPrompt: defaultPrompts.defaultModuleBPrompt })}
-      /> 
+      />
+      <PromptEditModal
+        isVisible={isTranslationModalVisible}
+        onClose={() => setIsTranslationModalVisible(false)}
+        promptType="translationPrompt"
+        initialPrompt={settings.translationPrompt}
+        greyPromptPart={'Give a translation of *word* in the context of *context*.'}
+        onReset={() => updateSettings({ translationPrompt: defaultPrompts.defaultTranslationPrompt })}
+      />
     </View>
   );
 };

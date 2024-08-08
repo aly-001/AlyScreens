@@ -1,4 +1,5 @@
 {
+  "defaultTranslationPrompt": "Also provide a tiny explanation of what's going on in the book. Keep it short. Your entire response shouldn't be more than 50 words, and paragraphs shouln't be more than 15 or so words. The explanation really shouldn't be more than 10 words, and make sure that it has to do with the original word, and not just explaining the book plot. Avoid referring to the title of the book, even if you know it. You're part of an e-reader, so don't say things like 'sure' or 'cetainly' or 'I can help with that'. Just give the translation and the explanation. For the translation, you don't have to say, 'in english' or 'to english' or 'in the context of'. Just give the translation.",
   "defaultImagePrompt": "Black and white, kaleidascope",
   "defaultGrammarPrompt": "The entire explanation has to be less than 10 words and involve an anteater",
   "defaultModuleAPrompt": "Write a 10-word story about *word*. The story needs to involve an elephant.",

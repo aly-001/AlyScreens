@@ -27,6 +27,7 @@ const useSettings = () => {
     flahscardsBackModuleA: false,
     flashcardsBackModuleB: false,
     languageTag: 'en-US',
+    translationPrompt: defaultPrompts.defaultTranslationPrompt,
     imagePrompt: defaultPrompts.defaultImagePrompt,
     grammarPrompt: defaultPrompts.defaultGrammarPrompt,
     moduleAPrompt: defaultPrompts.defaultModuleAPrompt,
