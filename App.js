@@ -10,18 +10,21 @@ import FlashcardTest from "./app/screens/FlashcardTest";
 import { SettingsProvider } from "./app/context/useSettingsContext";
 import LoadingText from "./app/components/LoadingText";
 import { View } from "react-native";
+import { APIKeyProvider } from "./app/context/APIKeyContext";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <SettingsProvider>
-    <NavigationContainer>
-      <BooksProvider>
-        <AppNavigator />
-      </BooksProvider>
-    </NavigationContainer>
-    </SettingsProvider>
+    <APIKeyProvider>
+      <SettingsProvider>
+        <NavigationContainer>
+          <BooksProvider>
+            <AppNavigator />
+          </BooksProvider>
+        </NavigationContainer>
+      </SettingsProvider>
+    </APIKeyProvider>
   );
 }
 

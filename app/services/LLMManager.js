@@ -1,15 +1,17 @@
 import OpenAI from "openai";
-import { API_KEY } from "../config/constants";
-import { Audio } from 'expo-av';
 import { Buffer } from 'buffer';
 
-const openai = new OpenAI({
-  apiKey: API_KEY,
-});
+// Remove the global OpenAI instance
 
-export async function callLLM(prompt) {
+// Helper function to create an OpenAI instance
+const createOpenAIInstance = (apiKey) => {
+  return new OpenAI({ apiKey });
+};
+
+export async function callLLM(apiKey, prompt) {
   console.log("prompt:", prompt);
   try {
+    const openai = createOpenAIInstance(apiKey);
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
@@ -21,8 +23,9 @@ export async function callLLM(prompt) {
   }
 }
 
-export const generateAudio = async (word) => {
+export const generateAudio = async (apiKey, word) => {
   try {
+    const openai = createOpenAIInstance(apiKey);
     const response = await openai.audio.speech.create({
       model: "tts-1",
       voice: "alloy",
@@ -38,5 +41,3 @@ export const generateAudio = async (word) => {
     throw error;
   }
 };
-
-

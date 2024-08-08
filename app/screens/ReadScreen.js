@@ -26,6 +26,7 @@ import { TabBarVisibilityContext } from "../navigation/TabBarVisibilityContext";
 import { addCard } from "../services/CardManager";
 
 import { useSettingsContext } from "../context/useSettingsContext";
+import { useAPIKey } from "../context/APIKeyContext";
 
 
 const duration = 300; // Animation duration
@@ -51,6 +52,9 @@ const BookHeader = ({ bookTitle, style }) => (
 );
 
 export default function ReadScreen() {
+  const {apiKey} = useAPIKey();
+  console.log("APIKEY", apiKey);
+
   const settings = useSettingsContext().settings;
   const route = useRoute();
   const isFocused = useIsFocused();
@@ -149,13 +153,14 @@ export default function ReadScreen() {
     
     // Turn below into a function and call it based on whether settings.flashcardsEnabled is true
     const addCardFromMessage = (message) => {
+      
       if (message.word && message.innerContext && message.outerContext) {
         const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
         const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
         const { innerContext, outerContext } = message;
         
         // Call addCard without awaiting
-        addCard(capitalizedWord, innerContext, outerContext, 'en', settings)
+        addCard(apiKey, capitalizedWord, innerContext, outerContext, 'en', settings)
           .then(() => {
             console.log('Card added successfully');
             // Optionally, you can update some state here to reflect the new card
