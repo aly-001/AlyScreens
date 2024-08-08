@@ -266,7 +266,6 @@ export const addCard = async (apiKey, word, innerContext, outerContext, language
   }
 };
 
-
 // Use this when your app is closing or you're done with database operations
 export const cleanupDatabase = async () => {
   await dbManager.closeConnection();

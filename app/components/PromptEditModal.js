@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Text, TouchableOpacity, Modal, Button } from 'react-native';
-import { useSettingsContext} from "../context/useSettingsContext";
+import { useSettingsContext } from "../context/useSettingsContext";
 import colors from '../config/colors';
-import { Divider } from 'react-native-paper';
 
-const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPromptPart, onReset}) => {
+const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPromptPart, onReset }) => {
   const { settings, updateSettings } = useSettingsContext();
   const [prompt, setPrompt] = useState(settings[promptType] || '');
 
@@ -26,8 +25,7 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.greyPartContainer}>
-
-          <Text style={styles.greyPromptPart}>{greyPromptPart}</Text>
+            <Text style={styles.greyPromptPart}>{greyPromptPart}</Text>
           </View>
           <TextInput
             style={styles.input}
@@ -36,16 +34,15 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
             multiline
             placeholder={`Enter ${promptType} prompt`}
           />
-          <View style={{alignSelf: "flex-start"}}>
-
-            <Button title="Reset"  onPress={onReset}/>
+          <View style={styles.resetButtonContainer}>
+            <Button title="Reset" onPress={onReset} color={colors.appleBlue} />
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
-              <Text style={styles.buttonText}>Save</Text>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -64,64 +61,64 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: 'white',
     borderRadius: 15,
-    padding: 35,
+    padding: 20,
     alignItems: 'center',
     width: '80%',
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+  greyPartContainer: {
+    alignSelf: 'flex-start',
     marginBottom: 15,
+  },
+  greyPromptPart: {
+    opacity: 0.8,
+    color: colors.utilityGrey,
+    fontStyle: 'italic',
   },
   input: {
     width: '100%',
     height: 100,
-    borderRadius: 5,
-     textAlignVertical: 'top',
+    borderRadius: 10,
+    textAlignVertical: 'top',
+    backgroundColor: '#F2F2F7',
+    padding: 10,
+    marginBottom: 15,
+  },
+  resetButtonContainer: {
+    alignSelf: 'flex-start',
+    marginBottom: 15,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: 20,
-  },
-  button: {
-    backgroundColor: colors.appleBlue,
-    borderRadius: 5,
-    paddingVertical: 10,
-    elevation: 2,
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   cancelButton: {
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: colors.appleBlue,
-    paddingVertical: 10,
-    elevation: 2,
     flex: 1,
-    marginHorizontal: 5,
+    backgroundColor: '#F2F2F7',
+    borderRadius: 10,
+    padding: 15,
+    marginRight: 10,
   },
   cancelButtonText: {
-    color: colors.appleBlue, 
-
-    fontWeight: 'bold',
+    color: colors.appleBlue,
+    fontWeight: '600',
     textAlign: 'center',
+    fontSize: 16,
   },
-  greyPromptPart: {
-    opacity: .8,
-    color: colors.utilityGrey,
-    fontStyle: 'italic',
+  saveButton: {
+    flex: 1,
+    backgroundColor: colors.appleBlue,
+    borderRadius: 10,
+    padding: 15,
+    marginLeft: 10,
   },
-  greyPartContainer:{
-    alignSelf: "flex-start",
-    marginBottom: 15  
-  }
+  saveButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+
 });
 
 export default PromptEditModal;
