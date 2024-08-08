@@ -11,6 +11,8 @@ const FlashcardMediaScreen = () => {
   const { settings, updateSettings } = useSettingsContext();
   const [isGrammarModalVisible, setIsGrammarModalVisible] = useState(false);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+  const [isModuleAModalVisible, setIsModuleAModalVisible] = useState(false);
+  const [isModuleBModalVisible, setIsModuleBModalVisible] = useState(false);
 
   const toggleSetting = (setting) => {
     let newSettings = { [setting]: !settings[setting] };
@@ -56,6 +58,13 @@ const FlashcardMediaScreen = () => {
         {renderSwitch("Word", "flashcardsFrontWord")}
         <Divider />
         {renderSwitch("Context", "flashcardsFrontContext")}
+        <Divider />
+        {renderSwitch("Grammar", "flashcardsFrontGrammar", () => setIsGrammarModalVisible(true))}
+        <Divider />
+        {renderSwitch("Custom Module A", "flashcardsFrontModuleA", () => setIsModuleAModalVisible(true))}
+        <Divider />
+        {renderSwitch("Custom Module B", "flashcardsFrontModuleB", () => setIsModuleBModalVisible(true))}
+        
       </View>
       <View style={[styles.group, {marginTop: 15}]}>
         <View style={styles.description}>
@@ -76,6 +85,10 @@ const FlashcardMediaScreen = () => {
         {renderSwitch("Image", "flashcardsBackImage", () => setIsImageModalVisible(true))}
         <Divider />
         {renderSwitch("Grammar", "flashcardsBackGrammar", () => setIsGrammarModalVisible(true))}
+        <Divider/>
+        {renderSwitch("Custom Module A", "flashcardsBackModuleA", () => setIsModuleAModalVisible(true))}
+        <Divider/>
+        {renderSwitch("Custom Module B", "flashcardsBackModuleB", () => setIsModuleBModalVisible(true))}
       </View>
 
       <PromptEditModal
@@ -93,6 +106,22 @@ const FlashcardMediaScreen = () => {
         initialPrompt={settings.imagePrompt}
         greyPromptPart={"Make a picture of *word* in the context of *context*. Do it in this style:"}
         onReset={() => updateSettings({ imagePrompt: defaultPrompts.defaultImagePrompt })}
+      />
+      <PromptEditModal
+        isVisible={isModuleAModalVisible}
+        onClose={() => setIsModuleAModalVisible(false)}
+        promptType="moduleAPrompt"
+        initialPrompt={settings.moduleAPrompt}
+        greyPromptPart={"Use *word* in the context of *context*."}
+        onReset={() => updateSettings({ moduleAPrompt: defaultPrompts.defaultModuleAPrompt })}
+      />
+      <PromptEditModal
+        isVisible={isModuleBModalVisible}
+        onClose={() => setIsModuleBModalVisible(false)}
+        promptType="moduleBPrompt"
+        initialPrompt={settings.moduleBPrompt}
+        greyPromptPart={"Use *word* in the context of *context*."}
+        onReset={() => updateSettings({ moduleBPrompt: defaultPrompts.defaultModuleBPrompt })}
       />
       
     </ScrollView>

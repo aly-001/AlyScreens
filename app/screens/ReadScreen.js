@@ -147,27 +147,33 @@ export default function ReadScreen() {
       setLocation(message.location);
     }
     
-    // Run addCard in the background
-    // Note: repetition of the cleaning word logic from useDefinitionManager
-    if (message.word && message.innerContext && message.outerContext) {
-      const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
-      const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
-      const { innerContext, outerContext } = message;
-      
-      // Call addCard without awaiting
-      addCard(capitalizedWord, innerContext, outerContext, 'en', settings)
-        .then(() => {
-          console.log('Card added successfully');
-          // Optionally, you can update some state here to reflect the new card
-          // For example: setLastAddedCardMessage('New card added successfully!');
-        })
-        .catch((error) => {
-          console.error('Error adding card:', error);
-          // Optionally, you can update some state to show an error message
-          // For example: setCardAddError('Failed to add new card. Please try again.');
-        });
-      
+    // Turn below into a function and call it based on whether settings.flashcardsEnabled is true
+    const addCardFromMessage = (message) => {
+      if (message.word && message.innerContext && message.outerContext) {
+        const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
+        const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
+        const { innerContext, outerContext } = message;
+        
+        // Call addCard without awaiting
+        addCard(capitalizedWord, innerContext, outerContext, 'en', settings)
+          .then(() => {
+            console.log('Card added successfully');
+            // Optionally, you can update some state here to reflect the new card
+            // For example: setLastAddedCardMessage('New card added successfully!');
+          })
+          .catch((error) => {
+            console.error('Error adding card:', error);
+            // Optionally, you can update some state to show an error message
+            // For example: setCardAddError('Failed to add new card. Please try again.');
+          });
+        
+      }
     }
+
+    if (settings.flashcardsEnabled) {
+      addCardFromMessage(message);
+    }
+
   };
 
   const handleMiddlePress = () => {

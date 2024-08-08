@@ -174,6 +174,22 @@ export default function PracticeScreenDef() {
           >
             {backData.grammarExplanation || "N/A"}
           </Text>
+          <Text
+            style={[
+              styles.def,
+              { backgroundColor: colors.translationPopup.moduleAModuleShade },
+            ]}
+          >
+            {backData.moduleA || "N/A"}
+          </Text>
+          <Text
+            style={[
+              styles.def,
+              { backgroundColor: colors.translationPopup.moduleBModuleShade },
+            ]}
+          >
+            {backData.moduleB || "N/A"}
+          </Text>
           <Text style={styles.def}>{backData.wordDef || "N/A"}</Text>
         </View>
         <View style={styles.dividerLine}>

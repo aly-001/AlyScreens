@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { Alert } from "react-native";
-import { WEBSOCKET_URL, API_KEY } from "../config/constants";
 import { callLLM, generateAudio } from "../services/LLMManager";
 import { useSettingsContext } from "../context/useSettingsContext";
 
@@ -11,8 +10,6 @@ export default function useDefinitionManager() {
   const [currentDefinition, setCurrentDefinition] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [finished, setFinished] = useState(false);
-  const [started, setStarted] = useState(false);
-  const [ws, setWs] = useState(null);
   const [added, setAdded] = useState(true);
 
   const [grammarStarted, setGrammarStarted] = useState(false);
@@ -20,65 +17,14 @@ export default function useDefinitionManager() {
   const [grammarFinished, setGrammarFinished] = useState(false);
   const [currentGrammar, setCurrentGrammar] = useState("");
 
-  const [moduleAStarted, setModuleAStarted] = useState(false);
   const [moduleALoading, setModuleALoading] = useState(false);
   const [currentModuleA, setCurrentModuleA] = useState("");
 
-  const [moduleBStarted, setModuleBStarted] = useState(false);
   const [moduleBLoading, setModuleBLoading] = useState(false);
   const [currentModuleB, setCurrentModuleB] = useState("");
 
-  const [audioData, setAudioData] = useState(null);
   const [audioBase64, setAudioBase64] = useState(null);
   const [audioLoading, setAudioLoading] = useState(false);
-
-  useEffect(() => {
-    connectWebSocket();
-    return () => {
-      if (ws) {
-        ws.close();
-      }
-    };
-  }, []);
-
-  const connectWebSocket = useCallback(() => {
-    const socket = new WebSocket(WEBSOCKET_URL);
-    socket.onopen = () => {
-      console.log("WebSocket connected");
-      setWs(socket);
-    };
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      switch (message.type) {
-        case "start":
-          setIsLoading(true);
-          break;
-        case "content":
-          setStarted(false);
-          setCurrentDefinition((prev) => prev + message.data);
-          setIsLoading(false);
-          break;
-        case "done":
-          console.log("Finished");
-          setIsLoading(false);
-          setFinished(true);
-          break;
-        case "error":
-          console.error("Error from server:", message.error);
-          Alert.alert("Error", "Unable to fetch definition. Please try again.");
-          setIsLoading(false);
-          break;
-      }
-    };
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      setIsLoading(false);
-    };
-    socket.onclose = () => {
-      console.log("WebSocket disconnected");
-      setWs(null);
-    };
-  }, []);
 
   const handleWebViewMessageDefinition = async (message) => {
     setGrammarFinished(false);
@@ -87,14 +33,13 @@ export default function useDefinitionManager() {
     setAdded(true);
     setCurrentDefinition("");
     setFinished(false);
-    setStarted(true);
-    setAudioData(null);
+    setAudioBase64(null);
     setCurrentGrammar("");
     setAudioLoading(false);
     console.log("Started");
+    
     const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, "");
-    const capitalizedWord =
-      cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
+    const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
     setCurrentWord(capitalizedWord);
     const { innerContext, outerContext } = message;
 
@@ -104,20 +49,22 @@ export default function useDefinitionManager() {
     // Create an array to hold all the promises
     const promises = [];
 
-    // Start the WebSocket request for the definition
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(
-        JSON.stringify({
-          word: capitalizedWord,
-          innerContext,
-          outerContext,
-          apiKey: API_KEY,
-        })
-      );
-    } else {
-      Alert.alert("Error", "WebSocket is not connected. Please try again.");
-      setIsLoading(false);
-    }
+    // Start the LLM request for the definition
+    const definitionPrompt = `Give a translation to english of the word "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". Provide a tiny explanation of what's going on in the book. Keep it short. Your entire response shouldn't be more than 50 words, and paragraphs shouln't be more than 15 or so words. The explanation really shouldn't be more than 10 words, and make sure that it has to do with the original word, and not just explaining the book plot. Avoid referring to the title of the book, even if you know it. You're part of an e-reader, so don't say things like "sure" or "cetainly" or "I can help with that". Just give the translation and the explanation. For the translation, you don't have to say, "in english" or "to english" or "in the context of". Just give the translation.`;
+    
+    const definitionPromise = callLLM(definitionPrompt)
+      .then((definitionResponse) => {
+        setCurrentDefinition(definitionResponse);
+        setFinished(true);
+      })
+      .catch((error) => {
+        console.error("Error fetching definition:", error);
+        Alert.alert("Error", "Unable to fetch definition. Please try again.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+    promises.push(definitionPromise);
 
     // Start the parallel grammar LLM request only if translationPopupGrammar is true
     if (settings.translationPopupGrammar) {
@@ -131,10 +78,7 @@ export default function useDefinitionManager() {
         })
         .catch((error) => {
           console.error("Error fetching grammar explanation:", error);
-          Alert.alert(
-            "Error",
-            "Unable to fetch grammar explanation. Please try again."
-          );
+          Alert.alert("Error", "Unable to fetch grammar explanation. Please try again.");
         })
         .finally(() => {
           setGrammarLoading(false);
@@ -159,7 +103,7 @@ export default function useDefinitionManager() {
       promises.push(audioPromise);
     }
 
-    // Start the parallel grammar LLM request only if translationPopupGrammar is true
+    // Start the parallel LLM request for ModuleA if enabled
     if (settings.translationPopupModuleA) {
       setModuleALoading(true);
       const moduleAPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleAPrompt}`;
@@ -169,10 +113,7 @@ export default function useDefinitionManager() {
         })
         .catch((error) => {
           console.error("Error fetching moduleA explanation:", error);
-          Alert.alert(
-            "Error",
-            "Unable to fetch moduleA explanation. Please try again."
-          );
+          Alert.alert("Error", "Unable to fetch moduleA explanation. Please try again.");
         })
         .finally(() => {
           setModuleALoading(false);
@@ -180,7 +121,7 @@ export default function useDefinitionManager() {
       promises.push(moduleAPromise);
     }
 
-    // Start the parallel grammar LLM request only if translationPopupGrammar is true
+    // Start the parallel LLM request for ModuleB if enabled
     if (settings.translationPopupModuleB) {
       setModuleBLoading(true);
       const moduleBPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleBPrompt}`;
@@ -190,10 +131,7 @@ export default function useDefinitionManager() {
         })
         .catch((error) => {
           console.error("Error fetching moduleB explanation:", error);
-          Alert.alert(
-            "Error",
-            "Unable to fetch moduleB explanation. Please try again."
-          );
+          Alert.alert("Error", "Unable to fetch moduleB explanation. Please try again.");
         })
         .finally(() => {
           setModuleBLoading(false);
@@ -212,7 +150,7 @@ export default function useDefinitionManager() {
     setCurrentGrammar("");
     setGrammarFinished(false);
     setGrammarStarted(false);
-    setAudioData(null);
+    setAudioBase64(null);
   };
 
   const handleToggle = () => {
@@ -227,7 +165,6 @@ export default function useDefinitionManager() {
     currentDefinition,
     isLoading,
     finished,
-    started,
     added,
     grammarStarted,
     grammarLoading,

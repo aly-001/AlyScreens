@@ -1,15 +1,17 @@
 import React from "react";
-import { View, StyleSheet, Text, SafeAreaView, StatusBar, TouchableWithoutFeedback } from "react-native";
+import { View, StyleSheet, Text, SafeAreaView, StatusBar, TouchableWithoutFeedback } from 'react-native';
+
 import colors from "../config/colors";
 import PracticeStatsFooter from "../components/PracticeStatsFooter";
 import PracticeDividerLine from "../components/PracticeDividerLine";
 import { useFlashcards } from "../context/FlashcardContext";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function PracticeScreenWord({ navigation }) {
   const { currentCard, stats } = useFlashcards();
 
   const handlePress = () => {
-    navigation.navigate('Def');
+    navigation.navigate("Def");
   };
 
   const renderCardContent = () => {
@@ -18,25 +20,48 @@ export default function PracticeScreenWord({ navigation }) {
     try {
       frontData = JSON.parse(currentCard.front[0]);
     } catch (error) {
-      console.error('Error parsing card data:', error);
+      console.error("Error parsing card data:", error);
       return <Text>Error: Could not parse card data</Text>;
     }
-    if (!frontData || typeof frontData !== 'object') {
-      console.error('Invalid card data format');
+    if (!frontData || typeof frontData !== "object") {
+      console.error("Invalid card data format");
       return <Text>Error: Invalid card data format</Text>;
     }
     return (
-      <>
+      <View style={styles.contentContainer}>
         <View style={styles.wordContainer}>
-          <Text style={styles.word}>{frontData.word || 'N/A'}</Text>
+          <Text style={styles.word}>{frontData.word || ""}</Text>
         </View>
-        <View style={styles.dividerLine}>
-          <PracticeDividerLine width="100%" height={2} color={colors.utilityGreyUltraLight} />
-        </View>
-        <View style={styles.contextContainer}>
-          <Text style={styles.context}>{frontData.context || 'N/A'}</Text>
-        </View>
-      </>
+        {frontData.grammarExplanation && (
+          <View style={[
+            styles.contentBox,
+            { backgroundColor: colors.translationPopup.grammarModuleShade }
+          ]}>
+            <Text style={styles.contentText}>{frontData.grammarExplanation}</Text>
+          </View>
+        )}
+        {frontData.moduleA && (
+          <View style={[
+            styles.contentBox,
+            { backgroundColor: colors.translationPopup.moduleAModuleShade }
+          ]}>
+            <Text style={styles.contentText}>{frontData.moduleA}</Text>
+          </View>
+        )}
+        {frontData.moduleB && (
+          <ScrollView maxHeight={100} scrollDirec style={[
+            styles.contentBox,
+            { backgroundColor: colors.translationPopup.moduleBModuleShade }
+          ]}>
+            <Text style={styles.contentText}>{frontData.moduleB}</Text>
+          </ScrollView>
+        )}
+        {frontData.context && (
+          <View style={[styles.contentBox, styles.contextBox]}>
+            <Text style={styles.context}>{frontData.context}</Text>
+          </View>
+        )}
+      </View>
     );
   };
 
@@ -59,7 +84,6 @@ export default function PracticeScreenWord({ navigation }) {
   );
 }
 
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -74,18 +98,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
   },
-  wordContainer: {
-  },
-  contextContainer: {
-  },
+  wordContainer: {},
   word: {
     fontSize: 50,
     fontWeight: "600",
-    color: colors.utilityGrey,
-  },
-  context: {
-    fontSize: 25,
-    fontWeight: "500",
     color: colors.utilityGrey,
   },
   footer: {
@@ -95,6 +111,39 @@ const styles = StyleSheet.create({
   },
   dividerLine: {
     marginVertical: 50,
+    width: "100%",
+  },
+  def: {
+    marginTop: 10,
+    fontSize: 25,
+    fontWeight: "500",
+    color: colors.utilityGrey,
+    opacity: 0.85,
+    padding: 5,
+    borderRadius: 5,
+  },
+  contentBox: {
+    marginTop: 15,
+    padding: 15,
+    borderRadius: 10,
+  },
+
+  contentText: {
+    fontSize: 30,
+    fontWeight: "500",
+    color: colors.utilityGrey,
+  },
+
+  contextBox: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: colors.utilityGrey,
     width: '100%',
+  },
+
+  context: {
+    fontSize: 25,
+    fontWeight: "500",
+    color: colors.utilityGrey,
   },
 });

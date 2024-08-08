@@ -28,6 +28,18 @@ const generateGrammarExplanation = async (word, innerContext, outerContext, prom
   return callLLM(prompt);
 }
 
+const generateCustomModuleA = async (word, innerContext, outerContext, prompt) => {
+  const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+  const fullPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${prompt}`;
+  return callLLM(fullPrompt);
+}
+
+const generateCustomModuleB = async (word, innerContext, outerContext, prompt) => {
+  const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+  const fullPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${prompt}`;
+  return callLLM(fullPrompt);
+}
+
 const generateAndSaveImage = async (word, innerContext, outerContext, imageID, imagePrompt) => {
   try {
     // console.log(imagePrompt);
@@ -197,15 +209,20 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
    
     const grammarPrompt = `Give a grammar explanation of the word "${word}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
     // Perform LLM operations
-    const [wordDef, contextDef, grammarExplanation] = await Promise.all([
+    const [wordDef, contextDef, grammarExplanation, moduleA, moduleB] = await Promise.all([
       settings.flashcardsBackWordTranslation ? generateWordDef(word, innerContext, outerContext) : null,
       settings.flashcardsBackContextTranslation ? generateContextDef(word, summarizedContext, outerContext) : null,
-      settings.flashcardsBackGrammar ? generateGrammarExplanation(word, innerContext, outerContext, grammarPrompt) : null,
+      (settings.flashcardsFrontGrammar || settings.flashcardsBackGrammar) ? generateGrammarExplanation(word, innerContext, outerContext, grammarPrompt) : null,
+      (settings.flashcardsFrontModuleA || settings.flashcardsBackModuleA) ? generateCustomModuleA(word, innerContext, outerContext, settings.moduleAPrompt) : null,
+      (settings.flashcardsFrontModuleB || settings.flashcardsBackModuleB) ? generateCustomModuleB(word, innerContext, outerContext, settings.moduleBPrompt) : null,
     ]);
     
     const cardDataFront = {
       word: settings.flashcardsFrontWord ? word : null,
       context: settings.flashcardsFrontContext ? summarizedContext : null,
+      grammarExplanation: settings.flashcardsFrontGrammar ? grammarExplanation : null,
+      moduleA: settings.flashcardsFrontModuleA ? moduleA : null,
+      moduleB: settings.flashcardsFrontModuleB ? moduleB : null,
     };
     
     const cardDataBack = { 
@@ -214,6 +231,8 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
       wordDef: settings.flashcardsBackWordTranslation ? wordDef : null, 
       grammarExplanation: settings.flashcardsBackGrammar ? grammarExplanation : null,
       contextDef: settings.flashcardsBackContextTranslation ? contextDef : null, 
+      moduleA: settings.flashcardsBackModuleA ? moduleA : null,
+      moduleB: settings.flashcardsBackModuleB ? moduleB : null,
       imageID: settings.flashcardsBackImage ? imageID : null,
       audioWordID: settings.flashcardsBackAudio ? audioWordID : null,
       audioContextID: settings.flashcardsBackContextAudio ? audioContextID : null,
@@ -245,6 +264,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
     throw new Error('Failed to add new card: ' + error.message);
   }
 };
+
 
 // Use this when your app is closing or you're done with database operations
 export const cleanupDatabase = async () => {
