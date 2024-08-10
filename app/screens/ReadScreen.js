@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableWithoutFeedback,
   SafeAreaView,
   StatusBar,
   Animated,
+  StyleSheet,
 } from "react-native";
 import { useRoute, useIsFocused } from "@react-navigation/native";
 import { ReaderProvider } from "@epubjs-react-native/core";
@@ -27,10 +27,11 @@ import { addCard } from "../services/CardManager";
 
 import { useSettingsContext } from "../context/useSettingsContext";
 import { useAPIKey } from "../context/APIKeyContext";
+import { useBooks } from "../context/BooksContext";
 
 const duration = 200; // Animation duration
 
-const BookHeader = ({ bookTitle, style }) => {
+const BookHeader = ({ bookTitle, style, onTocPress }) => {
   const truncatedTitle = bookTitle.length > 100 
     ? bookTitle.substring(0, 97) + '...' 
     : bookTitle;
@@ -39,13 +40,15 @@ const BookHeader = ({ bookTitle, style }) => {
     <Animated.View style={[styles.headerContainer, style]}>
       <SafeAreaView>
         <View style={styles.header}>
-          <View style={styles.headerIconContainer}>
-            <MaterialCommunityIcons
-              name="view-grid-outline"
-              size={24}
-              color={colors.utilityGrey}
-            />
-          </View>
+          <TouchableWithoutFeedback onPress={onTocPress}>
+            <View style={styles.headerIconContainer}>
+              <MaterialCommunityIcons
+                name="view-grid-outline"
+                size={24}
+                color={colors.utilityGrey}
+              />
+            </View>
+          </TouchableWithoutFeedback>
           <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">
             {truncatedTitle}
           </Text>
@@ -58,14 +61,13 @@ const BookHeader = ({ bookTitle, style }) => {
   );
 };
 
-
 export default function ReadScreen() {
+  const { getBookStatus } = useBooks();
   const { apiKey } = useAPIKey();
-  console.log("APIKEY", apiKey);
-
   const { setTabBarVisible } = useTabBarVisibility();
   const isFocused = useIsFocused();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [tableOfContents, setTableOfContents] = useState(false);
 
   const settings = useSettingsContext().settings;
   const route = useRoute();
@@ -77,7 +79,12 @@ export default function ReadScreen() {
   });
   const { handlePickComplete } = useEpubManager();
   
-  const { uri, title, color, status } = route.params || {};
+  const { uri, title, color } = route.params || {};
+  const { status } = getBookStatus(uri);
+
+  useEffect(() => {
+    console.log("Status:", status);
+  }, [status]);
 
   const {
     popupVisible,
@@ -114,21 +121,8 @@ export default function ReadScreen() {
     };
   }, [isFocused, isFullscreen, setTabBarVisible]);
 
-
-useEffect(() => {
-  if (isFocused) {
-    setTabBarVisible(!isFullscreen);
-  }
-  return () => {
-    if (isFocused) {
-      setTabBarVisible(true);
-    }
-  };
-}, [isFocused, isFullscreen]);
-
   useEffect(() => {
     if (isFullscreen) {
-      console.log("Fullscreen");
       Animated.parallel([
         Animated.timing(headerOpacity, {
           toValue: 0,
@@ -189,6 +183,10 @@ useEffect(() => {
     setIsFullscreen((prev) => !prev);
   };
 
+  const handleTocPress = () => {
+    setTableOfContents(true);
+  };
+
   if (uri) {
     return (
       <View style={styles.container}>
@@ -200,6 +198,8 @@ useEffect(() => {
                 uri={uri}
                 fileSystem={useFileSystem}
                 handleWebViewMessage={handleWebViewMessage}
+                tableOfContents={tableOfContents}
+                setTableOfContents={setTableOfContents}
               />
               <DefinitionPopup
                 location={location}
@@ -227,16 +227,13 @@ useEffect(() => {
         </TouchableWithoutFeedback>
         <BookHeader 
           bookTitle={title} 
-          style={{ 
-            opacity: headerOpacity,
-          }}
+          style={{ opacity: headerOpacity }}
+          onTocPress={handleTocPress}
         />
         <BookHiddenFooter 
           progress={status}
           color={color}
-          style={{ 
-            opacity: footerOpacity
-          }}
+          style={{ opacity: footerOpacity }}
         />
       </View>
     );

@@ -1,24 +1,49 @@
-import React, { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import React, { useCallback, useEffect, useState, useRef } from "react";
+import { View, StyleSheet } from "react-native";
 import { Reader, useReader } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { injectedScript } from "./injectedScript";
+import { useBooks } from "../context/BooksContext";
 
-export default function EpubReader({ uri, handleWebViewMessage }) {
-  const { injectJavascript } = useReader();
-// Temporary solution to fade and fall the functions every swipe, but 
-// eventually will need to figure out how to call it only when the
-// iframe content changes
-const handleCallFunctions = () => {
-  injectJavascript(`
-    window.runFunctionsForOneMinute();
-  `);
-};
+export default function EpubReader({ uri, handleWebViewMessage, tableOfContents, setTableOfContents }) {
+  const { injectJavascript, getCurrentLocation, goToLocation } = useReader();
+  const { books, updateBookStatus } = useBooks();
+  const [initialLocation, setInitialLocation] = useState(null);
+  const prevTableOfContentsRef = useRef(false);
 
-  const handleOnReady = () => {
-    // console.log("Ready");
-    handleCallFunctions();
-  };
+  useEffect(() => {
+    const book = books.find(book => book.uri === uri);
+    if (book?.cfi) {
+      setInitialLocation(book.cfi);
+    }
+  }, [books, uri]);
+
+  useEffect(() => {
+    if (tableOfContents && !prevTableOfContentsRef.current) {
+      goToLocation(0);
+      setTableOfContents(false);
+    }
+    prevTableOfContentsRef.current = tableOfContents;
+  }, [tableOfContents, goToLocation, setTableOfContents]);
+
+  const handleCallFunctions = useCallback(() => {
+    injectJavascript("window.runFunctionsForOneMinute();");
+  }, [injectJavascript]);
+
+  const handleLocationChange = useCallback(() => {
+    if (!updateBookStatus) return;
+    try {
+      const location = getCurrentLocation();
+      if (!location?.end?.percentage) return;
+      const percentage = location.end.percentage * 100;
+      const cfi = location.start.cfi;
+      
+      updateBookStatus(uri, percentage, cfi)
+        .catch(error => console.error("Error updating book status:", error));
+    } catch (error) {
+      console.error("Error in handleLocationChange:", error);
+    }
+  }, [getCurrentLocation, updateBookStatus, uri]);
 
   return (
     <View style={styles.readerContainer}>
@@ -26,20 +51,13 @@ const handleCallFunctions = () => {
         src={uri}
         injectedJavascript={injectedScript}
         fileSystem={useFileSystem}
-        initialLocation="epubcfi(/6/14!/4/2/12/2[c002p0005]/1:160)"
-        onWebViewMessage={(message) => {
-          // console.log("message", message);
-          // console.log("word", message.word);
-          // console.log("innerContext", message.innerContext);
-          // console.log("outerContext", message.outerContext);
-          // console.log("location", message.location);
-          handleWebViewMessage(message);
-        }}
-        onReady={handleOnReady}
+        initialLocation={initialLocation}
+        onWebViewMessage={handleWebViewMessage}
+        onReady={handleCallFunctions}
         onSwipeLeft={handleCallFunctions}
         onSwipeRight={handleCallFunctions}
-        onRendered={() => console.log("rendered")}
-        onLocationsReady={() => console.log("locations ready")}
+        onLocationsReady={handleLocationChange}
+        onLocationChange={handleLocationChange}
       />
     </View>
   );

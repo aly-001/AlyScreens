@@ -21,7 +21,7 @@ import PracticeStartButton from "../components/PracticeStartButton";
 
 const LibraryScreen = () => {
   const navigation = useNavigation();
-  const { books, loadBooks, addBook, deleteBook } = useBooks();
+  const { books, loadBooks, addBook, deleteBook, updateBookStatus } = useBooks();
 
   useEffect(() => {
     loadBooks();
@@ -98,6 +98,7 @@ const LibraryScreen = () => {
           status: 0,
         };
         await addBook(newBook);
+        await updateBookStatus(destinationUri, 70);
         Alert.alert("Success", "EPUB file stored successfully");
       } else {
         console.log("No file selected");
