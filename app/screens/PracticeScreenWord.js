@@ -77,7 +77,7 @@ export default function PracticeScreenWord({ navigation }) {
             <PracticeStatsFooter
               newCount={stats.new}
               learnCount={stats.learning}
-              dueCount={stats.due}
+              dueCount={stats.due + stats.overdue}
             />
           </View>
         </View>

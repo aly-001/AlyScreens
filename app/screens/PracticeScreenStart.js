@@ -23,6 +23,8 @@ export default function PracticeScreenStart() {
     initializeDatabase,
     newCards,
     learningCards,
+    laterCards,
+    overdueCards,
     dueCards,
   } = useFlashcards();
   const navigation = useNavigation();
@@ -35,11 +37,11 @@ export default function PracticeScreenStart() {
     }
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     console.log(newCards.length);
     console.log(learningCards.length);
     console.log(dueCards.length);
-  },[])
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -61,51 +63,54 @@ export default function PracticeScreenStart() {
           <View style={styles.headerContainer}>
             <ScreenHeader text="Practice" />
           </View>
-          <View style={styles.wordBoxContainer}>
-            <WordBox
-              words={newCards.map((card) => ({
-                id: card.id,
-                word: card.front,
-              }))}
-              color={colors.newWords}
-              title="New"
-            />
-          </View>
-          <View style={styles.wordBoxContainer}>
-            <WordBox
-              words={learningCards.map((card) => ({
-                id: card.id,
-                word: card.front,
-              }))}
-              color={colors.learnWords}
-              title="Learn"
-            />
-          </View>
-          <View style={styles.wordBoxContainer}>
-            <WordBox
-              words={dueCards.map((card) => ({
-                id: card.id,
-                word: card.front,
-              }))}
-              color={colors.dueWords}
-              title="Due"
-            />
-          </View>
-          {newCards.length === 0 &&
-          learningCards.length === 0 &&
-          dueCards.length === 0 ? (
-            <View style={styles.startBoxContainer}>
-                <PracticeStartButton text="Start" deactivated={true} />
+          <View style={styles.allBoxContainer}>
+            <View style={styles.wordBoxContainer}>
+              <WordBox
+                brt={true}
+                words={newCards.map((card) => ({
+                  id: card.id,
+                  word: card.front,
+                }))}
+                color={colors.newWords}
+                title="New"
+              />
             </View>
-          ) : (
-            
-            <TouchableOpacity activeOpacity={0.5} onPress={startReview}>
-            <View style={styles.startBoxContainer}>
-                <PracticeStartButton text="Start" deactivated={false} />
+            <View style={styles.wordBoxContainer}>
+              <WordBox
+                words={learningCards.map((card) => ({
+                  id: card.id,
+                  word: card.front,
+                }))}
+                color={colors.learnWords}
+                title="Learn"
+              />
             </View>
-            </TouchableOpacity>
-          )}
+            <View style={styles.wordBoxContainer}></View>
+            <View style={styles.wordBoxContainer}>
+              <WordBox
+                brb={true}
+                words={dueCards.concat(overdueCards).map((card) => ({
+                  id: card.id,
+                  word: card.front,
+                }))}
+                color={colors.dueWords}
+                title="Due"
+              />
+            </View>
+          </View>
         </ScrollView>
+        {newCards.length === 0 &&
+        learningCards.length === 0 &&
+        dueCards.length === 0 &&
+        overdueCards.length === 0 ? (
+          <View style={styles.startBoxContainer}>
+            <PracticeStartButton text="Start" deactivated={true} />
+          </View>
+        ) : (
+          <TouchableOpacity activeOpacity={0.5} onPress={startReview} style={styles.startBoxContainer}>
+            <PracticeStartButton text="Start" deactivated={false} />
+          </TouchableOpacity>
+        )}
       </Screen>
     </View>
   );
@@ -117,9 +122,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
-    flex: 1,
     padding: layout.margins.homeScreenWidgets / 2,
     paddingTop: 210,
+    paddingBottom: 120, // Add extra padding at the bottom to account for the start box
   },
   headerContainer: {
     position: "absolute",
@@ -127,13 +132,23 @@ const styles = StyleSheet.create({
     left: layout.margins.homeScreenWidgets,
     zIndex: 1,
   },
+  allBoxContainer: {
+    borderRadius: 20,
+    shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
+    shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
+    shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
+    shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
+    elevation: layout.shadows.homeScreenWidgets.elevation,
+  },
   wordBoxContainer: {
     paddingHorizontal: layout.margins.homeScreenWidgets - 15,
-    marginBottom: layout.margins.homeScreenWidgets,
   },
   startBoxContainer: {
+    position: "absolute",
+    bottom: 100, // Position 100px from the bottom
+    left: 0,
+    right: 0,
     paddingHorizontal: layout.margins.homeScreenWidgets - 15,
-    marginTop: 140,
   },
   statsText: {
     fontSize: 16,

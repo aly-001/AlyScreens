@@ -4,9 +4,13 @@ import Word from "./Word";
 import colors from "../config/colors";
 import layout from "../config/layout";
 
-export default function WordBox({ words = [], color = "black", title = "" }) {
+export default function WordBox({ words = [], color = "black", title = "", brb = false, brt = false }) {
   return (
-    <View style={styles.container}>
+    <View style={[
+      styles.container, 
+      brt && styles.topBorderRadius,
+      brb && styles.bottomBorderRadius
+    ]}>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.utilityGrey }]}>{title}</Text>
         <Text style={[styles.headerCount, { color }]}>{words.length}</Text>
@@ -24,28 +28,29 @@ export default function WordBox({ words = [], color = "black", title = "" }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    borderRadius: 15,
-    borderColor: "#e0e0e0",
-    shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
-    shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
-    shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
-    shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
-    elevation: layout.shadows.homeScreenWidgets.elevation,
+  },
+  topBorderRadius: {
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  bottomBorderRadius: {
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   hiddenStrip: {
     width: 25,
   },
   wordsContainer: {
-    paddingBottom: 30,
-    paddingTop: 20,
-    opacity: .6,
+    paddingBottom: 10,
+    paddingTop: 10,
+    opacity: 0.6,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
+    paddingTop: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   headerTitle: {
     fontSize: 23,

@@ -300,7 +300,7 @@ export default function PracticeScreenDef() {
             <PracticeStatsFooter
               newCount={stats.new}
               learnCount={stats.learning}
-              dueCount={stats.due}
+              dueCount={stats.due + stats.overdue}
             />
           </View>
           <View style={styles.allTabsContainer}>
@@ -393,9 +393,10 @@ const styles = StyleSheet.create({
     paddingBottom: 60,
   },
   footer: {
+    backgroundColor: colors.homeScreenBackground,
     alignSelf: "center",
     position: "absolute",
-    bottom: 20,
+    bottom: 0,
   },
   allTabsContainer: {
     position: "absolute",

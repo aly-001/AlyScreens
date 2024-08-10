@@ -23,6 +23,8 @@ export const FlashcardProvider = ({ children }) => {
   const [newCards, setNewCards] = useState([]);
   const [learningCards, setLearningCards] = useState([]);
   const [dueCards, setDueCards] = useState([]);
+  const [laterCards, setLaterCards] = useState([]);
+  const [overdueCards, setOverdueCards] = useState([]);
 
   useEffect(() => {
     initializeDatabase();
@@ -83,10 +85,15 @@ export const FlashcardProvider = ({ children }) => {
     const newCards = dolphinSRInstance.getNewCards().map(processCard).filter(Boolean);
     const learningCards = dolphinSRInstance.getLearningCards().map(processCard).filter(Boolean);
     const dueCards = dolphinSRInstance.getDueCards().map(processCard).filter(Boolean);
+    const laterCards = dolphinSRInstance.getLaterCards().map(processCard).filter(Boolean);
+    const overdueCards = dolphinSRInstance.getOverdueCards().map(processCard).filter(Boolean);
+
     
     setNewCards(newCards);
     setLearningCards(learningCards);
     setDueCards(dueCards);
+    setLaterCards(laterCards);
+    setOverdueCards(overdueCards);
   };
 
   const loadDeck = async (database, dolphinSRInstance) => {
@@ -209,6 +216,8 @@ export const FlashcardProvider = ({ children }) => {
       newCards,
       learningCards,
       dueCards,
+      laterCards,
+      overdueCards,
       updateStats,
     }}>
       {children}
