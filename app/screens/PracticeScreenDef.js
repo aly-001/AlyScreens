@@ -18,6 +18,9 @@ import PracticeRatingTab from "../components/PracticeRatingTab";
 import PracticeDividerLine from "../components/PracticeDividerLine";
 import PracticeAudio from "../components/PracticeAudio";
 import { useFlashcards } from "../context/FlashcardContext";
+import FlashcardModuleBox from "../components/FlashcardModuleBox";
+import FlashcardModuleBoxGeneral from "../components/FlashcardModuleBoxGeneral";
+import layout from "../config/layout";
 
 const { width, height } = Dimensions.get("window");
 
@@ -146,7 +149,6 @@ export default function PracticeScreenDef() {
 
   const renderCardContent = () => {
     if (!displayedCard) return <Text>No card available</Text>;
-
     let backData;
     try {
       backData = JSON.parse(displayedCard.back[0]);
@@ -154,58 +156,89 @@ export default function PracticeScreenDef() {
       console.error("Error parsing card data:", error);
       return <Text>Error: Could not parse card data</Text>;
     }
-
     if (!backData || typeof backData !== "object") {
       console.error("Invalid card data format");
       return <Text>Error: Invalid card data format</Text>;
     }
-
     return (
-      <>
-        <View style={styles.wordContainer}>
-          <Text style={styles.word}>{backData.word || "N/A"}</Text>
-        </View>
-        <View style={styles.defContainer}>
-          <Text
-            style={[
-              styles.def,
-              { backgroundColor: colors.translationPopup.grammarModuleShade },
-            ]}
+      <View style={styles.modulesContainer}>
+        <FlashcardModuleBoxGeneral color="white" openable={false}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
           >
-            {backData.grammarExplanation || "N/A"}
-          </Text>
-          <Text
-            style={[
-              styles.def,
-              { backgroundColor: colors.translationPopup.moduleAModuleShade },
-            ]}
-          >
-            {backData.moduleA || "N/A"}
-          </Text>
-          <Text
-            style={[
-              styles.def,
-              { backgroundColor: colors.translationPopup.moduleBModuleShade },
-            ]}
-          >
-            {backData.moduleB || "N/A"}
-          </Text>
-          <Text style={styles.def}>{backData.wordDef || "N/A"}</Text>
-        </View>
-        <View style={styles.dividerLine}>
-          <PracticeDividerLine
-            width="100%"
-            height={2}
-            color={colors.utilityGreyUltraLight}
+            <Text style={styles.word}>{backData.word || "N/A"}</Text>
+            {backData.audioWordID && (
+              <TouchableOpacity
+                style={{ alignSelf: "flex-start" }}
+                onPress={() => handleAudioPress("word")}
+                activeOpacity={0.8}
+              >
+                <PracticeAudio />
+              </TouchableOpacity>
+            )}
+          </View>
+          {backData.wordDef && (
+            <Text style={{ fontSize: layout.fontSize.FlashCardModuleBox, fontStyle: "italic"}}>
+              {backData.wordDef}
+            </Text>
+          )}
+        </FlashcardModuleBoxGeneral>
+
+        <FlashcardModuleBoxGeneral
+         openable={false}
+          color={colors.translationPopup.contextModuleShade}
+        >
+          <View>
+            {backData.context && (
+              <Text
+                style={{
+                  fontSize: layout.fontSize.FlashCardModuleBox,
+                  marginBottom: 10,
+                }}
+              >
+                "{backData.context}"
+              </Text>
+            )}
+            {backData.audioContextID && (
+              <TouchableOpacity
+                onPress={() => handleAudioPress("context")}
+                activeOpacity={0.8}
+                style={{alignSelf: "flex-start"}}
+              >
+                <PracticeAudio />
+              </TouchableOpacity>
+          )}
+            {backData.contextDef && (
+              <Text style={{ fontSize: layout.fontSize.FlashCardModuleBox, fontStyle: "italic" }}>
+                {backData.contextDef}
+              </Text>
+            )}
+          </View>
+        </FlashcardModuleBoxGeneral>
+
+        {backData.grammarExplanation && (
+          <FlashcardModuleBox
+            text={backData.grammarExplanation}
+            color={colors.translationPopup.grammarModuleShade}
           />
-        </View>
-        <View style={styles.contextContainer}>
-          <Text style={styles.context}>{backData.context || "N/A"}</Text>
-        </View>
-        <View style={styles.defContainer}>
-          <Text style={styles.contextDef}>{backData.contextDef || "N/A"}</Text>
-        </View>
-      </>
+        )}
+        {backData.moduleA && (
+          <FlashcardModuleBox
+            text={backData.moduleA}
+            color={colors.translationPopup.moduleAModuleShade}
+          />
+        )}
+        {backData.moduleB && (
+          <FlashcardModuleBox
+            text={backData.moduleB}
+            color={colors.translationPopup.moduleBModuleShade}
+          />
+        )}
+      </View>
     );
   };
 
@@ -224,20 +257,6 @@ export default function PracticeScreenDef() {
         )}
         <View style={styles.container}>
           {renderCardContent()}
-          <View style={styles.audio}>
-            <TouchableOpacity
-              onPress={() => handleAudioPress("word")}
-              activeOpacity={0.8}
-            >
-              <PracticeAudio />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleAudioPress("context")}
-              activeOpacity={0.8}
-            >
-              <PracticeAudio />
-            </TouchableOpacity>
-          </View>
           <View style={styles.footer}>
             <PracticeStatsFooter
               newCount={stats.new}
@@ -305,6 +324,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
   },
+  modulesContainer: {
+    width: "90%",
+  },
+  wordContainer: {
+    marginBottom: 20,
+  },
   defContainer: {
     width: width * 0.8,
   },
@@ -323,10 +348,10 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   word: {
-    marginTop: 200,
     fontSize: 50,
     fontWeight: "600",
     color: colors.utilityGrey,
+    marginBottom: 10,
   },
   context: {
     fontSize: 25,

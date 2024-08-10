@@ -24,6 +24,9 @@ const layout = {
     },
     // Add more shadow configurations as needed
   },
+  fontSize: {
+    FlashCardModuleBox: 24,
+  }
   // You can add more categories here as needed, such as:
   // spacing: { ... },
   // sizes: { ... },

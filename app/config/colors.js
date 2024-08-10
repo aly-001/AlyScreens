@@ -45,6 +45,7 @@ export default {
     translationModuleShade: "#ffffff",
     moduleAModuleShade: "#FFA07A",
     moduleBModuleShade: "#FFD700",
+    contextModuleShade: "#ffffff",
   },
 
   book: {

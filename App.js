@@ -11,6 +11,7 @@ import { SettingsProvider } from "./app/context/useSettingsContext";
 import LoadingText from "./app/components/LoadingText";
 import { View } from "react-native";
 import { APIKeyProvider } from "./app/context/APIKeyContext";
+import FlashcardModuleBox from "./app/components/FlashcardModuleBox";
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,16 @@ export default function App() {
     </APIKeyProvider>
   );
 }
+
+// const text = `TThis approach is relatively simple to implement and doesn't require a backend.It provides a nice welcome experience for first-time users of your app. Remember to customize the welcome message and styling to fit your app's branding and purpose. You can also expand this to include multiple onboarding screens if you want to provide more information or guide users through initial setup steps. Is there anything specificyou'd like to add or modify in this welcome screen implementation?his approach is relatively simple to implement and doesn't require a backend.It provides a nice welcome experience for first-time users of your app. Remember to customize the welcome message and styling to fit your app's branding and purpose. You can also expand this to include multiple onboarding screens if you want to provide more information or guide users through initial setup steps. Is there anything specificyou'd like to add or modify in this welcome screen implementation?`
+// export default function App() {
+//   return (
+//     <GestureHandlerRootView>
+
+//     <FlashcardModuleBox text={text}/>
+//     </GestureHandlerRootView>
+//   );
+// }
 
 // export default function App() {
 //   return(

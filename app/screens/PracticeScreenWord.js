@@ -6,6 +6,10 @@ import PracticeStatsFooter from "../components/PracticeStatsFooter";
 import PracticeDividerLine from "../components/PracticeDividerLine";
 import { useFlashcards } from "../context/FlashcardContext";
 import { ScrollView } from "react-native-gesture-handler";
+import FlashcardModuleBox from "../components/FlashcardModuleBox";
+import FlashcardModuleBoxGeneral from "../components/FlashcardModuleBoxGeneral";
+import Markdown from 'react-native-markdown-display';
+
 
 export default function PracticeScreenWord({ navigation }) {
   const { currentCard, stats } = useFlashcards();
@@ -15,6 +19,7 @@ export default function PracticeScreenWord({ navigation }) {
   };
 
   const renderCardContent = () => {
+;
     if (!currentCard) return <Text>No more cards available</Text>;
     let frontData;
     try {
@@ -27,40 +32,32 @@ export default function PracticeScreenWord({ navigation }) {
       console.error("Invalid card data format");
       return <Text>Error: Invalid card data format</Text>;
     }
+    console.log("Grammar explanation:", frontData.grammarExplanation);
     return (
       <View style={styles.contentContainer}>
+        <FlashcardModuleBoxGeneral color={"#ffffff"} >
+
         <View style={styles.wordContainer}>
           <Text style={styles.word}>{frontData.word || ""}</Text>
         </View>
+        </FlashcardModuleBoxGeneral>
+        {frontData.context && (
+          <FlashcardModuleBox text={frontData.context} color={colors.translationPopup.contextModuleShade} quotes={true}/>
+        )}
         {frontData.grammarExplanation && (
-          <View style={[
-            styles.contentBox,
-            { backgroundColor: colors.translationPopup.grammarModuleShade }
-          ]}>
-            <Text style={styles.contentText}>{frontData.grammarExplanation}</Text>
-          </View>
+          <FlashcardModuleBoxGeneral color={colors.translationPopup.grammarModuleShade}>
+            <Markdown>
+              {frontData.grammarExplanation}
+            </Markdown>
+          </FlashcardModuleBoxGeneral>
         )}
         {frontData.moduleA && (
-          <View style={[
-            styles.contentBox,
-            { backgroundColor: colors.translationPopup.moduleAModuleShade }
-          ]}>
-            <Text style={styles.contentText}>{frontData.moduleA}</Text>
-          </View>
+          <FlashcardModuleBox text={frontData.moduleA} color={colors.translationPopup.moduleAModuleShade} />
         )}
         {frontData.moduleB && (
-          <ScrollView maxHeight={100} scrollDirec style={[
-            styles.contentBox,
-            { backgroundColor: colors.translationPopup.moduleBModuleShade }
-          ]}>
-            <Text style={styles.contentText}>{frontData.moduleB}</Text>
-          </ScrollView>
+          <FlashcardModuleBox text={frontData.moduleB} color={colors.translationPopup.moduleBModuleShade} />  
         )}
-        {frontData.context && (
-          <View style={[styles.contentBox, styles.contextBox]}>
-            <Text style={styles.context}>{frontData.context}</Text>
-          </View>
-        )}
+
       </View>
     );
   };
@@ -92,13 +89,17 @@ const styles = StyleSheet.create({
   superContainer: {
     flex: 1,
   },
+  contentContainer:{
+    justifyContent: "center",
+    flex: 1,
+  },
   container: {
     marginHorizontal: 40,
     flex: 1,
-    justifyContent: "center",
-    alignItems: "flex-start",
   },
-  wordContainer: {},
+  wordContainer: {
+    marginBottom: 20,
+  },
   word: {
     fontSize: 50,
     fontWeight: "600",
@@ -146,4 +147,5 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: colors.utilityGrey,
   },
+
 });
