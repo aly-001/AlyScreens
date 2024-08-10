@@ -35,11 +35,16 @@ export default function PracticeScreenWord({ navigation }) {
     console.log("Grammar explanation:", frontData.grammarExplanation);
     return (
       <View style={styles.contentContainer}>
-        <FlashcardModuleBoxGeneral color={"#ffffff"} >
-
-        <View style={styles.wordContainer}>
-          <Text style={styles.word}>{frontData.word || ""}</Text>
-        </View>
+        <FlashcardModuleBoxGeneral color="white" openable={false}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={styles.word}>{frontData.word || "N/A"}</Text>
+          </View>
         </FlashcardModuleBoxGeneral>
         {frontData.context && (
           <FlashcardModuleBox text={frontData.context} color={colors.translationPopup.contextModuleShade} quotes={true}/>
@@ -98,6 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   wordContainer: {
+    justifyContent: "center",
     marginBottom: 20,
   },
   word: {

@@ -25,7 +25,7 @@ export default function PracticeRatingTab({ rating, onPress }) {
 
 const styles = StyleSheet.create({
   outerContainer: {
-    width: 100,
+     width: 100,
     marginBottom: 45,
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,

@@ -12,12 +12,15 @@ import LoadingText from "./app/components/LoadingText";
 import { View } from "react-native";
 import { APIKeyProvider } from "./app/context/APIKeyContext";
 import FlashcardModuleBox from "./app/components/FlashcardModuleBox";
+import { StatusBar } from "react-native";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <APIKeyProvider>
+    <StatusBar hidden={true} />
+
       <SettingsProvider>
         <NavigationContainer>
           <BooksProvider>

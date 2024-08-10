@@ -9,7 +9,7 @@ const createOpenAIInstance = (apiKey) => {
 };
 
 const summarizeContext = async(apiKey, word, innerContext) =>{
-  const prompt = `I’ve got two variables: word, innerContext. Your job is to summarize innerContext. For example, word: “éclairée” innerContext: “connaissance. C'était une grande salle éclairée par cinq ou six fenêtres, au-de”. You need to answer: “Une grande salle éclairée par cinq ou six fenêtres.”  Note that your final answer should include the word. Here are the variables: word: ${word}, innerContext: ${innerContext}`;
+  const prompt = `I’ve got two variables: word, innerContext. Your job is to summarize innerContext. For example, word: “éclairée” innerContext: “connaissance. C'était une grande salle éclairée par cinq ou six fenêtres, au-de”. You need to answer: “Une grande salle éclairée par cinq ou six fenêtres.”  Note that your final answer should include the word. Here are the variables: word: ${word}, innerContext: ${innerContext}. Don't put any quotes around your answer.`;
   return callLLM(apiKey, prompt);
 }
 
@@ -55,7 +55,7 @@ const generateAndSaveImage = async (openai, word, innerContext, outerContext, im
       [
         { resize: {
           width: 800, // Half of the original width
-          height: 700, // Half of the original height
+          height: 800, // Half of the original height
         }}
       ],
       { format: 'png' }

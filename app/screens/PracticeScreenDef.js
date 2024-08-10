@@ -7,11 +7,16 @@ import {
   Image,
   SafeAreaView,
   StatusBar,
+  ScrollView,
+  Modal,
+  TouchableOpacity,
+  ImageBackground,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity as GestureHandlerTouchableOpacity } from "react-native-gesture-handler";
 import * as FileSystem from "expo-file-system";
 import { Audio } from "expo-av";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { BlurView } from 'expo-blur';
 import colors from "../config/colors";
 import PracticeStatsFooter from "../components/PracticeStatsFooter";
 import PracticeRatingTab from "../components/PracticeRatingTab";
@@ -21,12 +26,14 @@ import { useFlashcards } from "../context/FlashcardContext";
 import FlashcardModuleBox from "../components/FlashcardModuleBox";
 import FlashcardModuleBoxGeneral from "../components/FlashcardModuleBoxGeneral";
 import layout from "../config/layout";
+import Markdown from "react-native-markdown-display";
 
 const { width, height } = Dimensions.get("window");
 
 export default function PracticeScreenDef() {
   const [imageUri, setImageUri] = useState(null);
   const [displayedCard, setDisplayedCard] = useState(null);
+  const [fullscreenVisible, setFullscreenVisible] = useState(false);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { currentCard, submitReview, getNextCard, stats } = useFlashcards();
@@ -52,7 +59,6 @@ export default function PracticeScreenDef() {
   useEffect(() => {
     async function setupAudio() {
       try {
-        // console.log("Setting up audio...");
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
           playsInSilentModeIOS: true,
@@ -60,7 +66,6 @@ export default function PracticeScreenDef() {
           staysActiveInBackground: false,
           playThroughEarpieceAndroid: false,
         });
-        // console.log("Audio setup complete");
       } catch (error) {
         console.error("Error setting up audio:", error);
       }
@@ -83,7 +88,6 @@ export default function PracticeScreenDef() {
           } else {
             setImageUri(null);
           }
-          // console.log("Image effect hook reloaded");
         } catch (error) {
           console.error("Error loading image:", error);
           setImageUri(null);
@@ -112,7 +116,6 @@ export default function PracticeScreenDef() {
         const audioID =
           backData[audioType === "word" ? "audioWordID" : "audioContextID"];
 
-        // If audioID is null, exit the function peacefully
         if (audioID === null) {
           console.log(`No audio available for ${audioType}`);
           return;
@@ -120,7 +123,6 @@ export default function PracticeScreenDef() {
 
         const audioFileName = `${audioID}.mp3`;
         const audioPath = `${FileSystem.documentDirectory}audio/${audioFileName}`;
-        // console.log("Audio path:", audioPath);
 
         const fileInfo = await FileSystem.getInfoAsync(audioPath);
         if (!fileInfo.exists) {
@@ -182,49 +184,62 @@ export default function PracticeScreenDef() {
             )}
           </View>
           {backData.wordDef && (
-            <Text style={{ fontSize: layout.fontSize.FlashCardModuleBox, fontStyle: "italic"}}>
+            <Text
+              style={{
+                fontSize: layout.fontSize.FlashCardModuleBox,
+                fontStyle: "italic",
+              }}
+            >
               {backData.wordDef}
             </Text>
           )}
         </FlashcardModuleBoxGeneral>
 
-        <FlashcardModuleBoxGeneral
-         openable={false}
-          color={colors.translationPopup.contextModuleShade}
-        >
-          <View>
-            {backData.context && (
-              <Text
-                style={{
-                  fontSize: layout.fontSize.FlashCardModuleBox,
-                  marginBottom: 10,
-                }}
-              >
-                "{backData.context}"
-              </Text>
-            )}
-            {backData.audioContextID && (
-              <TouchableOpacity
-                onPress={() => handleAudioPress("context")}
-                activeOpacity={0.8}
-                style={{alignSelf: "flex-start"}}
-              >
-                <PracticeAudio />
-              </TouchableOpacity>
-          )}
-            {backData.contextDef && (
-              <Text style={{ fontSize: layout.fontSize.FlashCardModuleBox, fontStyle: "italic" }}>
-                {backData.contextDef}
-              </Text>
-            )}
-          </View>
-        </FlashcardModuleBoxGeneral>
+        {(backData.context || backData.audioContextID) && (
+          <FlashcardModuleBoxGeneral
+            openable={false}
+            color={colors.translationPopup.contextModuleShade}
+          >
+            <View>
+              {backData.context && (
+                <Text
+                  style={{
+                    fontSize: layout.fontSize.FlashCardModuleBox,
+                    marginBottom: 10,
+                  }}
+                >
+                  "{backData.context}"
+                </Text>
+              )}
+              {backData.audioContextID && (
+                <TouchableOpacity
+                  onPress={() => handleAudioPress("context")}
+                  activeOpacity={0.8}
+                  style={{ alignSelf: "flex-start" }}
+                >
+                  <PracticeAudio />
+                </TouchableOpacity>
+              )}
+              {backData.contextDef && (
+                <Text
+                  style={{
+                    fontSize: layout.fontSize.FlashCardModuleBox,
+                    fontStyle: "italic",
+                  }}
+                >
+                  {backData.contextDef}
+                </Text>
+              )}
+            </View>
+          </FlashcardModuleBoxGeneral>
+        )}
 
         {backData.grammarExplanation && (
-          <FlashcardModuleBox
-            text={backData.grammarExplanation}
+          <FlashcardModuleBoxGeneral
             color={colors.translationPopup.grammarModuleShade}
-          />
+          >
+            <Markdown>{backData.grammarExplanation}</Markdown>
+          </FlashcardModuleBoxGeneral>
         )}
         {backData.moduleA && (
           <FlashcardModuleBox
@@ -247,16 +262,40 @@ export default function PracticeScreenDef() {
       <StatusBar hidden={true} />
       <View style={styles.superContainer}>
         {imageUri ? (
-          <Image
+          <ImageBackground
             source={{ uri: imageUri }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        ) : (
-          <View style={styles.image} resizeMode="cover" />
-        )}
+            style={styles.backgroundImage}
+            blurRadius={5}
+          >
+            <BlurView intensity={30} style={StyleSheet.absoluteFill}>
+              <View style={styles.lightTintOverlay} />
+              <TouchableOpacity
+                onPress={() => setFullscreenVisible(true)}
+                activeOpacity={0.8}
+              >
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={{ uri: imageUri }}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+                </View>
+              </TouchableOpacity>
+            </BlurView>
+          </ImageBackground>
+        ) : null}
         <View style={styles.container}>
-          {renderCardContent()}
+          {imageUri ? (
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.scrollViewContent}
+            >
+              {renderCardContent()}
+            </ScrollView>
+          ) : (
+            renderCardContent()
+          )}
+
           <View style={styles.footer}>
             <PracticeStatsFooter
               newCount={stats.new}
@@ -292,6 +331,33 @@ export default function PracticeScreenDef() {
           </View>
         </View>
       </View>
+      <Modal
+        visible={fullscreenVisible}
+        transparent={true}
+        animationType="fade"
+      >
+        <ImageBackground
+          source={{ uri: imageUri }}
+          style={styles.modalBackgroundImage}
+          blurRadius={10}
+        >
+          <BlurView intensity={100} style={StyleSheet.absoluteFill}>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setFullscreenVisible(false)}
+              >
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.fullscreenImage}
+                resizeMode="contain"
+              />
+            </View>
+          </BlurView>
+        </ImageBackground>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -304,20 +370,6 @@ const styles = StyleSheet.create({
   superContainer: {
     flex: 1,
   },
-  greyArea: {
-    position: "absolute",
-    left: (width - 900) / 2,
-    width: 900,
-    height: 450,
-    backgroundColor: colors.utilityGreyUltraLight,
-    opacity: 0.5,
-  },
-  image: {
-    position: "absolute",
-    left: (width - 900) / 2,
-    width: 900,
-    height: 450,
-  },
   container: {
     marginHorizontal: 40,
     flex: 1,
@@ -325,27 +377,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   modulesContainer: {
+    marginVertical: 45,
     width: "90%",
-  },
-  wordContainer: {
-    marginBottom: 20,
-  },
-  defContainer: {
-    width: width * 0.8,
-  },
-  def: {
-    marginTop: 20,
-    fontSize: 30,
-    fontWeight: "500",
-    color: colors.utilityGrey,
-    opacity: 0.85,
-  },
-  contextDef: {
-    marginTop: 20,
-    fontSize: 20,
-    fontWeight: "500",
-    color: colors.utilityGrey,
-    opacity: 0.85,
   },
   word: {
     fontSize: 50,
@@ -353,17 +386,11 @@ const styles = StyleSheet.create({
     color: colors.utilityGrey,
     marginBottom: 10,
   },
-  context: {
-    fontSize: 25,
-    fontWeight: "500",
-    color: colors.utilityGrey,
-  },
-  contextContainer: {
-    width: width * 0.8,
-  },
-  audio: {
-    position: "absolute",
-    bottom: 160,
+  scrollView: {},
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    paddingBottom: 60,
   },
   footer: {
     alignSelf: "center",
@@ -378,9 +405,47 @@ const styles = StyleSheet.create({
   tabContainer: {
     marginBottom: 0,
   },
-  dividerLine: {
-    marginVertical: 50,
-    width: "100%",
-    width: width * 0.8,
+  backgroundImage: {
+    width: '100%',
+    height: 400, // Adjust this value as needed
+  },
+  lightTintOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: 400,
+    height: 400,
+  },
+  modalBackgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent overlay
+  },
+  fullscreenImage: {
+    width: '90%',
+    height: '90%',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    padding: 10,
+    zIndex: 1,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 18,
   },
 });

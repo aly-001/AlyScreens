@@ -13,7 +13,7 @@ export async function callLLM(apiKey, prompt) {
   try {
     const openai = createOpenAIInstance(apiKey);
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
     });
     return completion.choices[0].message.content;

@@ -41,10 +41,10 @@ export default {
   defText: "#4C4C4C",
 
   translationPopup: {
-    grammarModuleShade: "#90EE90",
+    grammarModuleShade: "#ddf1e1",
     translationModuleShade: "#ffffff",
-    moduleAModuleShade: "#FFA07A",
-    moduleBModuleShade: "#FFD700",
+    moduleAModuleShade: "#f8eee9",
+    moduleBModuleShade: "#e7dfed",
     contextModuleShade: "#ffffff",
   },
 

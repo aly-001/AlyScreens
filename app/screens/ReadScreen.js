@@ -188,7 +188,7 @@ export default function ReadScreen() {
   if (uri) {
     return (
       <View style={styles.container}>
-        <StatusBar hidden={isFullscreen} />
+        <StatusBar hidden={true} />
         <TouchableWithoutFeedback onPress={handleMiddlePress}>
           <View style={styles.readerContainer}>
             <ReaderProvider>
