@@ -30,7 +30,7 @@ const BookHiddenFooter = ({ style, progress, color }) => {
 const styles = StyleSheet.create({
   hiddenFooterContainer: {
     position: "absolute",
-    bottom: 74,
+    bottom: 78,
     left: 0,
     right: 0,
     zIndex: 2,
@@ -42,8 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    height: 15,
-    borderBottomWidth: 1,
+    height: 13,
     borderBottomColor: "#e0e0e0",
   },
   status:{

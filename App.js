@@ -13,22 +13,25 @@ import { View } from "react-native";
 import { APIKeyProvider } from "./app/context/APIKeyContext";
 import FlashcardModuleBox from "./app/components/FlashcardModuleBox";
 import { StatusBar } from "react-native";
+import { TabBarVisibilityProvider } from "./app/navigation/TabBarVisibilityContext";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <APIKeyProvider>
-    <StatusBar hidden={true} />
+    <TabBarVisibilityProvider>
+      <APIKeyProvider>
+        <StatusBar hidden={true} />
 
-      <SettingsProvider>
-        <NavigationContainer>
-          <BooksProvider>
-            <AppNavigator />
-          </BooksProvider>
-        </NavigationContainer>
-      </SettingsProvider>
-    </APIKeyProvider>
+        <SettingsProvider>
+          <NavigationContainer>
+            <BooksProvider>
+              <AppNavigator />
+            </BooksProvider>
+          </NavigationContainer>
+        </SettingsProvider>
+      </APIKeyProvider>
+    </TabBarVisibilityProvider>
   );
 }
 
