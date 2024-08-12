@@ -8,6 +8,18 @@ const FlashcardContext = createContext();
 
 export const useFlashcards = () => useContext(FlashcardContext);
 
+export const getAllCards = (dolphinSR) => {
+  return dolphinSR.getAll().filter(Boolean);
+};
+
+export const getYoungCards = (dolphinSR) => {
+  return dolphinSR.getYoung().filter(Boolean);
+};
+
+export const getMatureCards = (dolphinSR) => {
+  return dolphinSR.getMature().filter(Boolean);
+};
+
 export const FlashcardProvider = ({ children }) => {
   const [db, setDb] = useState(null);
   const [dolphinSR, setDolphinSR] = useState(null);
