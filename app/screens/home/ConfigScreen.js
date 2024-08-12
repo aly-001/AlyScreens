@@ -9,7 +9,7 @@ import {
   TextInput,
   SafeAreaView,
 } from "react-native";
-import { useSettingsContext } from "../context/useSettingsContext";
+import { useSettingsContext } from "../../context/useSettingsContext";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 const ConfigScreen = () => {

@@ -11,13 +11,13 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import colors from "../config/colors";
-import { useBooks } from "../context/BooksContext";
-import BookCoverThumb from "../components/BookCoverThumb";
-import Screen from "../components/Screen";
-import ScreenHeader from "../components/ScreenHeader";
-import layout from "../config/layout";
-import PracticeStartButton from "../components/PracticeStartButton";
+import colors from "../../config/colors";
+import { useBooks } from "../../context/BooksContext";
+import BookCoverThumb from "../../components/BookCoverThumb";
+import Screen from "../../components/Screen";
+import ScreenHeader from "../../components/ScreenHeader";
+import layout from "../../config/layout";
+import PracticeStartButton from "../../components/PracticeStartButton";
 
 const LibraryScreen = () => {
   const navigation = useNavigation();

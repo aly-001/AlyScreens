@@ -1,9 +1,9 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "../screens/HomeScreen";
-import LibraryScreen from "../screens/LibraryScreen";
+import HomeScreen from "../screens/home/HomeScreen";
+import LibraryScreen from "../screens/home/LibraryScreen";
 import SettingsNavigator from "./SettingsNavigator";
-import DictionaryScreen from "../screens/DictionaryScreen";
+import DictionaryScreen from "../screens/home/DictionaryScreen";
 const Stack = createStackNavigator();
 
 const HomeNavigator = () => {

@@ -1,18 +1,18 @@
 import React, { useCallback } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import ScreenHeader from "../components/ScreenHeader";
+import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
-import Screen from "../components/Screen";
-import StatBox from "../components/StatBox";
-import colors from "../config/colors";
-import layout from "../config/layout";
-import MyLibrary from "../components/MyLibrary";
-import BottomWidget from "../components/BottomWidget";
+import Screen from "../../components/Screen";
+import StatBox from "../../components/StatBox";
+import colors from "../../config/colors";
+import layout from "../../config/layout";
+import MyLibrary from "../../components/MyLibrary";
+import BottomWidget from "../../components/BottomWidget";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { useBooks } from "../context/BooksContext";
-import StatBoxMax from "../components/StatBoxMax";
-import { FlashcardProvider } from "../context/FlashcardContext";
+import { useBooks } from "../../context/BooksContext";
+import StatBoxMax from "../../components/StatBoxMax";
+import { FlashcardProvider } from "../../context/FlashcardContext";
 
 export default function HomeScreen() {
   const navigation = useNavigation();

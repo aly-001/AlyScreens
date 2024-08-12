@@ -1,9 +1,9 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { TransitionPresets } from "@react-navigation/stack";
-import PracticeScreenStart from "../screens/PracticeScreenStart";
-import PracticeScreenDef from "../screens/PracticeScreenDef";
-import PracticeScreenWord from "../screens/PracticeScreenWord";
+import PracticeScreenStart from "../screens/practice/PracticeScreenStart";  
+import PracticeScreenDef from "../screens/practice/PracticeScreenDef";
+import PracticeScreenWord from "../screens/practice/PracticeScreenWord";
 import { FlashcardProvider } from "../context/FlashcardContext";
 
 const Stack = createStackNavigator();

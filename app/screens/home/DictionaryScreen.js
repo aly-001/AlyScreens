@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
-import colors from "../config/colors";
-import Screen from "../components/Screen";
-import ScreenHeader from "../components/ScreenHeader";
-import layout from "../config/layout";
-import { DolphinSR } from "../../lib/index";
+import colors from "../../config/colors";
+import Screen from "../../components/Screen";
+import ScreenHeader from "../../components/ScreenHeader";
+import layout from "../../config/layout";
+import { DolphinSR } from "../../../lib/index";
 import * as SQLite from 'expo-sqlite';
-import { getAllCards, getYoungCards, getMatureCards } from "../context/FlashcardContext";
-import Word from "../components/Word";
-import FlashcardBackModal from "../components/FlashcardBackModal";
+import { getAllCards, getYoungCards, getMatureCards } from "../../context/FlashcardContext";
+import Word from "../../components/Word";
+import FlashcardBackModal from "../../components/FlashcardBackModal";
 
 const DictionaryScreen = () => {
   const [dolphinSR, setDolphinSR] = useState(null);

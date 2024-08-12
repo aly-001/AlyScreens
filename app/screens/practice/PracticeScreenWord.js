@@ -1,13 +1,13 @@
 import React from "react";
 import { View, StyleSheet, Text, SafeAreaView, StatusBar, TouchableWithoutFeedback } from 'react-native';
 
-import colors from "../config/colors";
-import PracticeStatsFooter from "../components/PracticeStatsFooter";
-import PracticeDividerLine from "../components/PracticeDividerLine";
-import { useFlashcards } from "../context/FlashcardContext";
+import colors from "../../config/colors";
+import PracticeStatsFooter from "../../components/PracticeStatsFooter";
+import PracticeDividerLine from "../../components/PracticeDividerLine";
+import { useFlashcards } from "../../context/FlashcardContext";
 import { ScrollView } from "react-native-gesture-handler";
-import FlashcardModuleBox from "../components/FlashcardModuleBox";
-import FlashcardModuleBoxGeneral from "../components/FlashcardModuleBoxGeneral";
+import FlashcardModuleBox from "../../components/FlashcardModuleBox";
+import FlashcardModuleBoxGeneral from "../../components/FlashcardModuleBoxGeneral";
 import Markdown from 'react-native-markdown-display';
 
 

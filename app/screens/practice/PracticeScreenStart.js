@@ -8,13 +8,13 @@ import {
   StatusBar,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import ScreenHeader from "../components/ScreenHeader";
-import Screen from "../components/Screen";
-import colors from "../config/colors";
-import layout from "../config/layout";
-import WordBox from "../components/WordBox";
-import PracticeStartButton from "../components/PracticeStartButton";
-import { useFlashcards } from "../context/FlashcardContext";
+import ScreenHeader from "../../components/ScreenHeader";
+import Screen from "../../components/Screen";
+import colors from "../../config/colors";
+import layout from "../../config/layout";
+import WordBox from "../../components/WordBox";
+import PracticeStartButton from "../../components/PracticeStartButton";
+import { useFlashcards } from "../../context/FlashcardContext";
 
 export default function PracticeScreenStart() {
   const {
