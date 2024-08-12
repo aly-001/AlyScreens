@@ -32,7 +32,6 @@ export default function PracticeScreenWord({ navigation }) {
       console.error("Invalid card data format");
       return <Text>Error: Invalid card data format</Text>;
     }
-    console.log("Grammar explanation:", frontData.grammarExplanation);
     return (
       <View style={styles.contentContainer}>
         <FlashcardModuleBoxGeneral color="white" openable={false}>
