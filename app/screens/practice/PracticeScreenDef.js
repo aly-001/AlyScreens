@@ -110,6 +110,7 @@ export default function PracticeScreenDef() {
   };
 
   const handleAudioPress = async (audioType) => {
+    
     if (displayedCard && displayedCard.back) {
       try {
         const backData = JSON.parse(displayedCard.back[0]);
