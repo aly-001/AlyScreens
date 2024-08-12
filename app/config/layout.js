@@ -2,7 +2,7 @@
 
 const layout = {
   borderRadius: {
-    homeScreenWidgets: 40,
+    homeScreenWidgets: 20,
     // Add more border radius constants as needed
   },
   margins: {

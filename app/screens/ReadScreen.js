@@ -32,6 +32,9 @@ import { useBooks } from "../context/BooksContext";
 const duration = 200; // Animation duration
 
 const BookHeader = ({ bookTitle, style, onTocPress }) => {
+  if (!bookTitle) {
+    return null;
+  }
   const truncatedTitle = bookTitle.length > 100 
     ? bookTitle.substring(0, 97) + '...' 
     : bookTitle;

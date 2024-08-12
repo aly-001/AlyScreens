@@ -4,11 +4,10 @@ import colors from "../config/colors";
 import fonts from "../config/fonts";
 import layout from "../config/layout";
 
-export default function WidgetHeader({ text }) {
+export default function WidgetHeader({ text, noMargin = false }) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, noMargin ? null : styles.marginBottom]}>
       <Text style={styles.header}>{text}</Text>
-      
     </View>
   );
 }
@@ -18,13 +17,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  marginBottom: {
+    marginBottom: 60,
+  },
   header: {
     fontSize: 30,
     fontWeight: "600",
     marginBottom: 10,
     fontFamily: fonts.main,
     margin: layout.margins.screenHeaderMargin,
-    marginBottom: 50,
     color: colors.widgetHeader,
   },
   chevron: {

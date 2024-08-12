@@ -1,4 +1,4 @@
-// contexts/FlashcardContext.js
+
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { DolphinSR } from "../../lib/index";
@@ -25,6 +25,9 @@ export const FlashcardProvider = ({ children }) => {
   const [dueCards, setDueCards] = useState([]);
   const [laterCards, setLaterCards] = useState([]);
   const [overdueCards, setOverdueCards] = useState([]);
+  const [allCards, setAllCards] = useState([]); // New state for all cards
+  const [youngCards, setYoungCards] = useState([]); // New state for young cards
+  const [matureCards, setMatureCards] = useState([]); // New state for mature cards
 
   useEffect(() => {
     initializeDatabase();
@@ -87,13 +90,18 @@ export const FlashcardProvider = ({ children }) => {
     const dueCards = dolphinSRInstance.getDueCards().map(processCard).filter(Boolean);
     const laterCards = dolphinSRInstance.getLaterCards().map(processCard).filter(Boolean);
     const overdueCards = dolphinSRInstance.getOverdueCards().map(processCard).filter(Boolean);
-
+    const allCards = dolphinSRInstance.getAll().map(processCard).filter(Boolean);
+    const youngCards = dolphinSRInstance.getYoung().map(processCard).filter(Boolean);
+    const matureCards = dolphinSRInstance.getMature().map(processCard).filter(Boolean);
     
     setNewCards(newCards);
     setLearningCards(learningCards);
     setDueCards(dueCards);
     setLaterCards(laterCards);
     setOverdueCards(overdueCards);
+    setAllCards(allCards);
+    setYoungCards(youngCards);
+    setMatureCards(matureCards);
   };
 
   const loadDeck = async (database, dolphinSRInstance) => {
@@ -218,6 +226,9 @@ export const FlashcardProvider = ({ children }) => {
       dueCards,
       laterCards,
       overdueCards,
+      allCards,
+      youngCards,
+      matureCards,
       updateStats,
     }}>
       {children}

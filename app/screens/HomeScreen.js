@@ -11,6 +11,8 @@ import MyLibrary from "../components/MyLibrary";
 import BottomWidget from "../components/BottomWidget";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useBooks } from "../context/BooksContext";
+import StatBoxMax from "../components/StatBoxMax";
+import { FlashcardProvider } from "../context/FlashcardContext";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -45,17 +47,13 @@ export default function HomeScreen() {
             <ScreenHeader text="Home" />
           </View>
           <View style={styles.topWidgetContainer}>
-            <StatBox header="All" value={books.length} valueColor="green" />
-            <StatBox
-              header="Learning"
-              value={books.filter((book) => book.status < 100).length}
-              valueColor="blue"
-            />
-            <StatBox
-              header="Mature"
-              value={books.filter((book) => book.status === 100).length}
-              valueColor="red"
-            />
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate("Dictionary")}
+            >
+              <FlashcardProvider>
+                <StatBoxMax />
+              </FlashcardProvider>
+            </TouchableWithoutFeedback>
           </View>
           <TouchableWithoutFeedback
             onPress={() => navigation.navigate("Library")}
@@ -114,6 +112,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   topWidgetContainer: {
+    marginHorizontal: layout.margins.homeScreenWidgets / 2,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: layout.margins.homeScreenWidgets,
