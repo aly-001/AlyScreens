@@ -3,10 +3,11 @@ import React from "react";
 import colors from "../config/colors";
 import fonts from "../config/fonts";
 import shortenText from "../utils/shortenText"; // Adjust the path according to your file structure
+import layout from "../config/layout";
 
 export default function BookCoverThumb({ title, subtitle, color, status }) {
   const statusPercent = status + "%";
-  const maxChars = 20; // Example max character count, adjust as needed
+  const maxChars = 30; // Example max character count, adjust as needed
 
   const shortenedTitle = shortenText(title, maxChars);
   const shortenedSubtitle = shortenText(subtitle, maxChars);
@@ -22,7 +23,6 @@ export default function BookCoverThumb({ title, subtitle, color, status }) {
         </View>
 
         <Text style={styles.title}>{shortenedTitle}</Text>
-        <Text style={styles.subtitle}>{shortenedSubtitle}</Text>
       </View>
     </>
   );
@@ -31,12 +31,12 @@ export default function BookCoverThumb({ title, subtitle, color, status }) {
 const styles = StyleSheet.create({
   bookContainer: {
     alignItems: "center",
-    width: 185,
+    width: 210,
     marginBottom: 10,
   },
   book: {
-    width: 150,
-    height: 190,
+    width: layout.components.bookCoverThumb.width,
+    height: layout.components.bookCoverThumb.height,
     borderRadius: 15,
     justifyContent: "center",
     marginBottom: 4,

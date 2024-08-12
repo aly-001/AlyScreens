@@ -7,7 +7,6 @@ export const useAudioPlayer = (audioBase64) => {
   useEffect(() => {
     return sound
       ? () => {
-          console.log('Unloading Sound');
           sound.unloadAsync();
         }
       : undefined;
@@ -33,7 +32,6 @@ export const useAudioPlayer = (audioBase64) => {
       setSound(newSound);
 
       await newSound.playAsync();
-      console.log('Audio playback started');
     } catch (err) {
       console.error('Error playing sound:', err);
     }

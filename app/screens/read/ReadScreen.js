@@ -85,10 +85,6 @@ export default function ReadScreen() {
   const { uri, title, color } = route.params || {};
   const { status } = getBookStatus(uri);
 
-  useEffect(() => {
-    console.log("Status:", status);
-  }, [status]);
-
   const {
     popupVisible,
     currentWord,

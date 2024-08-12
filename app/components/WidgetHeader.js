@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   header: {
-    fontSize: 30,
+    fontSize: layout.fontSize.widgetHeader,
     fontWeight: "600",
     marginBottom: 10,
     fontFamily: fonts.main,

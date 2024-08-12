@@ -160,7 +160,6 @@ export const FlashcardProvider = ({ children }) => {
   
   const getNextCard = () => {
     if (isLoading) {
-      console.log('DolphinSR is initializing...');
       return null;
     }
     if (!dolphinSR) {

@@ -37,11 +37,6 @@ export default function PracticeScreenStart() {
     }
   };
 
-  useEffect(() => {
-    console.log(newCards.length);
-    console.log(learningCards.length);
-    console.log(dueCards.length);
-  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {

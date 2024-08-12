@@ -1,15 +1,30 @@
-// layout.js
+import { Dimensions } from 'react-native';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+
+const { width, height } = Dimensions.get('window');
+
+// Device size breakpoint
+const DEVICE_SIZE_THRESHOLD = 768; // Common breakpoint for tablet-sized devices
+
+// Device type check
+const isSmallDevice = width < DEVICE_SIZE_THRESHOLD;
+
+// Responsive value function
+const getResponsiveValue = (smallDeviceValue, largeDeviceValue) => {
+  return isSmallDevice ? smallDeviceValue : largeDeviceValue;
+};
 
 const layout = {
   borderRadius: {
     homeScreenWidgets: 20,
-    // Add more border radius constants as needed
   },
   margins: {
+    homeScreen: {
+      betweenHeaderAndWidgets: getResponsiveValue(50, 90),
+    },
     screenHeaderMargin: 25,
     homeScreenWidgets: 30,
     practiceScreenPaddingHorizontal: 30,
-    // Add more margin constants as needed
   },
   shadows: {
     homeScreenWidgets: {
@@ -22,14 +37,18 @@ const layout = {
       shadowRadius: 15,
       elevation: 0,
     },
-    // Add more shadow configurations as needed
   },
   fontSize: {
-    FlashCardModuleBox: 24,
+    ScreenHeader: getResponsiveValue(30, 50),
+    FlashCardModuleBox: getResponsiveValue(20, 24),
+    widgetHeader: getResponsiveValue(20, 30),
+  },
+  components: {
+    bookCoverThumb: {
+      height: getResponsiveValue(120, 190), 
+      width: getResponsiveValue(90, 150), 
+    }
   }
-  // You can add more categories here as needed, such as:
-  // spacing: { ... },
-  // sizes: { ... },
 };
 
 export default layout;

@@ -4,6 +4,7 @@ import { useFlashcards } from "../context/FlashcardContext";
 import WidgetHeader from "./WidgetHeader";
 import layout from "../config/layout";
 import colors from "../config/colors";
+import text from "../config/text";
 
 export default function StatBoxMax() {
   const { allCards, youngCards, matureCards } = useFlashcards();
@@ -14,7 +15,7 @@ export default function StatBoxMax() {
       <View style={styles.segmentContainer}>
         <View style={styles.statSegment}>
           <View style={styles.labelTextBox}>
-            <Text style={styles.labelText}>All words</Text>
+            <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.allWords}</Text>
           </View>
           <View style={styles.numberTextBox}>
             <Text style={styles.numberText}>{allCards.length}</Text>
@@ -23,7 +24,7 @@ export default function StatBoxMax() {
         <View style={styles.divider} />
         <View style={styles.statSegment}>
           <View style={styles.labelTextBox}>
-            <Text style={styles.labelText}>Young words</Text>
+            <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.youngWords}</Text>
           </View>
           <View style={styles.numberTextBox}>
             <Text style={styles.numberText}>{youngCards.length}</Text>
@@ -32,7 +33,7 @@ export default function StatBoxMax() {
         <View style={styles.divider} />
         <View style={styles.statSegment}>
           <View style={styles.labelTextBox}>
-            <Text style={styles.labelText}>Mature words</Text>
+            <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.matureWords}</Text>
           </View>
           <View style={styles.numberTextBox}>
             <Text style={styles.numberText}>{matureCards.length}</Text>
@@ -64,6 +65,8 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: "black",
     marginBottom: 40,
+    height: 40,
+    top: 30,
   },
   statSegment: {
     top: -10,

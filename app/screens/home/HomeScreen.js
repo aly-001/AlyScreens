@@ -4,7 +4,6 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
-import StatBox from "../../components/StatBox";
 import colors from "../../config/colors";
 import layout from "../../config/layout";
 import MyLibrary from "../../components/MyLibrary";
@@ -40,76 +39,75 @@ export default function HomeScreen() {
   };
 
   return (
-    <View style={styles.superContainer}>
-      <Screen>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
-          <View style={styles.headerContainer}>
-            <ScreenHeader text="Home" />
-          </View>
-          <View style={styles.topWidgetContainer}>
-            <TouchableWithoutFeedback
-              onPress={() => navigation.navigate("Dictionary")}
-            >
-              <FlashcardProvider>
-                <StatBoxMax />
-              </FlashcardProvider>
-            </TouchableWithoutFeedback>
-          </View>
+    <View style={styles.container}>
+      <ScreenHeader text="Home" style={styles.header} />
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.topWidgetContainer}>
           <TouchableWithoutFeedback
-            onPress={() => navigation.navigate("Library")}
+            onPress={() => navigation.navigate("Dictionary")}
           >
-            <View style={styles.libraryContainer}>
-              <MyLibrary books={books} onBookPress={handleBookPress} />
-            </View>
+            <FlashcardProvider>
+              <StatBoxMax />
+            </FlashcardProvider>
           </TouchableWithoutFeedback>
-          <View style={styles.bottomWidgetContainer}>
-            <BottomWidget
-              header="Help"
-              IconComponent={(props) => (
-                <FontAwesome5
-                  name="question"
-                  size={65}
-                  color={colors.homeScreenIcon}
-                  style={{ position: "absolute", top: -30 }}
-                  {...props}
-                />
-              )}
-            />
-            <BottomWidget
-              header="Settings"
-              IconComponent={(props) => (
-                <FontAwesome6
-                  name="gear"
-                  size={65}
-                  color={colors.homeScreenIcon}
-                  style={{ position: "absolute", top: -30 }}
-                  {...props}
-                />
-              )}
-              onPress={() => navigation.navigate("Config")}
-            />
+        </View>
+        <TouchableWithoutFeedback
+          onPress={() => navigation.navigate("Library")}
+        >
+          <View style={styles.libraryContainer}>
+            <MyLibrary books={books} onBookPress={handleBookPress} />
           </View>
-        </ScrollView>
-      </Screen>
+        </TouchableWithoutFeedback>
+        <View style={styles.bottomWidgetContainer}>
+          <BottomWidget
+            header="Help"
+            IconComponent={(props) => (
+              <FontAwesome5
+                name="question"
+                size={65}
+                color={colors.homeScreenIcon}
+                style={styles.icon}
+                {...props}
+              />
+            )}
+          />
+          <BottomWidget
+            header="Settings"
+            IconComponent={(props) => (
+              <FontAwesome6
+                name="gear"
+                size={65}
+                color={colors.homeScreenIcon}
+                style={styles.icon}
+                {...props}
+              />
+            )}
+            onPress={() => navigation.navigate("Config")}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  superContainer: {
+  container: {
     flex: 1,
     backgroundColor: colors.homeScreenBackground,
   },
-  contentContainer: {
-    flex: 1,
-    padding: layout.margins.homeScreenWidgets / 2,
-    paddingTop: 210,
-  },
-  headerContainer: {
+  header: {
     position: "absolute",
-    top: 30,
-    left: layout.margins.homeScreenWidgets,
-    zIndex: 1,
+    width: 100,
+    height: 60,
+
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: layout.margins.homeScreenWidgets / 2,
+    paddingTop: layout.margins.homeScreen.betweenHeaderAndWidgets,
   },
   topWidgetContainer: {
     marginHorizontal: layout.margins.homeScreenWidgets / 2,
@@ -125,6 +123,10 @@ const styles = StyleSheet.create({
   bottomWidgetContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 80,
+    marginBottom: 100,
   },
+  icon:{
+    bottom: 45,
+    paddingBottom: 30,
+  }
 });

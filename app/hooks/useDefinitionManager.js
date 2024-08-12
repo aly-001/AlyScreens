@@ -38,7 +38,6 @@ export default function useDefinitionManager() {
     setAudioBase64(null);
     setCurrentGrammar("");
     setAudioLoading(false);
-    console.log("Started");
     
     const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, "");
     const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);

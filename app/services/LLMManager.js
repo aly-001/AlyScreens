@@ -9,7 +9,6 @@ const createOpenAIInstance = (apiKey) => {
 };
 
 export async function callLLM(apiKey, prompt) {
-  console.log("prompt:", prompt);
   try {
     const openai = createOpenAIInstance(apiKey);
     const completion = await openai.chat.completions.create({
@@ -34,7 +33,6 @@ export const generateAudio = async (apiKey, word) => {
     
     const audioBuffer = await response.arrayBuffer();
     const base64Audio = Buffer.from(audioBuffer).toString('base64');
-    console.log("Audio data generated");
     return base64Audio;
   } catch (error) {
     console.error("Error generating audio:", error);

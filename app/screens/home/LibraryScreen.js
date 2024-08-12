@@ -17,15 +17,10 @@ import BookCoverThumb from "../../components/BookCoverThumb";
 import Screen from "../../components/Screen";
 import ScreenHeader from "../../components/ScreenHeader";
 import layout from "../../config/layout";
-import PracticeStartButton from "../../components/PracticeStartButton";
 
 const LibraryScreen = () => {
   const navigation = useNavigation();
-  const { books, loadBooks, addBook, deleteBook, updateBookStatus } = useBooks();
-
-  useEffect(() => {
-    loadBooks();
-  }, [loadBooks]);
+  const { books, addBook, deleteBook, updateBookStatus } = useBooks();
 
   const handleBookPress = (book) => {
     navigation.navigate("Read", {
@@ -68,27 +63,28 @@ const LibraryScreen = () => {
 
   const handleUpload = async () => {
     try {
-      console.log("Uploading file");
       const result = await DocumentPicker.getDocumentAsync({
         type: "application/epub+zip",
         copyToCacheDirectory: true,
       });
 
       if (result.assets && result.assets.length > 0) {
-        console.log("Successfully picked file");
         const sourceUri = result.assets[0].uri;
         const originalName = result.assets[0].name;
         const bookDir = FileSystem.documentDirectory + "books/";
         const destinationUri = bookDir + originalName;
+
         await FileSystem.makeDirectoryAsync(bookDir, { intermediates: true });
         await FileSystem.copyAsync({
           from: sourceUri,
           to: destinationUri,
         });
+        
         const fileInfo = await FileSystem.getInfoAsync(destinationUri);
         if (!fileInfo.exists) {
           throw new Error("Failed to copy file to document directory");
         }
+
         const newBook = {
           uri: destinationUri,
           name: originalName,
@@ -97,17 +93,19 @@ const LibraryScreen = () => {
           color: getRandomColor(),
           status: 0,
         };
-        await addBook(newBook);
-        await updateBookStatus(destinationUri, 70);
-        Alert.alert("Success", "EPUB file stored successfully");
+        const added = await addBook(newBook);
+        if (added) {
+          Alert.alert("Success", "EPUB file stored successfully");
+        }
       } else {
-        console.log("No file selected");
+        console.log("LibraryScreen: No file selected");
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
+      console.error("LibraryScreen: Error uploading file:", error);
       Alert.alert("Error", "Failed to store EPUB file");
     }
   };
+
 
   return (
     <View style={styles.superContainer}>

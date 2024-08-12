@@ -2,6 +2,7 @@ import { View, StyleSheet , Text} from 'react-native';
 import React from 'react';
 import fonts from '../config/fonts';
 import colors from '../config/colors';
+import layout from '../config/layout';
 
 export default function ScreenHeader({ text }) {
   return (
@@ -13,10 +14,11 @@ export default function ScreenHeader({ text }) {
 
 const styles = StyleSheet.create({
   container: {
-    
+    alignItems: "flex-start",
   },
   header:{
-    fontSize: 50,
+    margin: layout.margins.screenHeaderMargin,
+    fontSize: layout.fontSize.ScreenHeader,
     fontWeight: 'bold',
     textAlign: 'center',
     color: colors.screenHeader,
