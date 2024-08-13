@@ -146,8 +146,4 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: layout.margins.practiceScreenStart.startButtonHorizontal,
   },
-  statsText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
 });

@@ -44,10 +44,15 @@ const layout = {
       allTabsContainerBottom: getResponsiveValue(60, 100),
       allTabsContainerRight: getResponsiveValue(-42, -41),
     },
+    readScreen: {
+      headerTitleTop: getResponsiveValue(-10, 0),
+      headerHeight: getResponsiveValue(40, 80),
+    },
     screenHeaderMargin: 25,
     screenHeaderMarginTop: getResponsiveValue(35, 0),
     homeScreenWidgets: getResponsiveValue(0, 35),
     practiceScreenPaddingHorizontal: 30,
+
   },
   shadows: {
     homeScreenWidgets: {

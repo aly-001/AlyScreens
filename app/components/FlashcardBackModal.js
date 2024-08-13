@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: '100%',
-    height: 400,
+    height: layout.flashCards.image.width,
   },
   lightTintOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -277,8 +277,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 400,
-    height: 400,
+    width: layout.flashCards.image.width, 
+    height: layout.flashCards.image.width,
   },
   modulesContainer: {
     width: '90%',

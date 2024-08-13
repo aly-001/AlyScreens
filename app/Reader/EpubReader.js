@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
   readerContainer: {
     backgroundColor: "white",
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 60,
     paddingHorizontal: 20,
-    paddingBottom: 0,
+    paddingBottom: 20,
     minHeight: 640,
   },
 });

@@ -28,6 +28,7 @@ import { addCard } from "../../services/CardManager";
 import { useSettingsContext } from "../../context/useSettingsContext";
 import { useAPIKey } from "../../context/APIKeyContext";
 import { useBooks } from "../../context/BooksContext";
+import layout from "../../config/layout";
 
 const duration = 200; // Animation duration
 
@@ -266,7 +267,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    height: 65,
+    height: layout.margins.readScreen.headerHeight,
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
     paddingHorizontal: 10,
@@ -278,11 +279,13 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     marginHorizontal: 10,
+    top: layout.margins.readScreen.headerTitleTop,
   },
   headerIconContainer: {
     width: 24,
     alignItems: 'center',
     marginHorizontal: 20,
+    top: layout.margins.readScreen.headerTitleTop,
   },
   readerContainer: {
     flex: 1,

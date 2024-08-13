@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    padding: layout.margins.homeScreenWidgets / 2,
   },
   headerContainer: {
     marginBottom: 10,
@@ -172,6 +171,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 10,
+    paddingVertical: 30,
   },
   booksContainer: {
     flexDirection: "row",

@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import colors from "../../config/colors";
 import Screen from "../../components/Screen";
 import ScreenHeader from "../../components/ScreenHeader";
 import layout from "../../config/layout";
 import { DolphinSR } from "../../../lib/index";
-import * as SQLite from 'expo-sqlite';
-import { getAllCards, getYoungCards, getMatureCards } from "../../context/FlashcardContext";
+import * as SQLite from "expo-sqlite";
+import {
+  getAllCards,
+  getYoungCards,
+  getMatureCards,
+} from "../../context/FlashcardContext";
 import Word from "../../components/Word";
 import FlashcardBackModal from "../../components/FlashcardBackModal";
 
@@ -24,7 +34,7 @@ const DictionaryScreen = () => {
 
   const initializeDatabase = async () => {
     try {
-      const database = await SQLite.openDatabaseAsync('flashcards.db');
+      const database = await SQLite.openDatabaseAsync("flashcards.db");
 
       await database.execAsync(`
         CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
@@ -35,40 +45,41 @@ const DictionaryScreen = () => {
       setDolphinSR(dolphinSRInstance);
       await loadDeck(database, dolphinSRInstance);
     } catch (error) {
-      console.error('Database initialization error:', error);
+      console.error("Database initialization error:", error);
     }
   };
 
   const loadDeck = async (database, dolphinSRInstance) => {
     try {
-      const mastersResult = await database.getAllAsync('SELECT * FROM masters');
-      const reviewsResult = await database.getAllAsync('SELECT * FROM reviews');
-      
-      const loadedMasters = mastersResult.map(row => ({
+      const mastersResult = await database.getAllAsync("SELECT * FROM masters");
+      const reviewsResult = await database.getAllAsync("SELECT * FROM reviews");
+
+      const loadedMasters = mastersResult.map((row) => ({
         ...JSON.parse(row.data),
-        id: row.id // Ensure each master has an id
+        id: row.id, // Ensure each master has an id
       }));
-      const loadedReviews = reviewsResult.map(row => ({
+      const loadedReviews = reviewsResult.map((row) => ({
         ...JSON.parse(row.data),
         id: row.id, // Ensure each review has an id
-        ts: new Date(JSON.parse(row.data).ts)
+        ts: new Date(JSON.parse(row.data).ts),
       }));
-      
+
       dolphinSRInstance.addMasters(...loadedMasters);
       dolphinSRInstance.addReviews(...loadedReviews);
-      
+
       updateWords(dolphinSRInstance);
     } catch (error) {
-      console.error('Load deck error:', error);
-      console.error('Error stack:', error.stack);
+      console.error("Load deck error:", error);
+      console.error("Error stack:", error.stack);
     }
   };
 
   const updateWords = (dolphinSRInstance) => {
-    const processCards = (cards) => cards.map(card => ({
-      ...card,
-      id: card.id || `card-${Math.random().toString(36).substr(2, 9)}` // Ensure each card has a unique id
-    }));
+    const processCards = (cards) =>
+      cards.map((card) => ({
+        ...card,
+        id: card.id || `card-${Math.random().toString(36).substr(2, 9)}`, // Ensure each card has a unique id
+      }));
 
     setAllCards(processCards(getAllCards(dolphinSRInstance)));
     setYoungCards(processCards(getYoungCards(dolphinSRInstance)));
@@ -76,22 +87,24 @@ const DictionaryScreen = () => {
   };
 
   const renderCards = (cards) => {
-    return cards.map((card) => {
-      try {
-        const frontData = JSON.parse(card.front);
-        return (
-          <TouchableOpacity
-            key={card.id}
-            onPress={() => handleCardPress(card)}
-          >
-            <Word word={frontData.word} color={colors.word} />
-          </TouchableOpacity>
-        );
-      } catch (error) {
-        console.error('Error parsing card front:', error);
-        return null;
-      }
-    }).filter(Boolean);
+    return cards
+      .map((card) => {
+        try {
+          const frontData = JSON.parse(card.front);
+          return (
+            <TouchableOpacity
+              key={card.id}
+              onPress={() => handleCardPress(card)}
+            >
+              <Word word={frontData.word} color={colors.word} />
+            </TouchableOpacity>
+          );
+        } catch (error) {
+          console.error("Error parsing card front:", error);
+          return null;
+        }
+      })
+      .filter(Boolean);
   };
 
   const handleCardPress = (card) => {
@@ -101,11 +114,11 @@ const DictionaryScreen = () => {
 
   const renderSection = (title, cards) => (
     <View style={styles.scrollViewContainer} key={title}>
-    <Text style={[styles.sectionTitle, { color: colors.utilityGrey }]}>{title} ({cards.length})</Text>
+      <Text style={[styles.sectionTitle, { color: colors.utilityGrey }]}>
+        {title} ({cards.length})
+      </Text>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.wordsContainer}>
-          {renderCards(cards)}
-        </View>
+        <View style={styles.wordsContainer}>{renderCards(cards)}</View>
       </ScrollView>
     </View>
   );
@@ -113,10 +126,10 @@ const DictionaryScreen = () => {
   return (
     <View style={styles.superContainer}>
       <Screen>
+        <View style={styles.headerContainer}>
+          <ScreenHeader text="Dictionary" />
+        </View>
         <ScrollView contentContainerStyle={styles.contentContainer}>
-          <View style={styles.headerContainer}>
-            <ScreenHeader text="Dictionary" />
-          </View>
           <View style={styles.container}>
             {renderSection("All Words", allCards)}
             {renderSection("Young Words", youngCards)}
@@ -133,20 +146,17 @@ const DictionaryScreen = () => {
   );
 };
 
-
 const styles = StyleSheet.create({
   superContainer: {
     flex: 1,
     backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
+    paddingVertical: 30,
     flexGrow: 1,
-    padding: layout.margins.homeScreenWidgets / 2,
-    paddingTop: layout.margins.dictionaryScreen.betweenHeaderAndWidgets,
   },
   headerContainer: {
-    position: "absolute",
-    zIndex: 1,
+    marginBottom: 10,
   },
   container: {
     flex: 1,
@@ -162,7 +172,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: "purple",
     fontSize: layout.fontSize.dictionary.sectionTitle,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
     color: colors.text,
   },
@@ -172,10 +182,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   wordsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     padding: 10,
   },
 });

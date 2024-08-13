@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   headerTitle: {
-    fontSize: 23,
+    fontSize: layout.fontSize.dictionary.sectionTitle,
     fontWeight: "600",
   },
   headerCount: {
-    fontSize: 23,
+    fontSize: layout.fontSize.dictionary.sectionTitle,
     fontWeight: "600",
   }
 });

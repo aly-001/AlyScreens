@@ -44,7 +44,7 @@ const CustomDrawerContent = (props) => {
     <DrawerContentScrollView {...props} style={styles.drawerContent}>
       <View style={{alignSelf: "flex-start", marginLeft: 20}}>
         <View style={{marginBottom: 50}}>
-          <Text style={{ fontSize: 34, fontWeight: 'bold', textAlign: 'center', marginVertical: 20}}>
+          <Text style={{ fontSize: 34, fontWeight: 'bold', textAlign: 'center', marginVertical: 20, color: colors.utilityGreyLight}}>
             Settings
           </Text>
         </View>
