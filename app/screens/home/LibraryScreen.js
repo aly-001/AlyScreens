@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
   Alert,
-  Button,
   Text,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
@@ -18,9 +18,11 @@ import Screen from "../../components/Screen";
 import ScreenHeader from "../../components/ScreenHeader";
 import layout from "../../config/layout";
 
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
 const LibraryScreen = () => {
   const navigation = useNavigation();
-  const { books, addBook, deleteBook, updateBookStatus } = useBooks();
+  const { books, addBook, deleteBook } = useBooks();
 
   const handleBookPress = (book) => {
     navigation.navigate("Read", {
@@ -106,16 +108,15 @@ const LibraryScreen = () => {
     }
   };
 
-
   return (
     <View style={styles.superContainer}>
       <Screen>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <View style={styles.contentContainer}>
           <View style={styles.headerContainer}>
             <ScreenHeader text="Library" />
           </View>
 
-          <View style={styles.container}>
+          <View style={styles.booksContainerWrapper}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
               <View style={styles.booksContainer}>
                 {books.map((book) => (
@@ -136,19 +137,18 @@ const LibraryScreen = () => {
                 ))}
               </View>
             </ScrollView>
-            
           </View>
-          <View style={styles.startBoxContainer}>
-          <TouchableOpacity onPress={handleUpload} style={styles.button}>
-          <Text style={styles.buttonText}>Upload</Text>
-        </TouchableOpacity>
-        <View style={{paddingHorizontal: 45}}>
 
-        <Text style={{opacity: .5}}>PDF support is coming soon!</Text> 
-        <Text style={{opacity: .5}}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
-        </View>
+          <View style={styles.footerContainer}>
+            <TouchableOpacity onPress={handleUpload} style={styles.button}>
+              <Text style={styles.buttonText}>Upload</Text>
+            </TouchableOpacity>
+            <View style={styles.footerTextContainer}>
+              <Text style={styles.footerText}>PDF support is coming soon!</Text> 
+              <Text style={styles.footerText}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
+            </View>
           </View>
-        </ScrollView>
+        </View>
       </Screen>
     </View>
   );
@@ -156,21 +156,19 @@ const LibraryScreen = () => {
 
 const styles = StyleSheet.create({
   superContainer: {
+
     flex: 1,
     backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
     flex: 1,
     padding: layout.margins.homeScreenWidgets / 2,
-    paddingTop: 210,
   },
   headerContainer: {
-    position: "absolute",
-    top: 30,
-    left: layout.margins.homeScreenWidgets,
-    zIndex: 1,
+    marginBottom: 10,
   },
-  container: {
+  booksContainerWrapper: {
+    height: layout.margins.libraryScreen.maxScrollViewHeight,
   },
   scrollContent: {
     padding: 10,
@@ -183,19 +181,8 @@ const styles = StyleSheet.create({
   bookWrapper: {
     margin: 5,
   },
-  upload: {
-    // color: colors.appleBlue,
-    padding: 20,
-    fontSize: 23,
-    fontWeight: "600",
-    color: colors.utilityGrey,
-  },
-  startBoxContainer: {
-    position: "absolute",
-    bottom: 130, 
-    width: "100%",
-    paddingHorizontal: layout.margins.homeScreenWidgets - 15,
-    marginTop: 140,
+  footerContainer: {
+    marginTop: 10,
   },
   button: {
     padding: 10,
@@ -203,8 +190,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 20, // Change this value to adjust the text size
+    fontSize: 20,
     color: 'dodgerblue',
+  },
+  footerTextContainer: {
+    paddingHorizontal: 45,
+    marginTop: 10,
+  },
+  footerText: {
+    opacity: 0.5,
   },
 });
 

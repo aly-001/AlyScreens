@@ -30,6 +30,10 @@ const layout = {
       betweenHeaderAndWidgets: getResponsiveValue(120, 140),
       maxScrollViewHeight: getResponsiveValue(200, 265),
     },
+    libraryScreen:{
+      footerMargin: getResponsiveValue(50, 100),
+      maxScrollViewHeight: getResponsiveValue(460, 800),
+    },
     screenHeaderMargin: 25,
     homeScreenWidgets: getResponsiveValue(0, 35),
     practiceScreenPaddingHorizontal: 30,
