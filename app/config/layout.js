@@ -113,6 +113,16 @@ const layout = {
       top: getResponsiveValue(-60, 0), // only on iOS iPhone
     }
   },
+  translationPopup: {
+    width: getResponsiveValue(500, 700),
+    widthRatio: getResponsiveValue(0.9, 0.6),
+    maxHeightMiddle: getResponsiveValue(400, 450),
+    maxHeightTop: getResponsiveValue(500, 700),
+    fontSize: {
+      word: getResponsiveValue(23, 24),
+      definition: getResponsiveValue(18, 22),
+    },
+  },
 };
 
 export default layout;

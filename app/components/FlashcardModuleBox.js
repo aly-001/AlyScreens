@@ -54,7 +54,7 @@ export default function FlashcardModuleBox({ color, text = '', maxHeight = 200, 
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
               <Ionicons name="close" size={28} color={colors.utilityGrey} />
             </TouchableOpacity>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView showsVerticalScrollIndicator={false}  contentContainerStyle={styles.scrollViewContent}>
               <Text style={styles.text}>{formattedText}</Text>
             </ScrollView>
           </View>

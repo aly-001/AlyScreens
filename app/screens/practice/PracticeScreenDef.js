@@ -288,6 +288,7 @@ export default function PracticeScreenDef() {
         <View style={styles.container}>
           {imageUri ? (
             <ScrollView
+            showsVerticalScrollIndicator={false} 
               style={styles.scrollView}
               contentContainerStyle={styles.scrollViewContent}
             >

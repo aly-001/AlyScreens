@@ -5,7 +5,7 @@ import colors from '../config/colors';
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
 
-export default function FlashcardModuleBoxGeneral({ color, maxHeight = 200, borderRadius = 20, children, openable = true }) {
+export default function FlashcardModuleBoxGeneral({ color, maxHeight = 200, borderRadius = 20, children, openable = true, margin=true }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -30,6 +30,7 @@ export default function FlashcardModuleBoxGeneral({ color, maxHeight = 200, bord
             backgroundColor: color,
             borderRadius: borderRadius,
             maxHeight: maxHeight,
+            marginBottom: margin ? 20 : 0,
           }
         ]}>
           <View ref={contentRef}>
@@ -44,6 +45,7 @@ export default function FlashcardModuleBoxGeneral({ color, maxHeight = 200, bord
             backgroundColor: color,
             borderRadius: borderRadius,
             maxHeight: maxHeight,
+            marginBottom: margin ? 20 : 0,
           }
         ]}>
           <View ref={contentRef}>
@@ -63,7 +65,7 @@ export default function FlashcardModuleBoxGeneral({ color, maxHeight = 200, bord
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
               <Ionicons name="close" size={28} color={colors.utilityGrey} />
             </TouchableOpacity>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContent}>
               {children}
             </ScrollView>
           </View>
@@ -80,7 +82,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     padding: 15,
-    marginBottom: 20,
     overflow: 'hidden',
     minHeight: 50, // Minimum height to prevent collapse
   },

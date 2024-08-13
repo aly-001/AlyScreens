@@ -147,7 +147,7 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
           </TouchableOpacity>
           <View style={styles.modalContainer}>
             <BlurView intensity={100} style={[StyleSheet.absoluteFill, styles.blurViewStyle]}>
-              <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+              <ScrollView showsVerticalScrollIndicator={false}  style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
                 {imageUri && (
                   <ImageBackground
                     source={{ uri: imageUri }}

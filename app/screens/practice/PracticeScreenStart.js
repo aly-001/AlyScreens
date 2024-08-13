@@ -54,7 +54,7 @@ export default function PracticeScreenStart() {
     <View style={styles.superContainer}>
       <StatusBar hidden={true} />
       <Screen>
-        <ScrollView contentContainerStyle={styles.contentContainer}>
+        <ScrollView showsVerticalScrollIndicator={false}  contentContainerStyle={styles.contentContainer}>
           <View style={styles.headerContainer}>
             <ScreenHeader text="Practice" />
           </View>

@@ -7,18 +7,20 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Audio } from "expo-av";
-import * as FileSystem from "expo-file-system";
 
 import fonts from "../config/fonts";
 import colors from "../config/colors";
 import Pointer from "./Pointer";
 import { useSettingsContext } from "../context/useSettingsContext";
+import FlashcardModuleBoxGeneral from "../components/FlashcardModuleBoxGeneral";
+import Markdown from "react-native-markdown-display";
 
 import LoadingText from "./LoadingText";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
+import layout from "../config/layout";
 
 const { width, height } = Dimensions.get("window");
 
@@ -43,8 +45,11 @@ const DefinitionPopup = ({
   const [direction, setDirection] = useState("D");
   const [locationTop, setLocationTop] = useState(0);
   const [locationLeft, setLocationLeft] = useState(0);
+  const [maxHeight, setMaxHeight] = useState(450);
 
   const settings = useSettingsContext().settings;
+
+  const widthRatio = layout.translationPopup.widthRatio;
 
   useEffect(() => {
     if (visible) {
@@ -53,12 +58,22 @@ const DefinitionPopup = ({
   }, [visible]);
 
   useEffect(() => {
+    const maxHeightMiddle = layout.translationPopup.maxHeightMiddle;
+    const maxHeightTop = layout.translationPopup.maxHeightTop;
     if (location) {
       const { top, left } = calculatePosition(location);
       const newDirection = calculateDirection(top, left);
       updateDirection(newDirection);
       setLocationTop(top);
       setLocationLeft(left);
+
+      // Determine the maxHeight based on the location
+      const screenThird = height / 3;
+      if (top > screenThird && top < 2 * screenThird) {
+        setMaxHeight(maxHeightMiddle);
+      } else {
+        setMaxHeight(maxHeightTop);
+      }
     }
   }, [location]);
 
@@ -109,7 +124,7 @@ const DefinitionPopup = ({
   };
 
   const calculateModalLeft = () => {
-    const modalWidth = width * (3.75 / 6.25);
+    const modalWidth = width * (widthRatio);
     let x = locationLeft - modalWidth / 2;
     padding = 20;
 
@@ -123,7 +138,7 @@ const DefinitionPopup = ({
   };
 
   const calculatePointerLeft = () => {
-    const modalWidth = width * (3.75 / 6.25);
+    const modalWidth = width * (widthRatio);
     let x = locationLeft - modalWidth / 2;
     let z = modalWidth / 2;
     padding = 20;
@@ -173,36 +188,49 @@ const DefinitionPopup = ({
               <TouchableWithoutFeedback>
                 <View
                   style={[
-                    styles.modalView,
-                    { position: "absolute", left: calculateModalLeft() },
+                    styles.modalViewContainer,
+                    {
+                      width: (width) * widthRatio,
+                      position: "absolute",
+                      left: calculateModalLeft(),
+                      maxHeight: maxHeight, // Apply the dynamic maxHeight here
+                    },
                   ]}
                 >
-                  <ModalHeader word={word} onClose={onClose} />
-                  {settings.translationPopupAudio && (
-                    <ModalAudio
-                      audioBase64={audioBase64}
-                      audioLoading={audioLoading}
-                    />
-                  )}
-                  {settings.translationPopupGrammar && (
-                    <ModalGram
-                      grammarLoading={grammarLoading}
-                      currentGrammar={currentGrammar}
-                    />
-                  )}
-                  {settings.translationPopupModuleA && (
-                    <ModalModuleA
-                      moduleALoading={moduleALoading}
-                      currentModuleA={currentModuleA}
-                    />
-                  )}
-                  {settings.translationPopupModuleB && (
-                    <ModalModuleB
-                      moduleBLoading={moduleBLoading}
-                      currentModuleB={currentModuleB}
-                    />
-                  )}
-                  <ModalDef isLoading={isLoading} definition={definition} />
+                  <ScrollView
+                    showsVerticalScrollIndicator={false} 
+
+                    style={styles.modalView}
+                    contentContainerStyle={styles.modalViewContent}
+                  >
+                    <ModalHeader word={word} onClose={onClose} />
+
+                    {settings.translationPopupAudio && (
+                      <ModalAudio
+                        audioBase64={audioBase64}
+                        audioLoading={audioLoading}
+                      />
+                    )}
+                    <ModalDef isLoading={isLoading} definition={definition} />
+                    {settings.translationPopupGrammar && (
+                      <ModalGram
+                        grammarLoading={grammarLoading}
+                        currentGrammar={currentGrammar}
+                      />
+                    )}
+                    {settings.translationPopupModuleA && (
+                      <ModalModuleA
+                        moduleALoading={moduleALoading}
+                        currentModuleA={currentModuleA}
+                      />
+                    )}
+                    {settings.translationPopupModuleB && (
+                      <ModalModuleB
+                        moduleBLoading={moduleBLoading}
+                        currentModuleB={currentModuleB}
+                      />
+                    )}
+                  </ScrollView>
 
                   <View
                     style={[
@@ -237,11 +265,16 @@ const DefinitionPopup = ({
 };
 
 const ModalHeader = ({ word, onClose }) => (
-  <View style={styles.header}>
+  <View
+    style={[
+      styles.content,
+      {
+        backgroundColor: colors.translationPopup.translationModuleShade,
+        marginTop: 15,
+      },
+    ]}
+  >
     <Text style={styles.wordText}>{word}</Text>
-    <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-      <Ionicons name="close" size={28} color={colors.utilityGrey} />
-    </TouchableOpacity>
   </View>
 );
 
@@ -249,7 +282,10 @@ const ModalDef = ({ isLoading, definition }) => (
   <View
     style={[
       styles.content,
-      { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+      {
+        backgroundColor: colors.translationPopup.translationModuleShade,
+        marginBottom: 15,
+      },
     ]}
   >
     {isLoading ? (
@@ -260,7 +296,12 @@ const ModalDef = ({ isLoading, definition }) => (
         />
       </View>
     ) : (
-      <Text style={styles.definitionText}>{definition}</Text>
+      <FlashcardModuleBoxGeneral
+        margin={false}
+        color={colors.translationPopup.translationModuleShade}
+      >
+        <Text style={styles.definitionText}>{definition}</Text>
+      </FlashcardModuleBoxGeneral>
     )}
   </View>
 );
@@ -322,7 +363,12 @@ const ModalGram = ({ grammarLoading, currentGrammar }) => (
         />
       </View>
     ) : (
-      <Text style={styles.definitionText}>{currentGrammar}</Text>
+      <FlashcardModuleBoxGeneral
+        margin={false}
+        color={colors.translationPopup.grammarModuleShade}
+      >
+        <Markdown style={styles.definitionText}>{currentGrammar}</Markdown>
+      </FlashcardModuleBoxGeneral>
     )}
   </View>
 );
@@ -337,13 +383,17 @@ const ModalModuleA = ({ moduleALoading, currentModuleA }) => (
     {moduleALoading ? (
       <View style={styles.loadingContainer}>
         <LoadingText
-
           text="Loading custom module A..."
           barColor={colors.translationPopup.moduleAModuleShade}
         />
       </View>
     ) : (
-      <Text style={styles.definitionText}>{currentModuleA}</Text>
+      <FlashcardModuleBoxGeneral
+        margin={false}
+        color={colors.translationPopup.moduleAModuleShade}
+      >
+        <Text style={styles.definitionText}>{currentModuleA}</Text>
+      </FlashcardModuleBoxGeneral>
     )}
   </View>
 );
@@ -358,13 +408,17 @@ const ModalModuleB = ({ moduleBLoading, currentModuleB }) => (
     {moduleBLoading ? (
       <View style={styles.loadingContainer}>
         <LoadingText
-
           text="Loading custom module B..."
           barColor={colors.translationPopup.moduleBModuleShade}
         />
       </View>
     ) : (
-      <Text style={styles.definitionText}>{currentModuleB}</Text>
+      <FlashcardModuleBoxGeneral
+        margin={false}
+        color={colors.translationPopup.moduleBModuleShade}
+      >
+        <Text style={styles.definitionText}>{currentModuleB}</Text>
+      </FlashcardModuleBoxGeneral>
     )}
   </View>
 );
@@ -382,19 +436,21 @@ const styles = StyleSheet.create({
     height: 600,
     justifyContent: "flex-end",
   },
-  modalView: {
-    backgroundColor: "white",
-    width: (width * 3.75) / 6.25,
+  modalViewContainer: {
+    backgroundColor: "rgba(200, 200, 200, 1)",
     borderRadius: 10,
-    borderColor: colors.utilityGreyUltraLight,
-    borderWidth: 1.75,
+    paddingVertical: 15,
+  },
+  modalView: {
+    flex: 1,
+  },
+  modalViewContent: {
+    paddingBottom: 15,
   },
   header: {
     height: 70,
     justifyContent: "center",
     alignItems: "center",
-    borderBottomWidth: 1.5,
-    borderColor: colors.utilityGreyUltraLight,
   },
   closeButton: {
     position: "absolute",
@@ -402,20 +458,22 @@ const styles = StyleSheet.create({
     top: 20,
   },
   wordText: {
-    fontSize: 24,
+    fontSize: layout.translationPopup.fontSize.word,
     fontFamily: fonts.main,
-    color: colors.defHeader,
     fontWeight: "500",
   },
+  // ****************************
   content: {
     padding: 10,
+    marginHorizontal: 15,
+    marginBottom: 15,
+    borderRadius: 10,
   },
+  // ****************************
   definitionText: {
-    padding: 20,
     fontFamily: fonts.main,
     fontWeight: "400",
-    color: colors.defText,
-    fontSize: 22,
+    fontSize: layout.translationPopup.fontSize.definition,
   },
   footer: {
     marginLeft: 20,
@@ -429,7 +487,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontFamily: fonts.main,
-    color: colors.utilityGrey,
+    color: "white",
     fontSize: 24,
     marginLeft: 10,
     opacity: 0.5,
@@ -448,20 +506,6 @@ const styles = StyleSheet.create({
   },
   pointerBottom: {
     bottom: -8,
-  },
-  pointerCover: {
-    width: 80,
-    height: 20,
-  },
-  pointerCoverTop: {
-    top: 0,
-    left: -5,
-    right: 230,
-  },
-  pointerCoverBottom: {
-    position: "absolute",
-    bottom: 0,
-    right: width * (3.75 / 6.25) - 30,
   },
   highlight: {
     position: "absolute",
