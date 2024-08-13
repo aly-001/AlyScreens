@@ -3,12 +3,11 @@ import { View, StyleSheet, Text, SafeAreaView, StatusBar, TouchableWithoutFeedba
 
 import colors from "../../config/colors";
 import PracticeStatsFooter from "../../components/PracticeStatsFooter";
-import PracticeDividerLine from "../../components/PracticeDividerLine";
 import { useFlashcards } from "../../context/FlashcardContext";
-import { ScrollView } from "react-native-gesture-handler";
 import FlashcardModuleBox from "../../components/FlashcardModuleBox";
 import FlashcardModuleBoxGeneral from "../../components/FlashcardModuleBoxGeneral";
 import Markdown from 'react-native-markdown-display';
+import layout from "../../config/layout";
 
 
 export default function PracticeScreenWord({ navigation }) {
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    marginHorizontal: 40,
+    marginHorizontal: layout.flashCards.margins.contentPaddingHorizontal,
     flex: 1,
   },
   wordContainer: {
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   word: {
-    fontSize: 50,
+    fontSize: layout.flashCards.fontSize.word,
     fontWeight: "600",
     color: colors.utilityGrey,
   },
@@ -115,42 +114,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     bottom: 60,
   },
-  dividerLine: {
-    marginVertical: 50,
-    width: "100%",
-  },
   def: {
     marginTop: 10,
-    fontSize: 25,
+    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
     fontWeight: "500",
     color: colors.utilityGrey,
     opacity: 0.85,
     padding: 5,
     borderRadius: 5,
   },
-  contentBox: {
-    marginTop: 15,
-    padding: 15,
-    borderRadius: 10,
-  },
-
-  contentText: {
-    fontSize: 30,
-    fontWeight: "500",
-    color: colors.utilityGrey,
-  },
-
-  contextBox: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: colors.utilityGrey,
-    width: '100%',
-  },
-
-  context: {
-    fontSize: 25,
-    fontWeight: "500",
-    color: colors.utilityGrey,
-  },
-
 });

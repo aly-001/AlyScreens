@@ -1,6 +1,7 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import colors from "../config/colors";
+import layout from "../config/layout";
 
 export default function PracticeRatingTab({ rating, onPress }) {
   let color = rating === "Again" ? colors.tabs.again 
@@ -25,8 +26,8 @@ export default function PracticeRatingTab({ rating, onPress }) {
 
 const styles = StyleSheet.create({
   outerContainer: {
-     width: 100,
-    marginBottom: 45,
+     width: layout.components.practiceRatingTab.width,
+    marginBottom: layout.components.practiceRatingTab.marginBottom,
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
     overflow: 'hidden',
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
     opacity: 0.07,
   },
   textContainer: {
-    paddingVertical: 30,
+    paddingVertical: layout.components.practiceRatingTab.textContainerPaddingVertical,
     justifyContent: "center",
     alignItems: "center",
   },
   text: {
     color: colors.utilityGrey,
-    fontSize: 20,
+    fontSize: layout.components.practiceRatingTab.textFontSize,
     fontWeight: 'bold',
   }
 });

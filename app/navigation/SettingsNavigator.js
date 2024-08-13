@@ -2,14 +2,11 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { Dimensions, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import MainSettingsScreen from '../screens/settings/MainSettingsScreen';
 import LLMKeyScreen from '../screens/settings/LLMKeyScreen';
 import TranslationPopupScreen from '../screens/settings/TranslationPopupScreen';
 import FlashcardMediaScreen from '../screens/settings/FlashcardMediaScreen';
-import PromptEngineeringScreen from '../screens/settings/PromptEngineeringScreen';
 import { Divider } from 'react-native-paper';
-import ScreenHeader from '../components/ScreenHeader';
 import colors from '../config/colors';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
@@ -19,8 +16,8 @@ const Drawer = createDrawerNavigator();
 const DRAWER_WIDTH = 300; // Adjust as needed
 
 const isTablet = () => {
-  const { width, height } = Dimensions.get('window');
-  return Math.max(width, height) >= 768;
+  const { width } = Dimensions.get('window');
+  return width >= 768;
 };
 
 const DrawerItem = ({ label, onPress, isSelected }) => (

@@ -12,6 +12,7 @@ import {
 import { useAPIKey } from "../context/APIKeyContext";
 import colors from "../config/colors";
 import { Ionicons } from "@expo/vector-icons";
+import layout from "../config/layout";
 
 const APIKeyManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 20,
     alignItems: "center",
-    width: "80%",
+    width: layout.components.inputModals.width,
   },
   greyPartContainer: {
     flexDirection: "row",

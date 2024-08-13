@@ -14,7 +14,7 @@ const HomeNavigator = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="MyHome" component={HomeScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Library" component={LibraryScreen} />
       <Stack.Screen name="Config" component={SettingsNavigator}/>
       <Stack.Screen name="Dictionary" component={DictionaryScreen} />

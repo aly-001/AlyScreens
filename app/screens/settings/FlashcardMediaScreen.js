@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     flex: 1,
     backgroundColor: colors.homeScreenBackground,
+    marginBottom: 50,
   },
   group: {
     backgroundColor: "white",

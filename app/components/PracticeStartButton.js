@@ -22,7 +22,7 @@ export default function PracticeStartButton({ text, deactivated }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    borderRadius: 15,
+    borderRadius: layout.borderRadius.startButton,
     borderColor: "#e0e0e0",
     justifyContent: "center",
     alignItems: "center",

@@ -242,7 +242,7 @@ export default function ReadScreen() {
         <BookHeader bookTitle={title} />
         <View style={styles.pickerContainer}>
           <Text>No EPUB file selected</Text>
-          <EpubPicker onPickComplete={handlePickComplete} />
+          <Text>Click on the Library in Home to upload books</Text>
         </View>
       </View>
     );

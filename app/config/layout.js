@@ -18,6 +18,7 @@ const layout = {
     homeScreenWidgets: getResponsiveValue(50, 20),
     homeScreenWidgetsSandwich: getResponsiveValue(0, 20),
     dictionaryScreenWidgets: getResponsiveValue(15, 20),
+    startButton: getResponsiveValue(0, 15),
   },
   margins: {
     homeScreen: {
@@ -33,6 +34,14 @@ const layout = {
     libraryScreen:{
       footerMargin: getResponsiveValue(50, 100),
       maxScrollViewHeight: getResponsiveValue(460, 800),
+    },
+    practiceScreenStart: {
+      startButton: getResponsiveValue(44, 100),
+      startButtonHorizontal: getResponsiveValue(0, 35),
+    },
+    practiceScreenBack :{
+      allTabsContainerBottom: getResponsiveValue(60, 100),
+      allTabsContainerRight: getResponsiveValue(-42, -41),
     },
     screenHeaderMargin: 25,
     homeScreenWidgets: getResponsiveValue(0, 35),
@@ -72,6 +81,17 @@ const layout = {
     flashcardBackModal :{
       closeButtonOffset: getResponsiveValue(-25, -35),
     },
+    inputModals: {
+      width: getResponsiveValue("100%", "80%"),
+      justifyContent: getResponsiveValue("flex-start", "center"),
+      backgroundColor: getResponsiveValue('rgba(0, 0, 0, .2)', 'rgba(0, 0, 0, 0.2)'),
+    },
+    practiceRatingTab: {
+      marginBottom: getResponsiveValue(20, 50),
+      textContainerPaddingVertical: getResponsiveValue(20, 30),
+      textFontSize: getResponsiveValue(18, 20),
+      width: getResponsiveValue(70, 100),
+    },
   },
   icons: {
     homeScreenBottomWidget: getResponsiveValue(45, 65)
@@ -81,6 +101,15 @@ const layout = {
       word: getResponsiveValue(30, 50),
       flashcardModuleBox: getResponsiveValue(18, 24),
     },
+    margins: {
+      betweenModulesAndImage: getResponsiveValue(0, 45),
+      allContentExceptImageTop: getResponsiveValue(-40, 0), // only on iOS iPhone
+      contentPaddingHorizontal: getResponsiveValue(0, 40),
+    },
+    image: {
+      width: getResponsiveValue(300, 400),
+      top: getResponsiveValue(-60, 0), // only on iOS iPhone
+    }
   },
 };
 

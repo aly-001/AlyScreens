@@ -4,12 +4,13 @@ import Word from "./Word";
 import colors from "../config/colors";
 import layout from "../config/layout";
 
-export default function WordBox({ words = [], color = "black", title = "", brb = false, brt = false }) {
+export default function WordBox({ words = [], color = "black", title = "", brb = false, brt = false, extraPadding=false}) {
   return (
     <View style={[
       styles.container, 
       brt && styles.topBorderRadius,
-      brb && styles.bottomBorderRadius
+      brb && styles.bottomBorderRadius,
+      extraPadding && {paddingBottom: 30}
     ]}>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.utilityGrey }]}>{title}</Text>

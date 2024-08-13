@@ -205,7 +205,7 @@ export default function PracticeScreenDef() {
               {backData.context && (
                 <Text
                   style={{
-                    fontSize: layout.flashCards.fontSize.flashCardModuleBox,
+                    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
                     marginBottom: 10,
                   }}
                 >
@@ -297,13 +297,6 @@ export default function PracticeScreenDef() {
             renderCardContent()
           )}
 
-          <View style={styles.footer}>
-            <PracticeStatsFooter
-              newCount={stats.new}
-              learnCount={stats.learning}
-              dueCount={stats.due + stats.overdue}
-            />
-          </View>
           <View style={styles.allTabsContainer}>
             <View style={styles.tabContainer}>
               <PracticeRatingTab
@@ -372,22 +365,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    marginHorizontal: 40,
+    top: layout.flashCards.margins.allContentExceptImageTop,
+    marginRight: 40,
+    marginLeft: layout.flashCards.margins.contentPaddingHorizontal,
     flex: 1,
     justifyContent: "center",
     alignItems: "flex-start",
   },
   modulesContainer: {
-    marginVertical: 45,
+    marginVertical: layout.flashCards.margins.betweenModulesAndImage,
     width: "90%",
   },
   word: {
-    fontSize: 50,
+    fontSize: layout.flashCards.fontSize.word,
     fontWeight: "600",
     color: colors.utilityGrey,
     marginBottom: 10,
   },
-  scrollView: {},
+  scrollView: {
+    width: "100%",
+  },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: "flex-start",
@@ -401,15 +398,16 @@ const styles = StyleSheet.create({
   },
   allTabsContainer: {
     position: "absolute",
-    bottom: height * 0.25 - 210,
-    right: -40,
+    bottom: layout.margins.practiceScreenBack.allTabsContainerBottom,
+    right: layout.margins.practiceScreenBack.allTabsContainerRight,
   },
   tabContainer: {
     marginBottom: 0,
   },
   backgroundImage: {
     width: '100%',
-    height: 400, // Adjust this value as needed
+    height: layout.flashCards.image.width,
+    top: layout.flashCards.image.top,
   },
   lightTintOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -420,8 +418,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 400,
-    height: 400,
+    width: layout.flashCards.image.width,
+    height: layout.flashCards.image.width,
   },
   modalBackgroundImage: {
     flex: 1,

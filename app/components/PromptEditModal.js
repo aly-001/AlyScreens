@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Text, TouchableOpacity, Modal, Button } from 'react-native';
 import { useSettingsContext } from "../context/useSettingsContext";
 import colors from '../config/colors';
+import layout from '../config/layout';
 
 const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPromptPart, onReset }) => {
   const { settings, updateSettings } = useSettingsContext();
@@ -54,16 +55,17 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: layout.components.inputModals.justifyContent,
+    marginVertical: 60,
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: layout.components.inputModals.backgroundColor,
   },
   modalView: {
     backgroundColor: 'white',
     borderRadius: 15,
     padding: 20,
     alignItems: 'center',
-    width: '80%',
+    width: layout.components.inputModals.width,
   },
   greyPartContainer: {
     alignSelf: 'flex-start',

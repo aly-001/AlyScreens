@@ -83,6 +83,7 @@ export default function PracticeScreenStart() {
             <View style={styles.wordBoxContainer}></View>
             <View style={styles.wordBoxContainer}>
               <WordBox
+                extraPadding={true}
                 brb={true}
                 words={dueCards.concat(overdueCards).map((card) => ({
                   id: card.id,
@@ -123,9 +124,9 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     position: "absolute",
-    top: 30,
-    left: layout.margins.homeScreenWidgets,
-    zIndex: 1,
+    marginBottom: 10,
+    top: 18,
+    left: 18,
   },
   allBoxContainer: {
     borderRadius: 20,
@@ -140,10 +141,10 @@ const styles = StyleSheet.create({
   },
   startBoxContainer: {
     position: "absolute",
-    bottom: 100, // Position 100px from the bottom
+    bottom: layout.margins.practiceScreenStart.startButton, // Position 100px from the bottom
     left: 0,
     right: 0,
-    paddingHorizontal: layout.margins.homeScreenWidgets - 15,
+    paddingHorizontal: layout.margins.practiceScreenStart.startButtonHorizontal,
   },
   statsText: {
     fontSize: 16,
