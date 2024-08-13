@@ -8,7 +8,7 @@ import colors from "../../config/colors";
 import layout from "../../config/layout";
 import MyLibrary from "../../components/MyLibrary";
 import BottomWidget from "../../components/BottomWidget";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback, TouchableOpacity } from "react-native-gesture-handler";
 import { useBooks } from "../../context/BooksContext";
 import StatBoxMax from "../../components/StatBoxMax";
 import { FlashcardProvider } from "../../context/FlashcardContext";
@@ -60,21 +60,23 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
       >
         <View style={styles.topWidgetContainer}>
-          <TouchableWithoutFeedback
+          <TouchableOpacity
+          activeOpacity={0.7}
             onPress={() => navigation.navigate("Dictionary")}
           >
             <FlashcardProvider>
               <StatBoxMax />
             </FlashcardProvider>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </View>
-        <TouchableWithoutFeedback
+        <TouchableOpacity
+        activeOpacity={0.7}
           onPress={() => navigation.navigate("Library")}
         >
           <View style={styles.libraryContainer}>
             <MyLibrary books={books} onBookPress={handleBookPress} />
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
         <View style={styles.bottomWidgetContainer}>
           <BottomWidget
             style={{

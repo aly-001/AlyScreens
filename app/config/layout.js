@@ -1,4 +1,5 @@
 import { Dimensions } from 'react-native';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,7 +23,7 @@ const layout = {
   },
   margins: {
     homeScreen: {
-      betweenHeaderAndWidgets: getResponsiveValue(50, 140),
+      betweenHeaderAndWidgets: getResponsiveValue(80, 140),
       widgetHeader: getResponsiveValue(20, 30),
     },
     dictionaryScreen:{
@@ -44,6 +45,7 @@ const layout = {
       allTabsContainerRight: getResponsiveValue(-42, -41),
     },
     screenHeaderMargin: 25,
+    screenHeaderMarginTop: getResponsiveValue(35, 0),
     homeScreenWidgets: getResponsiveValue(0, 35),
     practiceScreenPaddingHorizontal: 30,
   },

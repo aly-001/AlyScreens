@@ -15,6 +15,7 @@ export default function ScreenHeader({ text }) {
 const styles = StyleSheet.create({
   container: {
     alignItems: "flex-start",
+    top: layout.margins.screenHeaderMarginTop,
   },
   header:{
     margin: layout.margins.screenHeaderMargin,
