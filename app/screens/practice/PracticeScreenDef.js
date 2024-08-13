@@ -187,7 +187,7 @@ export default function PracticeScreenDef() {
           {backData.wordDef && (
             <Text
               style={{
-                fontSize: layout.fontSize.FlashCardModuleBox,
+                fontSize: layout.flashCards.fontSize.flashcardModuleBox,
                 fontStyle: "italic",
               }}
             >
@@ -205,7 +205,7 @@ export default function PracticeScreenDef() {
               {backData.context && (
                 <Text
                   style={{
-                    fontSize: layout.fontSize.FlashCardModuleBox,
+                    fontSize: layout.flashCards.fontSize.flashCardModuleBox,
                     marginBottom: 10,
                   }}
                 >
@@ -224,7 +224,7 @@ export default function PracticeScreenDef() {
               {backData.contextDef && (
                 <Text
                   style={{
-                    fontSize: layout.fontSize.FlashCardModuleBox,
+                    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
                     fontStyle: "italic",
                   }}
                 >

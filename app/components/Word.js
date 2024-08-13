@@ -1,5 +1,6 @@
 import { View, StyleSheet, Text } from "react-native";
 import React from "react";
+import layout from "../config/layout";
 
 export default function Word({ word, id, color }) {
   return (
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   word: {
-    fontSize: 20,
+    fontSize: layout.fontSize.word,
     fontWeight: "500",
   }
 });

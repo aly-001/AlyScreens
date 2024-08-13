@@ -32,27 +32,20 @@ export default function MyLibrary({ books, onBookPress, onPress }) {
 
 const styles = StyleSheet.create({
   hiddenStrip: {
-    width: 45,
+    width: layout.components.hiddenStrip.width,
   },
   booksContainer: {},
   container: {
+    backgroundColor: "white",
     paddingBottom: 35,
     flex: 1,
     marginHorizontal: layout.margins.homeScreenWidgets / 2,
-    backgroundColor: "white",
-    borderRadius: layout.borderRadius.homeScreenWidgets,
+    borderRadius: layout.borderRadius.homeScreenWidgetsSandwich,
 
     shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
     shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
     shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
     shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
     elevation: layout.shadows.homeScreenWidgets.elevation,
-  },
-  nicolas: {
-    fontSize: 20,
-    fontWeight: "500",
-    color: "#83947c",
-    marginLeft: 20,
-    marginTop: 20,
   },
 });

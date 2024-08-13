@@ -34,7 +34,7 @@ export default function FlashcardModuleBox({ color, text = '', maxHeight = 200, 
             maxHeight: maxHeight,
           }
         ]}>
-          <Text style={styles.text} numberOfLines={null} ref={textRef}>
+          <Text style={{fontSize: layout.flashCards.fontSize.flashcardModuleBox}} numberOfLines={null} ref={textRef}>
             {formattedText}
           </Text>
           {isOverflowing && (
@@ -74,9 +74,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflow: 'hidden',
     minHeight: 50, // Add a minimum height to prevent collapse
-  },
-  text: {
-    fontSize: layout.fontSize.FlashCardModuleBox,
   },
   fadeOverlay: {
     position: 'absolute',

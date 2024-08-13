@@ -142,12 +142,10 @@ const styles = StyleSheet.create({
   contentContainer: {
     flexGrow: 1,
     padding: layout.margins.homeScreenWidgets / 2,
-    paddingTop: 180,
+    paddingTop: layout.margins.dictionaryScreen.betweenHeaderAndWidgets,
   },
   headerContainer: {
     position: "absolute",
-    top: 30,
-    left: layout.margins.homeScreenWidgets,
     zIndex: 1,
   },
   container: {
@@ -155,21 +153,21 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     backgroundColor: "white",
-    marginHorizontal: layout.margins.homeScreenWidgets / 2,
-    marginBottom: layout.margins.homeScreenWidgets,
+    marginHorizontal: layout.margins.dictionaryScreen.widgetsHorizontal / 2,
+    marginBottom: layout.margins.dictionaryScreen.widgetsVertical,
     paddingHorizontal: 30,
     paddingTop: 30,
-    borderRadius: layout.borderRadius.homeScreenWidgets,
+    borderRadius: layout.borderRadius.dictionaryScreenWidgets,
   },
   sectionTitle: {
     color: "purple",
-    fontSize: 18,
+    fontSize: layout.fontSize.dictionary.sectionTitle,
     fontWeight: 'bold',
     marginBottom: 10,
     color: colors.text,
   },
   scrollView: {
-    maxHeight: 240,
+    maxHeight: layout.margins.dictionaryScreen.maxScrollViewHeight,
     backgroundColor: colors.white,
     borderRadius: 10,
   },

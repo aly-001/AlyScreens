@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   marginBottom: {
-    marginBottom: 60,
+    marginBottom: layout.margins.homeScreen.widgetHeader,
   },
   header: {
     fontSize: layout.fontSize.widgetHeader,

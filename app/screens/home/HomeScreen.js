@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import React, { useCallback, useRef } from "react";
+import { View, StyleSheet, ScrollView, Animated } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
@@ -16,6 +16,7 @@ import { FlashcardProvider } from "../../context/FlashcardContext";
 export default function HomeScreen() {
   const navigation = useNavigation();
   const { books, loadBooks } = useBooks();
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   useFocusEffect(
     useCallback(() => {
@@ -38,12 +39,25 @@ export default function HomeScreen() {
     }
   };
 
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
   return (
     <View style={styles.container}>
-      <ScreenHeader text="Home" style={styles.header} />
-      <ScrollView 
+      <Animated.View style={[styles.screenHeaderContainer, { opacity: headerOpacity }]}>
+        <ScreenHeader text="Home" />
+      </Animated.View>
+      <Animated.ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
       >
         <View style={styles.topWidgetContainer}>
           <TouchableWithoutFeedback
@@ -63,11 +77,15 @@ export default function HomeScreen() {
         </TouchableWithoutFeedback>
         <View style={styles.bottomWidgetContainer}>
           <BottomWidget
+            style={{
+              borderBottomEndRadius:
+                layout.borderRadius.homeScreenWidgetsSandwich,
+            }}
             header="Help"
             IconComponent={(props) => (
               <FontAwesome5
                 name="question"
-                size={65}
+                size={layout.icons.homeScreenBottomWidget}
                 color={colors.homeScreenIcon}
                 style={styles.icon}
                 {...props}
@@ -75,11 +93,15 @@ export default function HomeScreen() {
             )}
           />
           <BottomWidget
+            style={{
+              borderBottomStartRadius:
+                layout.borderRadius.homeScreenWidgetsSandwich,
+            }}
             header="Settings"
             IconComponent={(props) => (
               <FontAwesome6
                 name="gear"
-                size={65}
+                size={layout.icons.homeScreenBottomWidget}
                 color={colors.homeScreenIcon}
                 style={styles.icon}
                 {...props}
@@ -88,7 +110,7 @@ export default function HomeScreen() {
             onPress={() => navigation.navigate("Config")}
           />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 }
@@ -98,16 +120,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.homeScreenBackground,
   },
-  header: {
-    position: "absolute",
-    width: 100,
-    height: 60,
-
+  screenHeaderContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
   scrollContent: {
     flexGrow: 1,
     padding: layout.margins.homeScreenWidgets / 2,
-    paddingTop: layout.margins.homeScreen.betweenHeaderAndWidgets,
+    paddingTop: layout.margins.homeScreen.betweenHeaderAndWidgets + 60, // Add extra padding to account for the header
   },
   topWidgetContainer: {
     marginHorizontal: layout.margins.homeScreenWidgets / 2,
@@ -125,8 +148,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 100,
   },
-  icon:{
-    bottom: 45,
+  icon: {
+    bottom: 20,
     paddingBottom: 30,
-  }
+  },
 });

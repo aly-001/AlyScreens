@@ -234,8 +234,8 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: -35,
-    right: -35,
+    top: layout.components.flashcardBackModal.closeButtonOffset,
+    right: layout.components.flashcardBackModal.closeButtonOffset,
     zIndex: 1,
   },
   closeButtonCircle: {
@@ -291,21 +291,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   word: {
-    fontSize: 50,
+    fontSize: layout.flashCards.fontSize.word,
     fontWeight: '600',
     color: colors.utilityGrey,
     marginBottom: 10,
   },
   wordDef: {
-    fontSize: layout.fontSize.FlashCardModuleBox,
+    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
     fontStyle: 'italic',
   },
   context: {
-    fontSize: layout.fontSize.FlashCardModuleBox,
+    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
     marginBottom: 10,
   },
   contextDef: {
-    fontSize: layout.fontSize.FlashCardModuleBox,
+    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
     fontStyle: 'italic',
   },
   audioButton: {

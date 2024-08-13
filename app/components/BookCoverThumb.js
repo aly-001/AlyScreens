@@ -31,7 +31,7 @@ export default function BookCoverThumb({ title, subtitle, color, status }) {
 const styles = StyleSheet.create({
   bookContainer: {
     alignItems: "center",
-    width: 210,
+    width: layout.components.bookCoverThumb.spacingWidth,
     marginBottom: 10,
   },
   book: {
@@ -48,8 +48,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: fonts.main,
     fontWeight: "500",
-    fontSize: 18,
+    fontSize: layout.components.bookCoverThumb.titleFontSize,
     color: colors.utilityGrey,
+    marginTop: 10,
   },
   subtitle: {
     textAlign: "center",

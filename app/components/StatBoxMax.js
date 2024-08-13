@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     borderRadius: layout.borderRadius.homeScreenWidgets,
+    borderBottomEndRadius: layout.borderRadius.homeScreenWidgetsSandwich,
+    borderBottomStartRadius: layout.borderRadius.homeScreenWidgetsSandwich,
 
     shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
     shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,

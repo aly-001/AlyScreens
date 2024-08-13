@@ -3,12 +3,16 @@ import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import WidgetHeader from './WidgetHeader';
 import layout from '../config/layout';
 
-export default function BottomWidget({ header, IconComponent, iconColor = '#000', onPress }) {
+export default function BottomWidget({ header, IconComponent, iconColor = 'lightgrey', onPress, style }) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity 
+      style={[styles.container, style]} 
+      onPress={onPress} 
+      activeOpacity={0.7}
+    >
       <WidgetHeader text={header} />
       <View style={styles.iconContainer}>
-        {IconComponent && <IconComponent />}
+        {IconComponent && <IconComponent color={iconColor} />}
       </View>
     </TouchableOpacity>
   );
@@ -21,6 +25,8 @@ const styles = StyleSheet.create({
     height: 190,
     backgroundColor: 'white',
     borderRadius: layout.borderRadius.homeScreenWidgets,
+    borderTopEndRadius: layout.borderRadius.homeScreenWidgetsSandwich,
+    borderTopStartRadius: layout.borderRadius.homeScreenWidgetsSandwich,
     shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
     shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
     shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
