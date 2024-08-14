@@ -30,7 +30,7 @@ const layout = {
       widgetsVertical: getResponsiveValue(35, 35),
       widgetsHorizontal: getResponsiveValue(0, 35),
       betweenHeaderAndWidgets: getResponsiveValue(120, 140),
-      maxScrollViewHeight: getResponsiveValue(200, 265),
+      maxScrollViewHeight: getResponsiveValue(130, 265),
     },
     libraryScreen:{
       footerMargin: getResponsiveValue(50, 100),

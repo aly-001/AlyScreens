@@ -13,7 +13,6 @@ const ModalScreen = ({ children }) => {
   return (
     <View style={styles.container}>
       <View style={styles.modalContent}>
-        <View style={styles.swipeIndicator} />
         {children}
       </View>
     </View>

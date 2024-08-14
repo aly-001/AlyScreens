@@ -1,10 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Linking, Animated } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Alert, 
+  Linking, 
+  Animated, 
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform
+} from 'react-native';
 import { useAPIKey } from "../../context/APIKeyContext";
 import { Ionicons } from "@expo/vector-icons";
 import colors from '../../config/colors';
 
+
 const WelcomeScreen = ({ onApiKeySet }) => {
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   const [apiKey, setApiKey] = useState('');
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
   const [showBlank, setShowBlank] = useState(true);
@@ -61,38 +80,40 @@ const WelcomeScreen = ({ onApiKeySet }) => {
   }
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <Text style={styles.title}>Welcome!</Text>
-      <Text style={styles.subtitle}>To get started, paste your OpenAI API key below</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={apiKey}
-          onChangeText={setApiKey}
-          placeholder="Enter your OpenAI API key"
-          secureTextEntry
-        />
-        <TouchableOpacity onPress={handleInfoPress} style={styles.infoIcon}>
-          <Ionicons
-            name="information-circle-outline"
-            size={24}
-            color={colors.appleBlue}
-          />
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity 
-        style={[styles.button, !isButtonEnabled && styles.buttonDisabled]}
-        onPress={handleSubmit}
-        disabled={!isButtonEnabled}
-      >
-        <Text style={[styles.buttonText, !isButtonEnabled && styles.buttonTextDisabled]}>Start</Text>
-      </TouchableOpacity>
-      <Text style={styles.disclaimer}>
-        Note: While we utilize the OpenAI API, we are not endorsed,
-        sponsored by, or affiliated with OpenAI. We're an independent
-        application striving to provide value through AI technology.
-      </Text>
-    </Animated.View>
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+          <Text style={styles.title}>Welcome!</Text>
+          <Text style={styles.subtitle}>To get started, paste your OpenAI API key below</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={apiKey}
+              onChangeText={setApiKey}
+              placeholder="Enter your OpenAI API key"
+            />
+            <TouchableOpacity onPress={handleInfoPress} style={styles.infoIcon}>
+              <Ionicons
+                name="information-circle-outline"
+                size={24}
+                color={colors.appleBlue}
+              />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity 
+            style={[styles.button, !isButtonEnabled && styles.buttonDisabled]}
+            onPress={handleSubmit}
+            disabled={!isButtonEnabled}
+          >
+            <Text style={[styles.buttonText, !isButtonEnabled && styles.buttonTextDisabled]}>Start</Text>
+          </TouchableOpacity>
+          <Text style={styles.subtitle2}>The key is stored securely on your device, and does not leave your device.</Text>
+          <Text style={styles.disclaimer}>
+            Note: While we utilize the OpenAI API, we are not endorsed,
+            sponsored by, or affiliated with OpenAI. We're an independent
+            application striving to provide value through AI technology.
+          </Text>
+        </Animated.View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -117,6 +138,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 30,
+  },
+  subtitle2: {
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 10,
+    color: "red",
   },
   inputContainer: {
     width: '100%',
@@ -154,7 +181,7 @@ const styles = StyleSheet.create({
     color: '#A9A9A9',
   },
   disclaimer: {
-    width: "60%",
+    width: "70%",
     marginTop: 40,
     fontSize: 12,
     color: colors.utilityGrey,

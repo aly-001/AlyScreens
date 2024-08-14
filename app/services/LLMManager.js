@@ -1,9 +1,6 @@
 import OpenAI from "openai";
 import { Buffer } from 'buffer';
 
-// Remove the global OpenAI instance
-
-// Helper function to create an OpenAI instance
 const createOpenAIInstance = (apiKey) => {
   return new OpenAI({ apiKey });
 };
