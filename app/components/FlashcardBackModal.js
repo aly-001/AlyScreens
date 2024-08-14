@@ -13,7 +13,7 @@ import {
 import { BlurView } from 'expo-blur';
 import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons';
-import colors from '../config/colors';
+import { useThemeColors } from '../config/colors';
 import layout from '../config/layout';
 import FlashcardModuleBox from '../components/FlashcardModuleBox';
 import FlashcardModuleBoxGeneral from '../components/FlashcardModuleBoxGeneral';
@@ -23,6 +23,7 @@ import Markdown from 'react-native-markdown-display';
 const { width, height } = Dimensions.get('window');
 
 const FlashcardBackModal = ({ visible, card, onClose }) => {
+  const colors = useThemeColors();
   const [imageUri, setImageUri] = useState(null);
   const [fullscreenVisible, setFullscreenVisible] = useState(false);
 
@@ -67,7 +68,7 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
       <View style={styles.modulesContainer}>
         <FlashcardModuleBoxGeneral color="white" openable={false}>
           <View style={styles.wordContainer}>
-            <Text style={styles.word}>{backData.word || 'N/A'}</Text>
+            <Text style={[styles.word, { color: colors.utilityGrey }]}>{backData.word || 'N/A'}</Text>
             {backData.audioWordID && (
               <TouchableOpacity
                 style={styles.audioButton}
@@ -147,7 +148,7 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
           </TouchableOpacity>
           <View style={styles.modalContainer}>
             <BlurView intensity={100} style={[StyleSheet.absoluteFill, styles.blurViewStyle]}>
-              <ScrollView showsVerticalScrollIndicator={false}  style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView} contentContainerStyle={styles.scrollViewContent}>
                 {imageUri && (
                   <ImageBackground
                     source={{ uri: imageUri }}
@@ -293,7 +294,6 @@ const styles = StyleSheet.create({
   word: {
     fontSize: layout.flashCards.fontSize.word,
     fontWeight: '600',
-    color: colors.utilityGrey,
     marginBottom: 10,
   },
   wordDef: {

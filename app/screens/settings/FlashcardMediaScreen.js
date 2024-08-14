@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { useSettingsContext } from "../../context/useSettingsContext";
 import SettingSwitch from "../../components/SettingsSwitch";
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import { Divider } from "react-native-paper";
 import PromptEditModal from "../../components/PromptEditModal";
 import defaultPrompts from "../../config/defaultPrompts.json";
 
 const FlashcardMediaScreen = () => {
+  const colors = useThemeColors();
   const { settings, updateSettings } = useSettingsContext();
   const [isGrammarModalVisible, setIsGrammarModalVisible] = useState(false);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
@@ -43,7 +44,7 @@ const FlashcardMediaScreen = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
       <View style={styles.group}>
         <SettingSwitch
           label="Enable Flashcards"
@@ -53,7 +54,7 @@ const FlashcardMediaScreen = () => {
       </View>
       <View style={[styles.group, {marginTop: 30}]}>
         <View style={styles.description}>
-          <Text style={styles.descriptionText}>FRONT</Text>
+          <Text style={[styles.descriptionText, {color: colors.utilityGrey}]}>FRONT</Text>
         </View>
         {renderSwitch("Word", "flashcardsFrontWord")}
         <Divider />
@@ -68,7 +69,7 @@ const FlashcardMediaScreen = () => {
       </View>
       <View style={[styles.group, {marginTop: 15}]}>
         <View style={styles.description}>
-          <Text style={styles.descriptionText}>BACK</Text>
+          <Text style={[styles.descriptionText, {color: colors.utilityGrey}]}>BACK</Text>
         </View>
         {renderSwitch("Word", "flashcardsBackWord")}
         <Divider />
@@ -132,7 +133,6 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 40,
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
     marginBottom: 50,
   },
   group: {
@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: 12,
-    color: colors.utilityGrey,
   },
 });
 

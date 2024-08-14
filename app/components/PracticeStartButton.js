@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import colors from '../config/colors';
 import layout from '../config/layout';
 
 export default function PracticeStartButton({ text, deactivated }) {

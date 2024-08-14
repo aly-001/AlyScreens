@@ -32,6 +32,7 @@ const useSettings = () => {
     grammarPrompt: defaultPrompts.defaultGrammarPrompt,
     moduleAPrompt: defaultPrompts.defaultModuleAPrompt,
     moduleBPrompt: defaultPrompts.defaultModuleBPrompt,
+    theme: 'light',
   });
 
   useEffect(() => {

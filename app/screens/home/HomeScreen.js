@@ -4,7 +4,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import Screen from "../../components/Screen";
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import layout from "../../config/layout";
 import MyLibrary from "../../components/MyLibrary";
 import BottomWidget from "../../components/BottomWidget";
@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from "expo-file-system";
 
 export default function HomeScreen() {
+  const colors = useThemeColors();
   const navigation = useNavigation();
   const [books, setBooks] = useState([]);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -134,7 +135,7 @@ export default function HomeScreen() {
 
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
       <Animated.View style={[styles.screenHeaderContainer, { opacity: headerOpacity }]}>
         <ScreenHeader text="Home" />
       </Animated.View>
@@ -208,7 +209,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   screenHeaderContainer: {
     position: 'absolute',

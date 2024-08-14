@@ -10,11 +10,12 @@ import {
   Linking,
 } from "react-native";
 import { useAPIKey } from "../context/APIKeyContext";
-import colors from "../config/colors";
+import { useThemeColors } from "../config/colors";
 import { Ionicons } from "@expo/vector-icons";
 import layout from "../config/layout";
 
 const APIKeyManagement = () => {
+  const colors = useThemeColors();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newKey, setNewKey] = useState("");
   const { apiKey, updateAPIKey, removeAPIKey } = useAPIKey();
@@ -60,9 +61,9 @@ const APIKeyManagement = () => {
     return (
       <Modal transparent={true} visible={isVisible} onRequestClose={onClose}>
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+          <View style={[styles.modalView, { backgroundColor: colors.mainComponentBackground }]}>
             <View style={styles.greyPartContainer}>
-              <Text style={styles.modalTitle}>Manage API Key</Text>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Manage API Key</Text>
               <TouchableOpacity
                 onPress={handleInfoPress}
                 style={styles.infoIcon}
@@ -75,23 +76,28 @@ const APIKeyManagement = () => {
               </TouchableOpacity>
             </View>
             <TextInput
-              style={styles.input}
+              style={[styles.input]}
               value={key}
               onChangeText={setKey}
               multiline
-              placeholder={`Enter new key`}
+              placeholder="Enter new key"
             />
             
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+              <TouchableOpacity
+                style={[styles.cancelButton, {borderWidth: 1, borderColor: colors.appleBlue}]}
+                onPress={onClose}
+              >
+                <Text style={[styles.cancelButtonText, { color: colors.appleBlue }]}>Cancel</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>Save</Text>
+              <TouchableOpacity
+                style={[styles.saveButton, { backgroundColor: colors.appleBlue }]}
+                onPress={handleSave}
+              >
+                <Text style={[styles.saveButtonText, { color: "white" }]}>Save</Text>
               </TouchableOpacity>
-              
             </View>
-            <Text style={styles.disclaimer}>
+            <Text style={[styles.disclaimer]}>
               Note: While we utilize the OpenAI API, we are not endorsed,
               sponsored by, or affiliated with OpenAI. We're an independent
               application striving to provide value through AI technology.
@@ -103,16 +109,12 @@ const APIKeyManagement = () => {
   };
 
   const DrawerItem = () => (
-    <>
-      
-      <TouchableOpacity
-      
-        style={styles.drawerItem}
-        onPress={() => setIsModalVisible(true)}
-      >
-        <Text style={styles.drawerItemText}>Manage API Key</Text>
-      </TouchableOpacity>
-    </>
+    <TouchableOpacity
+      style={[styles.drawerItem, { backgroundColor: colors.mainComponentBackground }]}
+      onPress={() => setIsModalVisible(true)}
+    >
+      <Text style={[styles.drawerItemText, { color: colors.appleBlue }]}>Manage API Key</Text>
+    </TouchableOpacity>
   );
 
   return (
@@ -129,7 +131,6 @@ const APIKeyManagement = () => {
 const styles = StyleSheet.create({
   drawerItem: {
     margin: 20,
-    backgroundColor: "white",
     padding: 15,
     marginTop: 40,
     borderRadius: 10,
@@ -137,7 +138,6 @@ const styles = StyleSheet.create({
   },
   drawerItemText: {
     fontSize: 16,
-    color: colors.appleBlue,
   },
   centeredView: {
     flex: 1,
@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
   modalView: {
-    backgroundColor: "white",
     borderRadius: 15,
     padding: 20,
     alignItems: "center",
@@ -176,14 +175,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 20,
-    backgroundColor: "#F2F2F7",
     fontSize: 16,
   },
   disclaimer: {
     marginTop: 40,
     marginHorizontal: 40,
     fontSize: 12,
-    color: colors.utilityGrey,
     textAlign: "center",
     marginBottom: 20,
     paddingHorizontal: 10,
@@ -195,31 +192,27 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    backgroundColor: "#F2F2F7",
     borderRadius: 10,
     padding: 15,
     marginRight: 10,
   },
   cancelButtonText: {
-    color: colors.appleBlue,
     fontWeight: "600",
     textAlign: "center",
     fontSize: 16,
   },
   saveButton: {
     flex: 1,
-    backgroundColor: colors.appleBlue,
     borderRadius: 10,
     padding: 15,
     marginLeft: 10,
   },
   saveButtonText: {
-    color: "white",
     fontWeight: "600",
     textAlign: "center",
     fontSize: 16,
   },
-    description: {
+  description: {
     flex: 1,
     position: "absolute",
     top: -22,
@@ -228,7 +221,6 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: 12,
-    color: colors.utilityGrey,
   },
 });
 

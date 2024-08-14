@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSettingsContext } from '../../context/useSettingsContext';
 import SettingSwitch from '../../components/SettingsSwitch';
-import colors from '../../config/colors';
+import { useThemeColors } from '../../config/colors';
 import { Divider } from 'react-native-paper';
 import PromptEditModal from '../../components/PromptEditModal';
 import defaultPrompts from '../../config/defaultPrompts.json';
 
 const TranslationPopupScreen = () => {
+  const colors = useThemeColors();
   const { settings, updateSettings } = useSettingsContext();
   const [isGrammarModalVisible, setIsGrammarModalVisible] = useState(false);
   const [isModuleAModalVisible, setIsModuleAModalVisible] = useState(false);
@@ -19,7 +20,7 @@ const TranslationPopupScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,     {backgroundColor: colors.homeScreenBackground}]}>
       <View style={styles.group}>
         <SettingSwitch
           label="Translation"
@@ -96,7 +97,6 @@ const TranslationPopupScreen = () => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 40,
-    backgroundColor: colors.homeScreenBackground,
     flex: 1,
   },
   group: {

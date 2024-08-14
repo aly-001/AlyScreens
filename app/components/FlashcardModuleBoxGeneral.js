@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Modal, TouchableOpacity, Dimensions, ScrollView, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import colors from '../config/colors';
+import { useThemeColors } from '../config/colors';
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
 
 export default function FlashcardModuleBoxGeneral({ color, maxHeight = 200, borderRadius = 20, children, openable = true, margin=true }) {
+  const colors = useThemeColors();
   const [modalVisible, setModalVisible] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const [isOverflowing, setIsOverflowing] = useState(false);

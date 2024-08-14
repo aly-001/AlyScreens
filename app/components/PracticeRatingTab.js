@@ -1,9 +1,10 @@
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import colors from "../config/colors";
+import { useThemeColors } from "../config/colors";
 import layout from "../config/layout";
 
 export default function PracticeRatingTab({ rating, onPress }) {
+  const colors = useThemeColors();
   let color = rating === "Again" ? colors.tabs.again 
             : rating === "Hard" ? colors.tabs.hard 
             : rating === "Good" ? colors.tabs.good 
@@ -17,7 +18,7 @@ export default function PracticeRatingTab({ rating, onPress }) {
       <View style={styles.outerContainer}>
         <View style={[styles.innerContainer, { backgroundColor: color }]} />
         <View style={styles.textContainer}>
-          <Text style={styles.text}>{rating}</Text>
+          <Text style={[styles.text, {color: colors.utilityGrey}]}>{rating}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -42,7 +43,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: colors.utilityGrey,
     fontSize: layout.components.practiceRatingTab.textFontSize,
     fontWeight: 'bold',
   }

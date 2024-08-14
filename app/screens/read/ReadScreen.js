@@ -20,7 +20,7 @@ import DefinitionPopup from "../../components/DefinitionPopup";
 import useEpubManager from "../../hooks/useEpubManager";
 import useDefinitionManager from "../../hooks/useDefinitionManager";
 import LocationPointer from "../../components/LocationPointer";
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import BookHiddenFooter from "../../components/BookHiddenFooter";
 import { useTabBarVisibility } from "../../navigation/TabBarVisibilityContext";
 import { addCard } from "../../services/CardManager";
@@ -32,6 +32,8 @@ import layout from "../../config/layout";
 const duration = 200; // Animation duration
 
 const BookHeader = ({ bookTitle, style, onTocPress }) => {
+  const colors = useThemeColors();
+
   if (!bookTitle) {
     return null;
   }
@@ -40,7 +42,7 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
     : bookTitle;
 
   return (
-    <Animated.View style={[styles.headerContainer, style]}>
+    <Animated.View style={[styles.headerContainer, style, { backgroundColor: colors.readScreen.primary }]}>
       <SafeAreaView>
         <View style={styles.header}>
           <TouchableWithoutFeedback onPress={onTocPress}>
@@ -52,7 +54,7 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
               />
             </View>
           </TouchableWithoutFeedback>
-          <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">
+          <Text style={[styles.headerTitle, {color: colors.utilityGrey}]} numberOfLines={1} ellipsizeMode="tail">
             {truncatedTitle}
           </Text>
           <View style={styles.headerIconContainer}>
@@ -65,6 +67,7 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
 };
 
 export default function ReadScreen() {
+  const colors = useThemeColors();
   const [bossStatus, setBossStatus] = useState(0);
   const { getBookByUri, updateBookStatus } = useBooks();
   const [currentBook, setCurrentBook] = useState(null);
@@ -187,7 +190,7 @@ export default function ReadScreen() {
     }
 
     if (message.progress) {
-      console.log("YYYYYYYYYYYYEEEEEEEEEEEAAAAAAAAAAAAHHHHHHHHHHHHHHH BABYYYYYYYYYYYY")
+      console.log("Progress update received");
     }
   };
 
@@ -202,10 +205,10 @@ export default function ReadScreen() {
 
   if (uri) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.readScreen.primary }]}>
         <StatusBar hidden={true} />
         <TouchableWithoutFeedback onPress={handleMiddlePress}>
-          <View style={styles.readerContainer}>
+          <View style={[styles.readerContainer, { backgroundColor: colors.readScreen.primary }]}>
             <ReaderProvider>
               <EpubReader
                 uri={uri}
@@ -253,7 +256,7 @@ export default function ReadScreen() {
     );
   } else {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.readScreen.primary }]}>
         <BookHeader bookTitle={title} />
         <View style={styles.pickerContainer}>
           <Text>No EPUB file selected</Text>
@@ -267,14 +270,12 @@ export default function ReadScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
   },
   headerContainer: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: "white",
     zIndex: 1,
   },
   header: {
@@ -287,7 +288,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   headerTitle: {
-    color: colors.utilityGrey,
+
     fontSize: 18,
     fontWeight: "bold",
     flex: 1,
@@ -303,7 +304,6 @@ const styles = StyleSheet.create({
   },
   readerContainer: {
     flex: 1,
-    backgroundColor: "white",
     paddingBottom: 20,
   },
   pickerContainer: {

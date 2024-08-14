@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import Screen from "../../components/Screen";
 import ScreenHeader from "../../components/ScreenHeader";
 import layout from "../../config/layout";
@@ -21,6 +21,7 @@ import Word from "../../components/Word";
 import FlashcardBackModal from "../../components/FlashcardBackModal";
 
 const DictionaryScreen = () => {
+  const colors = useThemeColors();
   const [dolphinSR, setDolphinSR] = useState(null);
   const [allCards, setAllCards] = useState([]);
   const [youngCards, setYoungCards] = useState([]);
@@ -113,7 +114,7 @@ const DictionaryScreen = () => {
   };
 
   const renderSection = (title, cards) => (
-    <View style={styles.scrollViewContainer} key={title}>
+    <View style={[styles.scrollViewContainer, {backgroundColor: colors.mainComponentBackground}]} key={title}>
       <Text style={[styles.sectionTitle, { color: colors.utilityGrey }]}>
         {title} ({cards.length})
       </Text>
@@ -124,7 +125,7 @@ const DictionaryScreen = () => {
   );
 
   return (
-    <View style={styles.superContainer}>
+    <View style={[styles.superContainer, {backgroundColor: colors.homeScreenBackground}]}>
       <Screen>
         <View style={styles.headerContainer}>
           <ScreenHeader text="Dictionary" />
@@ -149,7 +150,6 @@ const DictionaryScreen = () => {
 const styles = StyleSheet.create({
   superContainer: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
     paddingVertical: 30,
@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewContainer: {
-    backgroundColor: "white",
     marginHorizontal: layout.margins.dictionaryScreen.widgetsHorizontal / 2,
     marginBottom: layout.margins.dictionaryScreen.widgetsVertical,
     paddingHorizontal: 30,
@@ -170,15 +169,13 @@ const styles = StyleSheet.create({
     borderRadius: layout.borderRadius.dictionaryScreenWidgets,
   },
   sectionTitle: {
-    color: "purple",
     fontSize: layout.fontSize.dictionary.sectionTitle,
     fontWeight: "bold",
     marginBottom: 10,
-    color: colors.text,
+    color: "purple",
   },
   scrollView: {
     maxHeight: layout.margins.dictionaryScreen.maxScrollViewHeight,
-    backgroundColor: colors.white,
     borderRadius: 10,
   },
   wordsContainer: {

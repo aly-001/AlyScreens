@@ -1,3 +1,7 @@
+import { useSettingsContext } from "../context/useSettingsContext";
+
+// I have a setting called theme
+
 export const injectedScript = `
   let intervalId = null;
 
@@ -103,13 +107,23 @@ export const injectedScript = `
           font-size: 18pt !important;
           font-weight: 500 !important;
           line-height: 1.6 !important;
+          background-color: #000000 !important;
+          color: #FFFFFF !important;
+        }
+        p, div, span {
+          color: #FFFFFF !important;
+        }
+        a {
+          color: #4A90E2 !important;
         }
       \`;
       doc.head.appendChild(style);
     }
   }
 
+
   function runFunctionsForOneMinute() {
+      
     // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "rerunning functions for 10s"}));
 
     // Clear any existing interval
@@ -122,6 +136,7 @@ export const injectedScript = `
     // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "calling functions every 10ms"}));
  
     intervalId = setInterval(() => {
+      
       applyCustomStyles();
       wrapWordsInSpans();
       addLongPressListener();
@@ -135,4 +150,5 @@ export const injectedScript = `
       // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "interval cleared after 10 seconds"}));
     }, 10000); // 10 seconds
   }
+
 `;

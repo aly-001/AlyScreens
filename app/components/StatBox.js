@@ -2,9 +2,9 @@ import { View, StyleSheet, Text } from 'react-native';
 import React from 'react';
 import WidgetHeader from './WidgetHeader';
 import layout from '../config/layout';
-import colors from '../config/colors';
-
+import { useThemeColors } from '../config/colors';
 export default function StatBox({header, value, valueColor="#000"}) {
+  const colors = useThemeColors();
   return (
     <View style={styles.container}>
       <WidgetHeader text={header} />

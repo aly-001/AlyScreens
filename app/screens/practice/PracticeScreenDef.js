@@ -17,7 +17,7 @@ import * as FileSystem from "expo-file-system";
 import { Audio } from "expo-av";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { BlurView } from 'expo-blur';
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import PracticeStatsFooter from "../../components/PracticeStatsFooter";
 import PracticeRatingTab from "../../components/PracticeRatingTab";
 import PracticeDividerLine from "../../components/PracticeDividerLine";
@@ -31,6 +31,7 @@ import Markdown from "react-native-markdown-display";
 const { width, height } = Dimensions.get("window");
 
 export default function PracticeScreenDef() {
+  const colors = useThemeColors();
   const [imageUri, setImageUri] = useState(null);
   const [displayedCard, setDisplayedCard] = useState(null);
   const [fullscreenVisible, setFullscreenVisible] = useState(false);
@@ -173,7 +174,7 @@ export default function PracticeScreenDef() {
               justifyContent: "space-between",
             }}
           >
-            <Text style={styles.word}>{backData.word || "N/A"}</Text>
+            <Text style={[styles.word, {color: colors.utilityGrey} ]}>{backData.word || "N/A"}</Text>
             {backData.audioWordID && (
               <TouchableOpacity
                 style={{ alignSelf: "flex-start" }}
@@ -259,7 +260,7 @@ export default function PracticeScreenDef() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor: colors.homeScreenBackground}]}>
       <StatusBar hidden={true} />
       <View style={styles.superContainer}>
         {imageUri ? (
@@ -360,7 +361,6 @@ export default function PracticeScreenDef() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   superContainer: {
     flex: 1,
@@ -380,7 +380,6 @@ const styles = StyleSheet.create({
   word: {
     fontSize: layout.flashCards.fontSize.word,
     fontWeight: "600",
-    color: colors.utilityGrey,
     marginBottom: 10,
   },
   scrollView: {
@@ -390,12 +389,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "flex-start",
     paddingBottom: 60,
-  },
-  footer: {
-    backgroundColor: colors.homeScreenBackground,
-    alignSelf: "center",
-    position: "absolute",
-    bottom: 0,
   },
   allTabsContainer: {
     position: "absolute",

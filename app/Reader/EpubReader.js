@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, useColorScheme } from "react-native";
 import { Reader, useReader } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { injectedScript } from "./injectedScript";
 import { useBooks } from "../hooks/useBooks";
 
 export default function EpubReader({ uri, handleWebViewMessage, tableOfContents, setTableOfContents, handleStatus }) {
-  const { injectJavascript, getCurrentLocation, goToLocation } = useReader();
+  const { injectJavascript, getCurrentLocation, goToLocation, changeTheme } = useReader();
   const [initialLocation, setInitialLocation] = useState(null);
   const prevTableOfContentsRef = useRef(false);
+  const colorScheme = "dark";
   
-  const { getBookByUri, updateBookStatus } = useBooks(); // Use the hook to get necessary functions
+  const { getBookByUri, updateBookStatus } = useBooks();
   
   useEffect(() => {
     const book = getBookByUri(uri);
@@ -27,6 +28,22 @@ export default function EpubReader({ uri, handleWebViewMessage, tableOfContents,
     }
     prevTableOfContentsRef.current = tableOfContents;
   }, [tableOfContents, goToLocation, setTableOfContents]);
+
+  useEffect(() => {
+    const darkTheme = {
+      body: {
+        background: '#000000',
+        color: '#FFFFFF'
+      }
+    };
+    const lightTheme = {
+      body: {
+        background: '#FFFFFF',
+        color: '#000000'
+      }
+    };
+    changeTheme(colorScheme === 'dark' ? darkTheme : lightTheme);
+  }, [colorScheme, changeTheme]);
 
   const handleCallFunctions = useCallback(() => {
     injectJavascript("window.runFunctionsForOneMinute();");
@@ -48,7 +65,7 @@ export default function EpubReader({ uri, handleWebViewMessage, tableOfContents,
   }, [getCurrentLocation, updateBookStatus, uri, handleStatus]);
 
   return (
-    <View style={styles.readerContainer}>
+    <View style={[styles.readerContainer, colorScheme === 'dark' ? styles.darkContainer : styles.lightContainer]}>
       <Reader
         src={uri}
         injectedJavascript={injectedScript}
@@ -67,11 +84,16 @@ export default function EpubReader({ uri, handleWebViewMessage, tableOfContents,
 
 const styles = StyleSheet.create({
   readerContainer: {
-    backgroundColor: "white",
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 20,
     minHeight: 640,
+  },
+  lightContainer: {
+    backgroundColor: "white",
+  },
+  darkContainer: {
+    backgroundColor: "black",
   },
 });

@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Text, Modal, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import layout from '../config/layout';
-import colors from '../config/colors';
+import { useThemeColors } from '../config/colors';
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
 
 export default function FlashcardModuleBox({ color, text = '', maxHeight = 200, borderRadius = 20, quotes = false }) {
+  const colors = useThemeColors();
   const [modalVisible, setModalVisible] = useState(false);
   const [textHeight, setTextHeight] = useState(0);
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -54,7 +55,7 @@ export default function FlashcardModuleBox({ color, text = '', maxHeight = 200, 
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
               <Ionicons name="close" size={28} color={colors.utilityGrey} />
             </TouchableOpacity>
-            <ScrollView showsVerticalScrollIndicator={false}  contentContainerStyle={styles.scrollViewContent}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContent}>
               <Text style={styles.text}>{formattedText}</Text>
             </ScrollView>
           </View>

@@ -5,14 +5,15 @@ import HomeScreen from "../screens/home/HomeScreen";
 import LibraryScreen from "../screens/home/LibraryScreen";
 import SettingsNavigator from "./SettingsNavigator";
 import DictionaryScreen from "../screens/home/DictionaryScreen";
-import colors from "../config/colors";
 
+import { useThemeColors } from "../config/colors";
 const Stack = createStackNavigator();
 
 const ModalScreen = ({ children }) => {
+  const colors = useThemeColors();
   return (
     <View style={styles.container}>
-      <View style={styles.modalContent}>
+      <View style={[styles.modalContent, {backgroundColor: colors.homeScreenBackground}]}>
         {children}
       </View>
     </View>
@@ -59,17 +60,8 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-  },
-  swipeIndicator: {
-    width: 40,
-    height: 5,
-    backgroundColor: colors.utilityGreyLight,
-    borderRadius: 3,
-    alignSelf: 'center',
-    marginTop: 10,
   },
 });
 

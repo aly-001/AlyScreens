@@ -7,7 +7,7 @@ import LLMKeyScreen from '../screens/settings/LLMKeyScreen';
 import TranslationPopupScreen from '../screens/settings/TranslationPopupScreen';
 import FlashcardMediaScreen from '../screens/settings/FlashcardMediaScreen';
 import { Divider } from 'react-native-paper';
-import colors from '../config/colors';
+import { useThemeColors } from '../config/colors';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
@@ -20,11 +20,12 @@ const isTablet = () => {
   return width >= 768;
 };
 
-const DrawerItem = ({ label, onPress, isSelected }) => (
+const DrawerItem = ({ label, onPress, isSelected, colors }) => (
+
   <TouchableWithoutFeedback 
     style={[
       styles.drawerItem, 
-      isSelected && styles.drawerItemSelected
+      isSelected && {backgroundColor: colors.appleBlueShade}
     ]} 
     onPress={onPress}
   >
@@ -39,9 +40,10 @@ const DrawerItem = ({ label, onPress, isSelected }) => (
 
 const CustomDrawerContent = (props) => {
   const currentRouteName = props.state.routeNames[props.state.index];
+  const colors = useThemeColors();
 
   return (
-    <DrawerContentScrollView {...props} style={styles.drawerContent}>
+    <DrawerContentScrollView {...props} style={[styles.drawerContent, {backgroundColor: colors.homeScreenBackground}]}>
       <View style={{alignSelf: "flex-start", marginLeft: 20}}>
         <View style={{marginBottom: 50}}>
           <Text style={{ fontSize: 34, fontWeight: 'bold', textAlign: 'center', marginVertical: 20, color: colors.utilityGreyLight}}>
@@ -54,6 +56,7 @@ const CustomDrawerContent = (props) => {
           label="Configure AI Key"
           onPress={() => props.navigation.navigate('LLM Key')}
           isSelected={currentRouteName === 'LLM Key'}
+          colors={colors}
         />
       </View>
       
@@ -62,12 +65,14 @@ const CustomDrawerContent = (props) => {
           label="Translation Popup"
           onPress={() => props.navigation.navigate('Translation Popup')}
           isSelected={currentRouteName === 'Translation Popup'}
+          colors={colors}
         />
         <Divider />
         <DrawerItem
           label="Flashcard Media"
           onPress={() => props.navigation.navigate('Flashcard Media')}
           isSelected={currentRouteName === 'Flashcard Media'}
+          colors={colors}
         />
       </View>
     </DrawerContentScrollView>
@@ -110,7 +115,6 @@ const SettingsNavigator = () => {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   drawerGroup: {
     backgroundColor: 'white',
@@ -128,7 +132,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   drawerItemSelected: {
-    backgroundColor: colors.appleBlueShade,
   },
   drawerItemText: {
     fontSize: 16,

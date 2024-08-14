@@ -1,10 +1,11 @@
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import React from "react";
 import Word from "./Word";
-import colors from "../config/colors";
+import { useThemeColors } from "../config/colors";
 import layout from "../config/layout";
 
 export default function WordBox({ words = [], color = "black", title = "", brb = false, brt = false, extraPadding=false}) {
+  const colors = useThemeColors();
   return (
     <View style={[
       styles.container, 

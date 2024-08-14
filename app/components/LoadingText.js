@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Animated } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import colors from '../config/colors';
 
-const LoadingText = ({ text, barColor = '#fff', textColor = colors.utilityGrey, speed = 1000, barWidth = 30 }) => {
+import { useThemeColors } from '../config/colors';
+
+const LoadingText = ({ text, barColor = '#fff', textColor, speed = 1000, barWidth = 30 }) => {
+  const colors = useThemeColors();
   const [textWidth, setTextWidth] = useState(0);
   const barPosition = useRef(new Animated.Value(0)).current;
 
@@ -48,7 +50,7 @@ const LoadingText = ({ text, barColor = '#fff', textColor = colors.utilityGrey, 
   return (
     <View>
       <Text
-        style={{ color: textColor, fontWeight: '600', fontSize: 20 }}
+        style={{ color: colors.utilityGrey, fontWeight: '600', fontSize: 20 }}
         onLayout={handleTextLayout}
       >
         {text}

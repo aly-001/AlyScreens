@@ -3,7 +3,7 @@ import { View, StyleSheet, Animated, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
-import colors from "../config/colors";
+import { useThemeColors } from "../config/colors";
 import { TabBarVisibilityProvider, useTabBarVisibility } from "./TabBarVisibilityContext";
 import HomeNavigator from "./HomeNavigator";
 import ReadNavigator from "./ReadNavigator";
@@ -49,6 +49,7 @@ const TabBar = ({ state, descriptors, navigation }) => {
 };
 
 const AppNavigator = () => {
+  const colors = useThemeColors(); 
   return (
     <TabBarVisibilityProvider>
       <View style={styles.container}>

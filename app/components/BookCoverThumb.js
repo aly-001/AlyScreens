@@ -1,18 +1,20 @@
 import { View, StyleSheet, Text } from "react-native";
 import React from "react";
-import colors from "../config/colors";
+import { useThemeColors } from "../config/colors"; // Import the hook to access theme colors
 import fonts from "../config/fonts";
 import shortenText from "../utils/shortenText"; // Adjust the path according to your file structure
 import layout from "../config/layout";
 
 export default function BookCoverThumb({ title, subtitle, color, status }) {
-  // if status is more than 95, set it to 100.
+  // Access the theme colors using the hook
+  const colors = useThemeColors();
+
+  // If status is more than 95, set it to 100.
   const statusRounded = status > 90 ? 100 : status;
   const statusPercent = statusRounded + "%";
   const maxChars = 30; // Example max character count, adjust as needed
 
   const shortenedTitle = shortenText(title, maxChars);
-  const shortenedSubtitle = shortenText(subtitle, maxChars);
 
   return (
     <>
@@ -20,11 +22,11 @@ export default function BookCoverThumb({ title, subtitle, color, status }) {
         <View style={styles.strip}></View>
         <View style={[{ backgroundColor: color }, styles.book]}>
           <View style={styles.statusSection}>
-            <View style={[{ width: statusPercent }, styles.status]}></View>
+            <View style={[{ width: statusPercent, backgroundColor: colors.black, opacity: 0.4 }, styles.status]}></View>
           </View>
         </View>
 
-        <Text style={styles.title}>{shortenedTitle}</Text>
+        <Text style={[styles.title, { color: colors.utilityGrey }]}>{shortenedTitle}</Text>
       </View>
     </>
   );
@@ -44,22 +46,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     justifyContent: "flex-end",
     overflow: "hidden",
-    opacity: .9,
+    opacity: 0.9,
   },
   title: {
     textAlign: "center",
     fontFamily: fonts.main,
     fontWeight: "500",
     fontSize: layout.components.bookCoverThumb.titleFontSize,
-    color: colors.utilityGrey,
     marginTop: 10,
-  },
-  subtitle: {
-    textAlign: "center",
-    fontFamily: fonts.main,
-    fontWeight: "500",
-    fontSize: 18,
-    color: colors.utilityGreyLight,
   },
   statusSection: {
     backgroundColor: "white",
@@ -68,7 +62,5 @@ const styles = StyleSheet.create({
   },
   status: {
     height: 25,
-    backgroundColor: "black",
-    opacity: 0.4,
   },
 });

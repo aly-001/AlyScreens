@@ -10,15 +10,13 @@ import {
   Animated, 
   Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform
 } from 'react-native';
 import { useAPIKey } from "../../context/APIKeyContext";
 import { Ionicons } from "@expo/vector-icons";
-import colors from '../../config/colors';
-
+import { useThemeColors } from '../../config/colors';
 
 const WelcomeScreen = ({ onApiKeySet }) => {
+  const colors = useThemeColors();
 
   const dismissKeyboard = () => {
     Keyboard.dismiss();
@@ -76,43 +74,43 @@ const WelcomeScreen = ({ onApiKeySet }) => {
   };
 
   if (showBlank) {
-    return <View style={styles.blankScreen} />;
+    return <View style={[styles.blankScreen, { backgroundColor: colors.readScreen.primary }]} />;
   }
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
-        <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-          <Text style={styles.title}>Welcome!</Text>
-          <Text style={styles.subtitle}>To get started, paste your OpenAI API key below</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={apiKey}
-              onChangeText={setApiKey}
-              placeholder="Enter your OpenAI API key"
+      <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: colors.readScreen.primary }]}>
+        <Text style={styles.title}>Welcome!</Text>
+        <Text style={styles.subtitle}>To get started, paste your OpenAI API key below</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { borderColor: colors.utilityGrey }]}
+            value={apiKey}
+            onChangeText={setApiKey}
+            placeholder="Enter your OpenAI API key"
+          />
+          <TouchableOpacity onPress={handleInfoPress} style={styles.infoIcon}>
+            <Ionicons
+              name="information-circle-outline"
+              size={24}
+              color={colors.appleBlue}
             />
-            <TouchableOpacity onPress={handleInfoPress} style={styles.infoIcon}>
-              <Ionicons
-                name="information-circle-outline"
-                size={24}
-                color={colors.appleBlue}
-              />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity 
-            style={[styles.button, !isButtonEnabled && styles.buttonDisabled]}
-            onPress={handleSubmit}
-            disabled={!isButtonEnabled}
-          >
-            <Text style={[styles.buttonText, !isButtonEnabled && styles.buttonTextDisabled]}>Start</Text>
           </TouchableOpacity>
-          <Text style={styles.subtitle2}>The key is stored securely on your device, and does not leave your device.</Text>
-          <Text style={styles.disclaimer}>
-            Note: While we utilize the OpenAI API, we are not endorsed,
-            sponsored by, or affiliated with OpenAI. We're an independent
-            application striving to provide value through AI technology.
-          </Text>
-        </Animated.View>
+        </View>
+        <TouchableOpacity 
+          style={[styles.button, !isButtonEnabled && styles.buttonDisabled, { backgroundColor: isButtonEnabled ? colors.appleBlue : colors.utilityGrey }]}
+          onPress={handleSubmit}
+          disabled={!isButtonEnabled}
+        >
+          <Text style={[styles.buttonText, !isButtonEnabled && styles.buttonTextDisabled]}>Start</Text>
+        </TouchableOpacity>
+        <Text style={styles.subtitle2}>The key is stored securely on your device, and does not leave your device.</Text>
+        <Text style={[styles.disclaimer, { color: colors.utilityGrey }]}>
+          Note: While we utilize the OpenAI API, we are not endorsed,
+          sponsored by, or affiliated with OpenAI. We're an independent
+          application striving to provide value through AI technology.
+        </Text>
+      </Animated.View>
     </TouchableWithoutFeedback>
   );
 };
@@ -120,14 +118,12 @@ const WelcomeScreen = ({ onApiKeySet }) => {
 const styles = StyleSheet.create({
   blankScreen: {
     flex: 1,
-    backgroundColor: 'white',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -154,7 +150,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
-    borderColor: colors.utilityGrey,
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
@@ -163,28 +158,20 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button: {
-    backgroundColor: colors.appleBlue,
     padding: 10,
     borderRadius: 5,
     width: '100%',
     alignItems: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: colors.utilityGrey,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  buttonTextDisabled: {
-    color: '#A9A9A9',
-  },
   disclaimer: {
     width: "70%",
     marginTop: 40,
     fontSize: 12,
-    color: colors.utilityGrey,
     textAlign: 'center',
     paddingHorizontal: 10,
   },

@@ -10,13 +10,14 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import Screen from "../../components/Screen";
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import layout from "../../config/layout";
 import WordBox from "../../components/WordBox";
 import PracticeStartButton from "../../components/PracticeStartButton";
 import { useFlashcards } from "../../context/FlashcardContext";
 
 export default function PracticeScreenStart() {
+  const colors = useThemeColors();
   const {
     stats,
     getNextCard,
@@ -51,7 +52,7 @@ export default function PracticeScreenStart() {
   };
 
   return (
-    <View style={styles.superContainer}>
+    <View style={[styles.superContainer, {backgroundColor: colors.homeScreenBackground}]}>
       <StatusBar hidden={true} />
       <Screen>
         <ScrollView showsVerticalScrollIndicator={false}  contentContainerStyle={styles.contentContainer}>
@@ -115,7 +116,6 @@ export default function PracticeScreenStart() {
 const styles = StyleSheet.create({
   superContainer: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
     padding: layout.margins.homeScreenWidgets / 2,

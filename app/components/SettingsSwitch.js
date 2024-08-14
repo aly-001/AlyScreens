@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import colors from '../config/colors';
-
+import { useThemeColors } from '../config/colors';
 const SettingSwitch = ({ label, value, onValueChange, disabled = false, onEdit }) => {
+  const colors = useThemeColors();
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>

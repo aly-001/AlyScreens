@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, Animated, Dimensions, StyleSheet } from 'react-native';
-import colors from '../config/colors';
 
 const BookHiddenFooter = ({ style, progress, color }) => {
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);

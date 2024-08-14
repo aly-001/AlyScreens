@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Text, SafeAreaView, StatusBar, TouchableWithoutFeedback } from 'react-native';
 
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import PracticeStatsFooter from "../../components/PracticeStatsFooter";
 import { useFlashcards } from "../../context/FlashcardContext";
 import FlashcardModuleBox from "../../components/FlashcardModuleBox";
@@ -11,6 +11,7 @@ import layout from "../../config/layout";
 
 
 export default function PracticeScreenWord({ navigation }) {
+  const colors = useThemeColors();
   const { currentCard, stats } = useFlashcards();
 
   const handlePress = () => {
@@ -41,7 +42,8 @@ export default function PracticeScreenWord({ navigation }) {
               justifyContent: "space-between",
             }}
           >
-            <Text style={styles.word}>{frontData.word || "N/A"}</Text>
+    backgroundColor: colors.homeScreenBackground,
+            <Text style={[styles.word, {color: colors.utilityGrey}]}>{frontData.word || "N/A"}</Text>
           </View>
         </FlashcardModuleBoxGeneral>
         {frontData.context && (
@@ -66,7 +68,7 @@ export default function PracticeScreenWord({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor: colors.homeScreenBackground}]}>
       <StatusBar hidden={true} />
       <TouchableWithoutFeedback onPress={handlePress}>
         <View style={styles.container}>
@@ -87,7 +89,7 @@ export default function PracticeScreenWord({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
+
   },
   superContainer: {
     flex: 1,
@@ -107,20 +109,10 @@ const styles = StyleSheet.create({
   word: {
     fontSize: layout.flashCards.fontSize.word,
     fontWeight: "600",
-    color: colors.utilityGrey,
   },
   footer: {
     position: "absolute",
     alignSelf: "center",
     bottom: 60,
-  },
-  def: {
-    marginTop: 10,
-    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
-    fontWeight: "500",
-    color: colors.utilityGrey,
-    opacity: 0.85,
-    padding: 5,
-    borderRadius: 5,
   },
 });

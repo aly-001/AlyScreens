@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useSettingsContext } from '../../context/useSettingsContext';
-import colors from '../../config/colors';
+import { useThemeColors } from '../../config/colors';
 import { Divider } from 'react-native-paper';
 
 const PromptEngineeringScreen = () => {
+  const colors = useThemeColors();
   const { settings, updateSettings } = useSettingsContext();
   const [imagePrompt, setImagePrompt] = useState(settings.imagePrompt || '');
   const [grammarPrompt, setGrammarPrompt] = useState(settings.grammarPrompt || '');
@@ -26,7 +27,7 @@ const PromptEngineeringScreen = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
       <View style={styles.settingGroup}>
       <View style={styles.description}>
           <Text style={styles.descriptionText}>IMAGE</Text>
@@ -55,7 +56,7 @@ const PromptEngineeringScreen = () => {
       </View>
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save</Text>
+        <Text style={[styles.saveButtonText, {color: colors.appleBlue}]}>Save</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 40,
-    backgroundColor: colors.homeScreenBackground,
+
   },
   settingGroup: {
     backgroundColor: 'white',
@@ -73,12 +74,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginHorizontal: 20,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: colors.utilityGrey,
   },
   input: {
     padding: 10,
@@ -92,7 +87,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveButtonText: {
-    color: colors.appleBlue,
     fontSize: 16,
     fontWeight: 'bold',
 

@@ -12,7 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 
 import fonts from "../config/fonts";
-import colors from "../config/colors";
+import { useThemeColors } from "../config/colors"; // Import the hook to access theme colors
 import Pointer from "./Pointer";
 import { useSettingsContext } from "../context/useSettingsContext";
 import FlashcardModuleBoxGeneral from "../components/FlashcardModuleBoxGeneral";
@@ -48,6 +48,7 @@ const DefinitionPopup = ({
   const [maxHeight, setMaxHeight] = useState(450);
 
   const settings = useSettingsContext().settings;
+  const colors = useThemeColors(); // Access theme colors
 
   const widthRatio = layout.translationPopup.widthRatio;
 
@@ -126,7 +127,7 @@ const DefinitionPopup = ({
   const calculateModalLeft = () => {
     const modalWidth = width * widthRatio;
     let x = locationLeft - modalWidth / 2;
-    padding = 20;
+    const padding = 20;
 
     if (x < 0) {
       x = 0 + padding;
@@ -141,7 +142,7 @@ const DefinitionPopup = ({
     const modalWidth = width * widthRatio;
     let x = locationLeft - modalWidth / 2;
     let z = modalWidth / 2;
-    padding = 20;
+    const padding = 20;
 
     if (x < 0) {
       // pushed right
@@ -190,6 +191,7 @@ const DefinitionPopup = ({
                   style={[
                     styles.modalViewContainer,
                     {
+                      backgroundColor: colors.translationPopup.background,
                       width: width * widthRatio,
                       position: "absolute",
                       left: calculateModalLeft(),
@@ -204,42 +206,42 @@ const DefinitionPopup = ({
                   >
                     <ModalHeader word={word} onClose={onClose} />
                     <Divider />
-                     {settings.translationPopupAudio && (
+                    {settings.translationPopupAudio && (
                       <>
-                      <ModalAudio
-                        audioBase64={audioBase64}
-                        audioLoading={audioLoading}
-                      />
-                      <Divider />
+                        <ModalAudio
+                          audioBase64={audioBase64}
+                          audioLoading={audioLoading}
+                        />
+                        <Divider />
                       </>
                     )}
                     <ModalDef isLoading={isLoading} definition={definition} />
                     <Divider />
                     {settings.translationPopupGrammar && (
                       <>
-                      <ModalGram
-                        grammarLoading={grammarLoading}
-                        currentGrammar={currentGrammar}
-                      />
-                      <Divider />
+                        <ModalGram
+                          grammarLoading={grammarLoading}
+                          currentGrammar={currentGrammar}
+                        />
+                        <Divider />
                       </>
                     )}
                     {settings.translationPopupModuleA && (
                       <>
-                      <ModalModuleA
-                        moduleALoading={moduleALoading}
-                        currentModuleA={currentModuleA}
-                      />
-                      <Divider />
+                        <ModalModuleA
+                          moduleALoading={moduleALoading}
+                          currentModuleA={currentModuleA}
+                        />
+                        <Divider />
                       </>
                     )}
                     {settings.translationPopupModuleB && (
                       <>
-                      <ModalModuleB
-                        moduleBLoading={moduleBLoading}
-                        currentModuleB={currentModuleB}
-                      />
-                      <Divider />
+                        <ModalModuleB
+                          moduleBLoading={moduleBLoading}
+                          currentModuleB={currentModuleB}
+                        />
+                        <Divider />
                       </>
                     )}
                   </ScrollView>
@@ -277,6 +279,8 @@ const DefinitionPopup = ({
 };
 
 const Divider = () => {
+  const colors = useThemeColors(); // Access theme colors
+
   return (
     <TouchableWithoutFeedback>
       <View
@@ -289,48 +293,57 @@ const Divider = () => {
   );
 };
 
-const ModalHeader = ({ word, onClose }) => (
-  <View
-    style={[
-      styles.content,
-      {
-        backgroundColor: colors.translationPopup.translationModuleShade,
-        marginTop: 15,
-      },
-    ]}
-  >
-    <Text style={styles.wordText}>{word}</Text>
-  </View>
-);
+const ModalHeader = ({ word, onClose }) => {
+  const colors = useThemeColors(); // Access theme colors
 
-const ModalDef = ({ isLoading, definition }) => (
-  <View
-    style={[
-      styles.content,
-      {
-        backgroundColor: colors.translationPopup.translationModuleShade,
-      },
-    ]}
-  >
-    {isLoading ? (
-      <View style={styles.loadingContainer}>
-        <LoadingText
-          text="Loading translation..."
-          barColor={colors.translationPopup.translationModuleShade}
-        />
-      </View>
-    ) : (
-      <FlashcardModuleBoxGeneral
-        margin={false}
-        color={colors.translationPopup.translationModuleShade}
-      >
-        <Text style={styles.definitionText}>{definition}</Text>
-      </FlashcardModuleBoxGeneral>
-    )}
-  </View>
-);
+  return (
+    <View
+      style={[
+        styles.content,
+        {
+          backgroundColor: colors.translationPopup.translationModuleShade,
+          marginTop: 15,
+        },
+      ]}
+    >
+      <Text style={styles.wordText}>{word}</Text>
+    </View>
+  );
+};
+
+const ModalDef = ({ isLoading, definition }) => {
+  const colors = useThemeColors(); // Access theme colors
+
+  return (
+    <View
+      style={[
+        styles.content,
+        {
+          backgroundColor: colors.translationPopup.translationModuleShade,
+        },
+      ]}
+    >
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingText
+            text="Loading translation..."
+            barColor={colors.translationPopup.translationModuleShade}
+          />
+        </View>
+      ) : (
+        <FlashcardModuleBoxGeneral
+          margin={false}
+          color={colors.translationPopup.translationModuleShade}
+        >
+          <Text style={styles.definitionText}>{definition}</Text>
+        </FlashcardModuleBoxGeneral>
+      )}
+    </View>
+  );
+};
 
 const ModalAudio = ({ audioBase64, audioLoading }) => {
+  const colors = useThemeColors(); // Access theme colors
   const [isPlaying, setIsPlaying] = useState(false);
   const { playSound, stopSound } = useAudioPlayer(audioBase64);
 
@@ -371,81 +384,93 @@ const ModalAudio = ({ audioBase64, audioLoading }) => {
     </View>
   );
 };
-// modal gram essentially the same as modal def
-const ModalGram = ({ grammarLoading, currentGrammar }) => (
-  <View
-    style={[
-      styles.content,
-      { backgroundColor: colors.translationPopup.grammarModuleShade },
-    ]}
-  >
-    {grammarLoading ? (
-      <View style={styles.loadingContainer}>
-        <LoadingText
-          text="Loading grammar..."
-          barColor={colors.translationPopup.grammarModuleShade}
-        />
-      </View>
-    ) : (
-      <FlashcardModuleBoxGeneral
-        margin={false}
-        color={colors.translationPopup.grammarModuleShade}
-      >
-        <Markdown style={styles.definitionText}>{currentGrammar}</Markdown>
-      </FlashcardModuleBoxGeneral>
-    )}
-  </View>
-);
 
-const ModalModuleA = ({ moduleALoading, currentModuleA }) => (
-  <View
-    style={[
-      styles.content,
-      { backgroundColor: colors.translationPopup.moduleAModuleShade },
-    ]}
-  >
-    {moduleALoading ? (
-      <View style={styles.loadingContainer}>
-        <LoadingText
-          text="Loading custom module A..."
-          barColor={colors.translationPopup.moduleAModuleShade}
-        />
-      </View>
-    ) : (
-      <FlashcardModuleBoxGeneral
-        margin={false}
-        color={colors.translationPopup.moduleAModuleShade}
-      >
-        <Text style={styles.definitionText}>{currentModuleA}</Text>
-      </FlashcardModuleBoxGeneral>
-    )}
-  </View>
-);
+const ModalGram = ({ grammarLoading, currentGrammar }) => {
+  const colors = useThemeColors(); // Access theme colors
 
-const ModalModuleB = ({ moduleBLoading, currentModuleB }) => (
-  <View
-    style={[
-      styles.content,
-      { backgroundColor: colors.translationPopup.moduleBModuleShade },
-    ]}
-  >
-    {moduleBLoading ? (
-      <View style={styles.loadingContainer}>
-        <LoadingText
-          text="Loading custom module B..."
-          barColor={colors.translationPopup.moduleBModuleShade}
-        />
-      </View>
-    ) : (
-      <FlashcardModuleBoxGeneral
-        margin={false}
-        color={colors.translationPopup.moduleBModuleShade}
-      >
-        <Text style={styles.definitionText}>{currentModuleB}</Text>
-      </FlashcardModuleBoxGeneral>
-    )}
-  </View>
-);
+  return (
+    <View
+      style={[
+        styles.content,
+        { backgroundColor: colors.translationPopup.grammarModuleShade },
+      ]}
+    >
+      {grammarLoading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingText
+            text="Loading grammar..."
+            barColor={colors.translationPopup.grammarModuleShade}
+          />
+        </View>
+      ) : (
+        <FlashcardModuleBoxGeneral
+          margin={false}
+          color={colors.translationPopup.grammarModuleShade}
+        >
+          <Markdown style={styles.definitionText}>{currentGrammar}</Markdown>
+        </FlashcardModuleBoxGeneral>
+      )}
+    </View>
+  );
+};
+
+const ModalModuleA = ({ moduleALoading, currentModuleA }) => {
+  const colors = useThemeColors(); // Access theme colors
+
+  return (
+    <View
+      style={[
+        styles.content,
+        { backgroundColor: colors.translationPopup.moduleAModuleShade },
+      ]}
+    >
+      {moduleALoading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingText
+            text="Loading custom module A..."
+            barColor={colors.translationPopup.moduleAModuleShade}
+          />
+        </View>
+      ) : (
+        <FlashcardModuleBoxGeneral
+          margin={false}
+          color={colors.translationPopup.moduleAModuleShade}
+        >
+          <Text style={styles.definitionText}>{currentModuleA}</Text>
+        </FlashcardModuleBoxGeneral>
+      )}
+    </View>
+  );
+};
+
+const ModalModuleB = ({ moduleBLoading, currentModuleB }) => {
+  const colors = useThemeColors(); // Access theme colors
+
+  return (
+    <View
+      style={[
+        styles.content,
+        { backgroundColor: colors.translationPopup.moduleBModuleShade },
+      ]}
+    >
+      {moduleBLoading ? (
+        <View style={styles.loadingContainer}>
+          <LoadingText
+            text="Loading custom module B..."
+            barColor={colors.translationPopup.moduleBModuleShade}
+          />
+        </View>
+      ) : (
+        <FlashcardModuleBoxGeneral
+          margin={false}
+          color={colors.translationPopup.moduleBModuleShade}
+        >
+          <Text style={styles.definitionText}>{currentModuleB}</Text>
+        </FlashcardModuleBoxGeneral>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -461,7 +486,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalViewContainer: {
-    backgroundColor: colors.translationPopup.background,
     borderRadius: 10,
     paddingVertical: 15,
   },
@@ -536,7 +560,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: colors.translationPopup.background,
+    backgroundColor: "white", // Replace with colors.translationPopup.background if needed
     zIndex: 1,
   },
 });

@@ -11,7 +11,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import colors from "../../config/colors";
+import  {useThemeColors} from "../../config/colors"; // Change this import to your config folder
 import { useBooks } from "../../hooks/useBooks"; // Change this import to your hooks folder
 import BookCoverThumb from "../../components/BookCoverThumb";
 import Screen from "../../components/Screen";
@@ -21,6 +21,7 @@ import layout from "../../config/layout";
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const LibraryScreen = () => {
+  const colors = useThemeColors(); // Use the hook here
   const navigation = useNavigation();
   const { books, addBook, deleteBook } = useBooks(); // Use the hook here
 
@@ -124,7 +125,7 @@ const LibraryScreen = () => {
   };
 
   return (
-    <View style={styles.superContainer}>
+    <View style={[styles.superContainer,     {backgroundColor: colors.homeScreenBackground}]}>
       <Screen>
         <View style={styles.contentContainer}>
           <View style={styles.headerContainer}>
@@ -173,7 +174,6 @@ const styles = StyleSheet.create({
   superContainer: {
 
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
     flex: 1,

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet, Text, TouchableOpacity, Modal, Button } from 'react-native';
 import { useSettingsContext } from "../context/useSettingsContext";
-import colors from '../config/colors';
+import { useThemeColors } from '../config/colors';
 import layout from '../config/layout';
 
 const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPromptPart, onReset }) => {
+  const colors = useThemeColors();
   const { settings, updateSettings } = useSettingsContext();
   const [prompt, setPrompt] = useState(settings[promptType] || '');
 
@@ -26,7 +27,7 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.greyPartContainer}>
-            <Text style={styles.greyPromptPart}>{greyPromptPart}</Text>
+            <Text style={[styles.greyPromptPart, { color: colors.utilityGrey }]}>{greyPromptPart}</Text>
           </View>
           <TextInput
             style={styles.input}
@@ -40,9 +41,9 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={[styles.cancelButtonText, { color: colors.appleBlue }]}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <TouchableOpacity style={[styles.saveButton, { backgroundColor: colors.appleBlue }]} onPress={handleSave}>
               <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>
           </View>
@@ -73,7 +74,6 @@ const styles = StyleSheet.create({
   },
   greyPromptPart: {
     opacity: 0.8,
-    color: colors.utilityGrey,
     fontStyle: 'italic',
   },
   input: {
@@ -102,14 +102,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   cancelButtonText: {
-    color: colors.appleBlue,
     fontWeight: '600',
     textAlign: 'center',
     fontSize: 16,
   },
   saveButton: {
     flex: 1,
-    backgroundColor: colors.appleBlue,
     borderRadius: 10,
     padding: 15,
     marginLeft: 10,
@@ -120,7 +118,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
   },
-
 });
 
 export default PromptEditModal;

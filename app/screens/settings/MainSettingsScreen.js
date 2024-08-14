@@ -2,11 +2,11 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
-import colors from '../../config/colors';
+import { useThemeColors } from '../../config/colors';
 
-const SettingsItem = ({ label, onPress }) => (
+const SettingsItem = ({ label, onPress, colors }) => (
   <TouchableOpacity style={styles.settingsItem} onPress={onPress}>
-    <Text style={styles.settingsItemText}>{label}</Text>
+    <Text style={[styles.settingsItemText, {color: colors.utilityGrey}]}>{label}</Text>
     <MaterialIcons name="chevron-right" size={24} color={colors.text} />
   </TouchableOpacity>
 );
@@ -18,25 +18,29 @@ const SettingsGroup = ({ children }) => (
 );
 
 const MainSettingsScreen = ({ navigation }) => {
+  const colors = useThemeColors();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
       
       <SettingsGroup>
         <SettingsItem 
           label="Configure AI Key" 
           onPress={() => navigation.navigate('LLM Key')} 
+          colors={colors}
         />
       </SettingsGroup>
       
       <SettingsGroup>
         <SettingsItem 
           label="Translation Popup" 
-          onPress={() => navigation.navigate('Translation Popup')} 
+          onPress={() => navigation.navigate('Translation Popup')}
+          colors={colors}
         />
         <Divider />
         <SettingsItem 
           label="Flashcard Media" 
           onPress={() => navigation.navigate('Flashcard Media')} 
+          colors={colors}
         />
       </SettingsGroup>
     </View>
@@ -47,13 +51,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: colors.homeScreenBackground,
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    marginBottom: 40,
-    color: colors.text,
+
   },
   settingsGroup: {
     backgroundColor: 'white',
@@ -70,7 +68,6 @@ const styles = StyleSheet.create({
   },
   settingsItemText: {
     fontSize: 16,
-    color: colors.text,
   },
 });
 

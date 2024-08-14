@@ -1,8 +1,9 @@
 import { View, StyleSheet, Text } from 'react-native';
 import React from 'react';
-import colors from '../config/colors';
+import { useThemeColors } from '../config/colors';
 
 export default function PracticeStatsFooter({ newCount, learnCount, dueCount }) {
+  const colors = useThemeColors();
   return (
     <View style={styles.container}>
      <Text style={[ styles.count , {color: colors.newWords}]}>{newCount}</Text> 

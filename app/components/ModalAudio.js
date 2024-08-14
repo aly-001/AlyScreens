@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
-import colors from "../config/colors";
+import { useThemeColors } from '../config/colors';
 import { useAudioPlayer } from '../hooks/useAudioPlayer'; // We'll create this hook
 import LoadingText from './LoadingText';
 
 const ModalAudio = ({ audioBase64, isLoading }) => {
+  const colors = useThemeColors();
   const [isPlaying, setIsPlaying] = useState(false);
   const { playSound, stopSound } = useAudioPlayer(audioBase64);
 
@@ -21,7 +22,7 @@ const ModalAudio = ({ audioBase64, isLoading }) => {
   };
 
   return (
-    <View style={styles.audioContainer}>
+    <View style={[styles.audioContainer, {backgroundColor: colors.utilityGrey}]}>
       {isLoading ? (
         <LoadingText text="Loading Audio..." />
       ) : (
@@ -42,7 +43,6 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.translationPopup.audioModuleShade,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },

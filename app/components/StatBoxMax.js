@@ -3,10 +3,11 @@ import React from "react";
 import { useFlashcards } from "../context/FlashcardContext";
 import WidgetHeader from "./WidgetHeader";
 import layout from "../config/layout";
-import colors from "../config/colors";
+import { useThemeColors } from "../config/colors";
 import text from "../config/text";
 
 export default function StatBoxMax() {
+  const colors = useThemeColors();
   const { allCards, youngCards, matureCards } = useFlashcards();
 
   return (
@@ -17,7 +18,7 @@ export default function StatBoxMax() {
           <View style={styles.labelTextBox}>
             <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.allWords}</Text>
           </View>
-          <View style={styles.numberTextBox}>
+          <View style={[styles.numberTextBox, {color: colors.utilityGrey}]}>
             <Text style={styles.numberText}>{allCards.length}</Text>
           </View>
         </View>
@@ -26,7 +27,7 @@ export default function StatBoxMax() {
           <View style={styles.labelTextBox}>
             <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.youngWords}</Text>
           </View>
-          <View style={styles.numberTextBox}>
+          <View style={[styles.numberTextBox, {color: colors.utilityGrey}]}>
             <Text style={styles.numberText}>{youngCards.length}</Text>
           </View>
         </View>
@@ -35,7 +36,7 @@ export default function StatBoxMax() {
           <View style={styles.labelTextBox}>
             <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.matureWords}</Text>
           </View>
-          <View style={styles.numberTextBox}>
+          <View style={[styles.numberTextBox, {color: colors.utilityGrey}]}>
             <Text style={styles.numberText}>{matureCards.length}</Text>
           </View>
         </View>
@@ -86,7 +87,6 @@ const styles = StyleSheet.create({
     // Add any additional styling for the label text here
   },
   numberTextBox: {
-    color: colors.utilityGrey,
     marginTop: 5,
     // Add any additional styling for the number box here
   },
