@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from "react";
-import { View, StyleSheet, ScrollView, Animated } from "react-native";
+import React, { useCallback, useRef, useState, useEffect } from "react";
+import { View, StyleSheet, ScrollView, Animated, Alert } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
@@ -9,20 +9,107 @@ import layout from "../../config/layout";
 import MyLibrary from "../../components/MyLibrary";
 import BottomWidget from "../../components/BottomWidget";
 import { TouchableWithoutFeedback, TouchableOpacity } from "react-native-gesture-handler";
-import { useBooks } from "../../context/BooksContext";
 import StatBoxMax from "../../components/StatBoxMax";
 import { FlashcardProvider } from "../../context/FlashcardContext";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from "expo-file-system";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  const { books, loadBooks } = useBooks();
+  const [books, setBooks] = useState([]);
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const getRandomColor = () => {
+    const colors = [
+      "#FF6B6B",
+      "#4ECDC4",
+      "#45B7D1",
+      "#FFA07A",
+      "#98D8C8",
+      "#F38181",
+      "#A8D8EA",
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  const loadBooks = useCallback(async () => {
+    try {
+      const bookMetadata = await AsyncStorage.getItem("bookMetadata");
+      if (bookMetadata) {
+        setBooks(JSON.parse(bookMetadata));
+      } else {
+        const bookDir = FileSystem.documentDirectory + "books/";
+        await FileSystem.makeDirectoryAsync(bookDir, { intermediates: true });
+        const bookFiles = await FileSystem.readDirectoryAsync(bookDir);
+        const bookList = bookFiles.map((file) => ({
+          uri: bookDir + file,
+          name: file,
+          title: file.replace(".epub", ""),
+          subtitle: "Unknown Author",
+          color: getRandomColor(),
+          status: 0,
+        }));
+        setBooks(bookList);
+        await AsyncStorage.setItem("bookMetadata", JSON.stringify(bookList));
+      }
+    } catch (error) {
+      console.error("Error loading books:", error);
+      Alert.alert("Error", "Failed to load books. Please try again.");
+    }
+  }, []);
+
+  const deleteBook = useCallback(async (uri) => {
+    try {
+      const bookMetadata = await AsyncStorage.getItem("bookMetadata");
+      if (!bookMetadata) {
+        throw new Error("No book metadata found");
+      }
+      let updatedBooks = JSON.parse(bookMetadata);
+      const bookIndex = updatedBooks.findIndex(book => book.uri === uri);
+      if (bookIndex === -1) {
+        throw new Error("Book not found");
+      }
+      await FileSystem.deleteAsync(uri, { idempotent: true });
+      updatedBooks.splice(bookIndex, 1);
+      await AsyncStorage.setItem("bookMetadata", JSON.stringify(updatedBooks));
+      setBooks(updatedBooks);
+      console.log(`Book deleted successfully: ${uri}`);
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      Alert.alert("Error", "Failed to delete the book. Please try again.");
+    }
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       loadBooks();
     }, [loadBooks])
   );
+
+  const addBook = useCallback(async (newBook) => {
+    try {
+      const updatedBooks = [...books, newBook];
+      setBooks(updatedBooks);
+      await AsyncStorage.setItem('bookMetadata', JSON.stringify(updatedBooks));
+      return true;
+    } catch (error) {
+      console.error("Error adding book:", error);
+      Alert.alert("Error", "Failed to add the book to your library. Please try again.");
+      return false;
+    }
+  }, [books]);
+
+  const updateBookStatus = useCallback(async (uri, status, cfi) => {
+    try {
+      const updatedBooks = books.map(book => 
+        book.uri === uri ? { ...book, status, cfi } : book
+      );
+      setBooks(updatedBooks);
+      await AsyncStorage.setItem('bookMetadata', JSON.stringify(updatedBooks));
+    } catch (error) {
+      console.error("Error updating book status:", error);
+    }
+  }, [books]);
 
   const handleBookPress = (bookName) => {
     const book = books.find((b) => b.name === bookName);
@@ -33,7 +120,7 @@ export default function HomeScreen() {
           uri: book.uri,
           title: book.title,
           color: book.color,
-          status: 40,
+          status: book.status,
         },
       });
     }
@@ -44,6 +131,7 @@ export default function HomeScreen() {
     outputRange: [1, 0],
     extrapolate: 'clamp',
   });
+
 
   return (
     <View style={styles.container}>
@@ -61,7 +149,7 @@ export default function HomeScreen() {
       >
         <View style={styles.topWidgetContainer}>
           <TouchableOpacity
-          activeOpacity={0.7}
+            activeOpacity={0.7}
             onPress={() => navigation.navigate("Dictionary")}
           >
             <FlashcardProvider>
@@ -70,7 +158,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-        activeOpacity={0.7}
+          activeOpacity={0.7}
           onPress={() => navigation.navigate("Library")}
         >
           <View style={styles.libraryContainer}>

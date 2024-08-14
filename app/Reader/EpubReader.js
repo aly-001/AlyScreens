@@ -3,20 +3,22 @@ import { View, StyleSheet } from "react-native";
 import { Reader, useReader } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { injectedScript } from "./injectedScript";
-import { useBooks } from "../context/BooksContext";
+import { useBooks } from "../hooks/useBooks";
 
-export default function EpubReader({ uri, handleWebViewMessage, tableOfContents, setTableOfContents }) {
+export default function EpubReader({ uri, handleWebViewMessage, tableOfContents, setTableOfContents, handleStatus }) {
   const { injectJavascript, getCurrentLocation, goToLocation } = useReader();
-  const { books, updateBookStatus } = useBooks();
   const [initialLocation, setInitialLocation] = useState(null);
   const prevTableOfContentsRef = useRef(false);
-
+  
+  const { getBookByUri, updateBookStatus } = useBooks(); // Use the hook to get necessary functions
+  
   useEffect(() => {
-    const book = books.find(book => book.uri === uri);
+    const book = getBookByUri(uri);
     if (book?.cfi) {
       setInitialLocation(book.cfi);
     }
-  }, [books, uri]);
+    handleStatus(book?.status || 0);
+  }, [getBookByUri, uri]);
 
   useEffect(() => {
     if (tableOfContents && !prevTableOfContentsRef.current) {
@@ -31,19 +33,19 @@ export default function EpubReader({ uri, handleWebViewMessage, tableOfContents,
   }, [injectJavascript]);
 
   const handleLocationChange = useCallback(() => {
-    if (!updateBookStatus) return;
     try {
       const location = getCurrentLocation();
       if (!location?.end?.percentage) return;
-      const percentage = location.end.percentage * 100;
+      const percentage = Math.round(location.end.percentage * 100);
       const cfi = location.start.cfi;
       
-      updateBookStatus(uri, percentage, cfi)
-        .catch(error => console.error("Error updating book status:", error));
+      console.log("Location changed:", percentage, cfi);
+      updateBookStatus(uri, percentage, cfi);
+      handleStatus(percentage);
     } catch (error) {
       console.error("Error in handleLocationChange:", error);
     }
-  }, [getCurrentLocation, updateBookStatus, uri]);
+  }, [getCurrentLocation, updateBookStatus, uri, handleStatus]);
 
   return (
     <View style={styles.readerContainer}>

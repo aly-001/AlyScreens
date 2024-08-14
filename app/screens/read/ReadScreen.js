@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -27,9 +27,8 @@ import { addCard } from "../../services/CardManager";
 
 import { useSettingsContext } from "../../context/useSettingsContext";
 import { useAPIKey } from "../../context/APIKeyContext";
-import { useBooks } from "../../context/BooksContext";
+import { useBooks } from "../../hooks/useBooks"; // Update this import
 import layout from "../../config/layout";
-
 const duration = 200; // Animation duration
 
 const BookHeader = ({ bookTitle, style, onTocPress }) => {
@@ -66,7 +65,10 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
 };
 
 export default function ReadScreen() {
-  const { getBookStatus } = useBooks();
+  const [bossStatus, setBossStatus] = useState(0);
+  const { getBookByUri, updateBookStatus } = useBooks();
+  const [currentBook, setCurrentBook] = useState(null);
+
   const { apiKey } = useAPIKey();
   const { setTabBarVisible } = useTabBarVisibility();
   const isFocused = useIsFocused();
@@ -84,7 +86,6 @@ export default function ReadScreen() {
   const { handlePickComplete } = useEpubManager();
   
   const { uri, title, color } = route.params || {};
-  const { status } = getBookStatus(uri);
 
   const {
     popupVisible,
@@ -109,6 +110,13 @@ export default function ReadScreen() {
 
   const headerOpacity = useRef(new Animated.Value(1)).current;
   const footerOpacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (uri) {
+      const book = getBookByUri(uri);
+      setCurrentBook(book);
+    }
+  }, [uri, getBookByUri]);
 
   useEffect(() => {
     if (isFocused) {
@@ -177,7 +185,12 @@ export default function ReadScreen() {
     if (settings.flashcardsEnabled) {
       addCardFromMessage(message);
     }
+
+    if (message.progress) {
+      console.log("YYYYYYYYYYYYEEEEEEEEEEEAAAAAAAAAAAAHHHHHHHHHHHHHHH BABYYYYYYYYYYYY")
+    }
   };
+
 
   const handleMiddlePress = () => {
     setIsFullscreen((prev) => !prev);
@@ -200,6 +213,7 @@ export default function ReadScreen() {
                 handleWebViewMessage={handleWebViewMessage}
                 tableOfContents={tableOfContents}
                 setTableOfContents={setTableOfContents}
+                handleStatus={(status) => setBossStatus(status)}
               />
               <DefinitionPopup
                 location={location}
@@ -231,7 +245,7 @@ export default function ReadScreen() {
           onTocPress={handleTocPress}
         />
         <BookHiddenFooter 
-          progress={status}
+          progress={bossStatus}
           color={color}
           style={{ opacity: footerOpacity }}
         />
