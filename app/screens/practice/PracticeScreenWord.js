@@ -19,7 +19,6 @@ export default function PracticeScreenWord({ navigation }) {
   };
 
   const renderCardContent = () => {
-;
     if (!currentCard) return <Text>No more cards available</Text>;
     let frontData;
     try {
@@ -42,7 +41,6 @@ export default function PracticeScreenWord({ navigation }) {
               justifyContent: "space-between",
             }}
           >
-    backgroundColor: colors.homeScreenBackground,
             <Text style={[styles.word, {color: colors.utilityGrey}]}>{frontData.word || "N/A"}</Text>
           </View>
         </FlashcardModuleBoxGeneral>
