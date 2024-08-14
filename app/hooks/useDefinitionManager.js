@@ -39,10 +39,11 @@ export default function useDefinitionManager() {
     setCurrentGrammar("");
     setAudioLoading(false);
     
-    const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, "");
+    const cleanWord = message.word.replace(/^[".,\s]+|[".,\s]+$/g, "").trim();
     const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
     setCurrentWord(capitalizedWord);
     const { innerContext, outerContext } = message;
+  
 
     setPopupVisible(true);
     setIsLoading(true);
