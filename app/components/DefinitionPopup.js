@@ -445,6 +445,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   modalViewContent: {
+    flexGrow: 1,
     paddingBottom: 15,
   },
   header: {

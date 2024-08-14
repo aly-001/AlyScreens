@@ -6,7 +6,9 @@ import shortenText from "../utils/shortenText"; // Adjust the path according to 
 import layout from "../config/layout";
 
 export default function BookCoverThumb({ title, subtitle, color, status }) {
-  const statusPercent = status + "%";
+  // if status is more than 95, set it to 100.
+  const statusRounded = status > 90 ? 100 : status;
+  const statusPercent = statusRounded + "%";
   const maxChars = 30; // Example max character count, adjust as needed
 
   const shortenedTitle = shortenText(title, maxChars);

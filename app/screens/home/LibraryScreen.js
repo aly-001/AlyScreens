@@ -60,7 +60,27 @@ const LibraryScreen = () => {
   };
 
   const getRandomColor = () => {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+    const bookColors = [
+      "#D15A6C", "#708eb9", "#83947c", "#447a83", "#2ac0ec",
+      "#697cea", "#c47b57", "#92926d", "#53aaac", "#C9A795",
+      "#9cb9d1", "#9dc5b2", "#C59DB0", "#94b87b", "#A07BB8",
+      "#ae898a", "#89AEAD", "#d2c6b9"
+    ];
+  
+    // Get the colors of existing books
+    const existingColors = books.map(book => book.color);
+  
+    // Filter out colors that are already in use
+    const availableColors = bookColors.filter(color => !existingColors.includes(color));
+  
+    if (availableColors.length === 0) {
+      // If all colors are used, generate a completely random color
+      return '#' + Math.floor(Math.random()*16777215).toString(16);
+    } else {
+      // Select a random color from the available colors
+      const randomIndex = Math.floor(Math.random() * availableColors.length);
+      return availableColors[randomIndex];
+    }
   };
 
   const handleUpload = async () => {
