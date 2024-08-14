@@ -41,6 +41,7 @@ export default {
   defText: "#4C4C4C",
 
   translationPopup: {
+    background: "rgba(200, 200, 200, 1)",
     grammarModuleShade: "#ddf1e1",
     translationModuleShade: "#ffffff",
     moduleAModuleShade: "#f8eee9",

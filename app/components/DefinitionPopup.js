@@ -124,7 +124,7 @@ const DefinitionPopup = ({
   };
 
   const calculateModalLeft = () => {
-    const modalWidth = width * (widthRatio);
+    const modalWidth = width * widthRatio;
     let x = locationLeft - modalWidth / 2;
     padding = 20;
 
@@ -138,7 +138,7 @@ const DefinitionPopup = ({
   };
 
   const calculatePointerLeft = () => {
-    const modalWidth = width * (widthRatio);
+    const modalWidth = width * widthRatio;
     let x = locationLeft - modalWidth / 2;
     let z = modalWidth / 2;
     padding = 20;
@@ -190,7 +190,7 @@ const DefinitionPopup = ({
                   style={[
                     styles.modalViewContainer,
                     {
-                      width: (width) * widthRatio,
+                      width: width * widthRatio,
                       position: "absolute",
                       left: calculateModalLeft(),
                       maxHeight: maxHeight, // Apply the dynamic maxHeight here
@@ -198,37 +198,49 @@ const DefinitionPopup = ({
                   ]}
                 >
                   <ScrollView
-                    showsVerticalScrollIndicator={false} 
-
+                    showsVerticalScrollIndicator={false}
                     style={styles.modalView}
                     contentContainerStyle={styles.modalViewContent}
                   >
                     <ModalHeader word={word} onClose={onClose} />
-
-                    {settings.translationPopupAudio && (
+                    <Divider />
+                     {settings.translationPopupAudio && (
+                      <>
                       <ModalAudio
                         audioBase64={audioBase64}
                         audioLoading={audioLoading}
                       />
+                      <Divider />
+                      </>
                     )}
                     <ModalDef isLoading={isLoading} definition={definition} />
+                    <Divider />
                     {settings.translationPopupGrammar && (
+                      <>
                       <ModalGram
                         grammarLoading={grammarLoading}
                         currentGrammar={currentGrammar}
                       />
+                      <Divider />
+                      </>
                     )}
                     {settings.translationPopupModuleA && (
+                      <>
                       <ModalModuleA
                         moduleALoading={moduleALoading}
                         currentModuleA={currentModuleA}
                       />
+                      <Divider />
+                      </>
                     )}
                     {settings.translationPopupModuleB && (
+                      <>
                       <ModalModuleB
                         moduleBLoading={moduleBLoading}
                         currentModuleB={currentModuleB}
                       />
+                      <Divider />
+                      </>
                     )}
                   </ScrollView>
 
@@ -264,6 +276,19 @@ const DefinitionPopup = ({
   );
 };
 
+const Divider = () => {
+  return (
+    <TouchableWithoutFeedback>
+      <View
+        style={{
+          backgroundColor: colors.translationPopup.background,
+          height: 15,
+        }}
+      />
+    </TouchableWithoutFeedback>
+  );
+};
+
 const ModalHeader = ({ word, onClose }) => (
   <View
     style={[
@@ -284,7 +309,6 @@ const ModalDef = ({ isLoading, definition }) => (
       styles.content,
       {
         backgroundColor: colors.translationPopup.translationModuleShade,
-        marginBottom: 15,
       },
     ]}
   >
@@ -437,7 +461,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalViewContainer: {
-    backgroundColor: "rgba(200, 200, 200, 1)",
+    backgroundColor: colors.translationPopup.background,
     borderRadius: 10,
     paddingVertical: 15,
   },
@@ -467,7 +491,6 @@ const styles = StyleSheet.create({
   content: {
     padding: 10,
     marginHorizontal: 15,
-    marginBottom: 15,
     borderRadius: 10,
   },
   // ****************************
@@ -513,7 +536,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "rgba(255, 255, 0, 0.3)",
+    backgroundColor: colors.translationPopup.background,
     zIndex: 1,
   },
 });
