@@ -1,7 +1,3 @@
-import { useSettingsContext } from "../context/useSettingsContext";
-
-// I have a setting called theme
-
 export const injectedScript = `
   let intervalId = null;
 
@@ -107,14 +103,7 @@ export const injectedScript = `
           font-size: 18pt !important;
           font-weight: 500 !important;
           line-height: 1.6 !important;
-          background-color: #000000 !important;
           color: #FFFFFF !important;
-        }
-        p, div, span {
-          color: #FFFFFF !important;
-        }
-        a {
-          color: #4A90E2 !important;
         }
       \`;
       doc.head.appendChild(style);

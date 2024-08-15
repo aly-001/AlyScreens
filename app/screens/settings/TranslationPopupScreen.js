@@ -21,7 +21,7 @@ const TranslationPopupScreen = () => {
 
   return (
     <View style={[styles.container,     {backgroundColor: colors.homeScreenBackground}]}>
-      <View style={styles.group}>
+      <View style={[styles.group, {backgroundColor: colors.mainComponentBackground}]}>
         <SettingSwitch
           label="Translation"
           disabled={true}
@@ -96,7 +96,7 @@ const TranslationPopupScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    paddingTop: 50,
     flex: 1,
   },
   group: {

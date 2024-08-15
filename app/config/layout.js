@@ -23,7 +23,7 @@ const layout = {
   },
   margins: {
     homeScreen: {
-      betweenHeaderAndWidgets: getResponsiveValue(80, 140),
+      betweenHeaderAndWidgets: getResponsiveValue(110, 140),
       widgetHeader: getResponsiveValue(20, 30),
     },
     dictionaryScreen:{

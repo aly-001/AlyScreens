@@ -66,8 +66,8 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
     }
     return (
       <View style={styles.modulesContainer}>
-        <FlashcardModuleBoxGeneral color="white" openable={false}>
-          <View style={styles.wordContainer}>
+        <FlashcardModuleBoxGeneral color={colors.mainComponentBackground} openable={false}>
+          <View style={[styles.wordContainer]}>
             <Text style={[styles.word, { color: colors.utilityGrey }]}>{backData.word || 'N/A'}</Text>
             {backData.audioWordID && (
               <TouchableOpacity
@@ -80,7 +80,7 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
             )}
           </View>
           {backData.wordDef && (
-            <Text style={styles.wordDef}>{backData.wordDef}</Text>
+            <Text style={[styles.wordDef, {color: colors.utilityGrey}]}>{backData.wordDef}</Text>
           )}
         </FlashcardModuleBoxGeneral>
 
@@ -91,7 +91,7 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
           >
             <View>
               {backData.context && (
-                <Text style={styles.context}>"{backData.context}"</Text>
+                <Text style={[styles.context, {color: colors.utilityGrey}]}>"{backData.context}"</Text>
               )}
               {backData.audioContextID && (
                 <TouchableOpacity
@@ -103,7 +103,7 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
                 </TouchableOpacity>
               )}
               {backData.contextDef && (
-                <Text style={styles.contextDef}>{backData.contextDef}</Text>
+                <Text style={[styles.contextDef, {color: colors.utilityGrey}]}>{backData.contextDef}</Text>
               )}
             </View>
           </FlashcardModuleBoxGeneral>
@@ -113,7 +113,23 @@ const FlashcardBackModal = ({ visible, card, onClose }) => {
           <FlashcardModuleBoxGeneral
             color={colors.translationPopup.grammarModuleShade}
           >
-            <Markdown>{backData.grammarExplanation}</Markdown>
+            <Markdown
+              style={{
+                body: { color: colors.utilityGrey },
+                heading1: { color: colors.utilityGrey },
+                heading2: { color: colors.utilityGrey },
+                heading3: { color: colors.utilityGrey },
+                heading4: { color: colors.utilityGrey },
+                heading5: { color: colors.utilityGrey },
+                heading6: { color: colors.utilityGrey },
+                paragraph: { color: colors.utilityGrey },
+                link: { color: colors.appleBlue },
+                list: { color: colors.utilityGrey },
+                listItem: { color: colors.utilityGrey },
+                strong: { color: colors.utilityGrey },
+                em: { color: colors.utilityGrey },
+              }}
+            >{backData.grammarExplanation}</Markdown>
           </FlashcardModuleBoxGeneral>
         )}
         {backData.moduleA && (
@@ -243,7 +259,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },

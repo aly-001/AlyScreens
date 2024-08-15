@@ -2,17 +2,19 @@ import React from 'react';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import WidgetHeader from './WidgetHeader';
 import layout from '../config/layout';
+import { useThemeColors } from '../config/colors';
 
 export default function BottomWidget({ header, IconComponent, iconColor = 'lightgrey', onPress, style }) {
+  const colors = useThemeColors();
   return (
     <TouchableOpacity 
-      style={[styles.container, style]} 
+      style={[styles.container, style, {backgroundColor: colors.mainComponentBackground,}]} 
       onPress={onPress} 
       activeOpacity={0.7}
     >
       <WidgetHeader text={header} />
       <View style={styles.iconContainer}>
-        {IconComponent && <IconComponent color={iconColor} />}
+        {IconComponent && <IconComponent color={colors.bottomWidgetIcon} />}
       </View>
     </TouchableOpacity>
   );
@@ -23,7 +25,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: layout.margins.homeScreenWidgets / 2,
     height: 190,
-    backgroundColor: 'white',
     borderRadius: layout.borderRadius.homeScreenWidgets,
     borderTopEndRadius: layout.borderRadius.homeScreenWidgetsSandwich,
     borderTopStartRadius: layout.borderRadius.homeScreenWidgetsSandwich,

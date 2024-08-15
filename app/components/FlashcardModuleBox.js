@@ -35,7 +35,7 @@ export default function FlashcardModuleBox({ color, text = '', maxHeight = 200, 
             maxHeight: maxHeight,
           }
         ]}>
-          <Text style={{fontSize: layout.flashCards.fontSize.flashcardModuleBox}} numberOfLines={null} ref={textRef}>
+          <Text style={{fontSize: layout.flashCards.fontSize.flashcardModuleBox, color: colors.utilityGrey}} numberOfLines={null} ref={textRef}>
             {formattedText}
           </Text>
           {isOverflowing && (
@@ -56,7 +56,7 @@ export default function FlashcardModuleBox({ color, text = '', maxHeight = 200, 
               <Ionicons name="close" size={28} color={colors.utilityGrey} />
             </TouchableOpacity>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContent}>
-              <Text style={styles.text}>{formattedText}</Text>
+              <Text style={[styles.text, {color: colors.utilityGrey}]}>{formattedText}</Text>
             </ScrollView>
           </View>
         </View>
@@ -68,6 +68,9 @@ export default function FlashcardModuleBox({ color, text = '', maxHeight = 200, 
 const styles = StyleSheet.create({
   main: {
     width: '100%',
+  },
+  text: {
+    fontSize: layout.flashCards.fontSize.flashcardModuleBox,
   },
   container: {
     width: '100%',

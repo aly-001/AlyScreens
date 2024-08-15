@@ -9,6 +9,7 @@ import FlashcardMediaScreen from '../screens/settings/FlashcardMediaScreen';
 import { Divider } from 'react-native-paper';
 import { useThemeColors } from '../config/colors';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import AppearanceScreen from '../screens/settings/AppearanceScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -25,12 +26,14 @@ const DrawerItem = ({ label, onPress, isSelected, colors }) => (
   <TouchableWithoutFeedback 
     style={[
       styles.drawerItem, 
+      {backgroundColor: colors.mainComponentBackground},
       isSelected && {backgroundColor: colors.appleBlueShade}
     ]} 
     onPress={onPress}
   >
     <Text style={[
       styles.drawerItemText,
+      {color: colors.utilityGrey},
       isSelected && styles.drawerItemTextSelected
     ]}>
       {label}
@@ -50,6 +53,14 @@ const CustomDrawerContent = (props) => {
             Settings
           </Text>
         </View>
+      </View>
+      <View style={styles.drawerGroup}>
+      <DrawerItem
+          label="Appearance"
+          onPress={() => props.navigation.navigate('Appearance')}
+          isSelected={currentRouteName === 'Appearance'}
+          colors={colors}
+        />
       </View>
       <View style={styles.drawerGroup}>
         <DrawerItem
@@ -96,18 +107,29 @@ const TabletNavigator = () => (
     <Drawer.Screen name="LLM Key" component={LLMKeyScreen} />
     <Drawer.Screen name="Translation Popup" component={TranslationPopupScreen} />
     <Drawer.Screen name="Flashcard Media" component={FlashcardMediaScreen} />
+    <Drawer.Screen name="Appearance" component={AppearanceScreen} />
   </Drawer.Navigator>
 );
 
-const PhoneNavigator = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Settings" component={MainSettingsScreen} />
-    <Stack.Screen name="LLM Key" component={LLMKeyScreen} />
-    <Stack.Screen name="Translation Popup" component={TranslationPopupScreen} />
-    <Stack.Screen name="Flashcard Media" component={FlashcardMediaScreen} />
-  </Stack.Navigator>
-);
-
+const PhoneNavigator = () => {
+  const colors = useThemeColors();
+  
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        cardStyle: { backgroundColor: colors.homeScreenBackground },
+        headerStyle: { backgroundColor: colors.homeScreenBackground },
+        headerTintColor: colors.utilityGrey,
+      }}
+    >
+      <Stack.Screen name="Settings" component={MainSettingsScreen} />
+      <Stack.Screen name="LLM Key" component={LLMKeyScreen} />
+      <Stack.Screen name="Translation Popup" component={TranslationPopupScreen} />
+      <Stack.Screen name="Flashcard Media" component={FlashcardMediaScreen} />
+      <Stack.Screen name="Appearance" component={AppearanceScreen} />
+    </Stack.Navigator>
+  );
+};
 const SettingsNavigator = () => {
   return isTablet() ? <TabletNavigator /> : <PhoneNavigator />;
 };

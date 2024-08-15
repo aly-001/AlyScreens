@@ -8,7 +8,7 @@ export default function WordBox({ words = [], color = "black", title = "", brb =
   const colors = useThemeColors();
   return (
     <View style={[
-      styles.container, 
+      {backgroundColor: colors.mainComponentBackground}, 
       brt && styles.topBorderRadius,
       brb && styles.bottomBorderRadius,
       extraPadding && {paddingBottom: 30}
@@ -28,9 +28,6 @@ export default function WordBox({ words = [], color = "black", title = "", brb =
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-  },
   topBorderRadius: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,

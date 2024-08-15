@@ -124,6 +124,7 @@ const LibraryScreen = () => {
     }
   };
 
+
   return (
     <View style={[styles.superContainer,     {backgroundColor: colors.homeScreenBackground}]}>
       <Screen>
@@ -160,8 +161,8 @@ const LibraryScreen = () => {
               <Text style={styles.buttonText}>Upload</Text>
             </TouchableOpacity>
             <View style={styles.footerTextContainer}>
-              <Text style={styles.footerText}>PDF support is coming soon!</Text> 
-              <Text style={styles.footerText}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
+              <Text style={[styles.footerText, {color: colors.utilityGrey}]}>PDF support is coming soon!</Text> 
+              <Text style={[styles.footerText, {color: colors.utilityGrey}]}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
             </View>
           </View>
         </View>

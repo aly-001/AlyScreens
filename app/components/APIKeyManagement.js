@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   drawerItem: {
     margin: 20,
     padding: 15,
-    marginTop: 40,
+    marginTop: 50,
     borderRadius: 10,
     height: 48,
   },

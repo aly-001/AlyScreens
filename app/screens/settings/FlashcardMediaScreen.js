@@ -45,14 +45,14 @@ const FlashcardMediaScreen = () => {
 
   return (
     <ScrollView style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
-      <View style={styles.group}>
+      <View style={[styles.group, {backgroundColor: colors.mainComponentBackground}]}>
         <SettingSwitch
           label="Enable Flashcards"
           value={settings.flashcardsEnabled}
           onValueChange={() => toggleSetting("flashcardsEnabled")}
         />
       </View>
-      <View style={[styles.group, {marginTop: 30}]}>
+      <View style={[styles.group, {marginTop: 30, backgroundColor: colors.mainComponentBackground}]}>
         <View style={styles.description}>
           <Text style={[styles.descriptionText, {color: colors.utilityGrey}]}>FRONT</Text>
         </View>
@@ -67,7 +67,7 @@ const FlashcardMediaScreen = () => {
         {renderSwitch("Custom Module B", "flashcardsFrontModuleB", () => setIsModuleBModalVisible(true))}
         
       </View>
-      <View style={[styles.group, {marginTop: 15}]}>
+      <View style={[styles.group, {marginTop: 15, backgroundColor: colors.mainComponentBackground}]}>
         <View style={styles.description}>
           <Text style={[styles.descriptionText, {color: colors.utilityGrey}]}>BACK</Text>
         </View>
@@ -131,12 +131,11 @@ const FlashcardMediaScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
+    paddingTop: 50,
     flex: 1,
-    marginBottom: 50,
+    paddingBottom: 50,
   },
   group: {
-    backgroundColor: "white",
     marginHorizontal: 20,
     marginBottom: 45,
     borderRadius: 10,

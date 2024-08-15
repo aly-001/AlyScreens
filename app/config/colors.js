@@ -3,6 +3,10 @@ import { useColorScheme } from 'react-native';
 import { useSettingsContext } from "../context/useSettingsContext";
 
 const lightColors = {
+  wordBorder: "lightgrey",
+  bottomWidgetIcon: "lightgrey",
+  divider: "black",
+  appearanceSwitch: "light",
   mainComponentBackground: "white",
   rose: "#D8C1F2",
   utilityBlue: "#1B225C",
@@ -67,13 +71,17 @@ const lightColors = {
 };
 
 const darkColors = {
-  mainComponentBackground: "black",
+  wordBorder: "lightpink",
+  bottomWidgetIcon: "lightgrey",
+  divider: "white",
+  appearanceSwitch: "dark",
+  mainComponentBackground: "brown",
   rose: "#A694B5",
   utilityBlue: "#2D3875",
   utilityBlueLight: "#6A70A0",
   utilityBlueUltraLight: "#9A9DBF",
   utilityBlueCrazyLight: "#2A2E45",
-  utilityGrey: "#D1D1D1",
+  utilityGrey: "white",
   utilityGreyLight: "#595959",
   utilityGreyUltraLight: "#323232",
   utilityGrayCrazyLight: "#0E0E0A",
@@ -93,7 +101,7 @@ const darkColors = {
   homeScreenBackground: "#0E0E0A",
   homeScreenIcon: "#181915",
   screenHeader: "#595959",
-  widgetHeader: "#7F7F7F",
+  widgetHeader: "white",
   defHeader: "#C0C0C0",
   defText: "#B3B3B3",
   translationPopup: {
@@ -105,7 +113,7 @@ const darkColors = {
     contextModuleShade: "#1A1A1A",
   },
   readScreen:{
-    primary: "white",
+    primary: "black",
   },
   book: {
     pinkRed: "#FF7A8D",

@@ -166,7 +166,7 @@ export default function PracticeScreenDef() {
     }
     return (
       <View style={styles.modulesContainer}>
-        <FlashcardModuleBoxGeneral color="white" openable={false}>
+        <FlashcardModuleBoxGeneral color={colors.mainComponentBackground} openable={false}>
           <View
             style={{
               flexDirection: "row",
@@ -190,6 +190,7 @@ export default function PracticeScreenDef() {
               style={{
                 fontSize: layout.flashCards.fontSize.flashcardModuleBox,
                 fontStyle: "italic",
+                color: colors.utilityGrey,
               }}
             >
               {backData.wordDef}
@@ -208,6 +209,7 @@ export default function PracticeScreenDef() {
                   style={{
                     fontSize: layout.flashCards.fontSize.flashcardModuleBox,
                     marginBottom: 10,
+                    color: colors.utilityGrey,
                   }}
                 >
                   "{backData.context}"
@@ -227,6 +229,7 @@ export default function PracticeScreenDef() {
                   style={{
                     fontSize: layout.flashCards.fontSize.flashcardModuleBox,
                     fontStyle: "italic",
+                    color: colors.utilityGrey,
                   }}
                 >
                   {backData.contextDef}
@@ -240,7 +243,23 @@ export default function PracticeScreenDef() {
           <FlashcardModuleBoxGeneral
             color={colors.translationPopup.grammarModuleShade}
           >
-            <Markdown>{backData.grammarExplanation}</Markdown>
+            <Markdown
+              style={{
+                body: { color: colors.utilityGrey },
+                heading1: { color: colors.utilityGrey },
+                heading2: { color: colors.utilityGrey },
+                heading3: { color: colors.utilityGrey },
+                heading4: { color: colors.utilityGrey },
+                heading5: { color: colors.utilityGrey },
+                heading6: { color: colors.utilityGrey },
+                paragraph: { color: colors.utilityGrey },
+                link: { color: colors.appleBlue },
+                list: { color: colors.utilityGrey },
+                listItem: { color: colors.utilityGrey },
+                strong: { color: colors.utilityGrey },
+                em: { color: colors.utilityGrey },
+              }}
+            >{backData.grammarExplanation}</Markdown>
           </FlashcardModuleBoxGeneral>
         )}
         {backData.moduleA && (

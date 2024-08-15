@@ -4,29 +4,36 @@ import BookCoverThumb from "./BookCoverThumb";
 import layout from "../config/layout";
 import WidgetHeader from "./WidgetHeader";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { useThemeColors } from "../config/colors";
 
 export default function MyLibrary({ books, onBookPress, onPress }) {
+  const colors = useThemeColors();
   return (
-      <View style={styles.container}>
-        <WidgetHeader text="Library" />
-        <ScrollView horizontal style={styles.booksContainer}>
-          <View style={styles.hiddenStrip}></View>
-          {books.map((book, index) => (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.8}
-              onPress={() => onBookPress(book.name)}
-            >
-              <BookCoverThumb
-                title={book.title}
-                subtitle={book.subtitle}
-                color={book.color}
-                status={book.status}
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: colors.mainComponentBackground },
+      ]}
+    >
+      <WidgetHeader text="Library" />
+      <ScrollView horizontal style={styles.booksContainer}>
+        <View style={styles.hiddenStrip}></View>
+        {books.map((book, index) => (
+          <TouchableOpacity
+            key={index}
+            activeOpacity={0.8}
+            onPress={() => onBookPress(book.name)}
+          >
+            <BookCoverThumb
+              title={book.title}
+              subtitle={book.subtitle}
+              color={book.color}
+              status={book.status}
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -36,7 +43,6 @@ const styles = StyleSheet.create({
   },
   booksContainer: {},
   container: {
-    backgroundColor: "white",
     paddingBottom: 35,
     flex: 1,
     marginHorizontal: layout.margins.homeScreenWidgets / 2,

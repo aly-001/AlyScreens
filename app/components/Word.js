@@ -1,12 +1,14 @@
 import { View, StyleSheet, Text } from "react-native";
 import React from "react";
 import layout from "../config/layout";
+import { useThemeColors } from "../config/colors";
 
 export default function Word({ word, id, color }) {
+  const colors = useThemeColors();
   return (
     <View style={[ styles.container]}>
-      <View style={[ styles.wordContainer, {borderColor: color} ]}>
-        <Text style={[ styles.word, {color: color} ]}>{word}</Text>
+      <View style={[ styles.wordContainer, {borderColor: colors.wordBorder} ]}>
+        <Text style={[ styles.word, {color: colors.wordBorder} ]}>{word}</Text>
       </View>
     </View>
   );

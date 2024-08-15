@@ -6,7 +6,7 @@ const SettingSwitch = ({ label, value, onValueChange, disabled = false, onEdit }
   const colors = useThemeColors();
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, {color: colors.utilityGrey}]}>{label}</Text>
       <View style={styles.controlsContainer}>
         {onEdit && (
           <TouchableOpacity onPress={onEdit} style={styles.editButton}>

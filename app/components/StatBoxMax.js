@@ -11,33 +11,33 @@ export default function StatBoxMax() {
   const { allCards, youngCards, matureCards } = useFlashcards();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.mainComponentBackground}]}>
       <WidgetHeader text="Dictionary" noMargin />
       <View style={styles.segmentContainer}>
         <View style={styles.statSegment}>
           <View style={styles.labelTextBox}>
-            <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.allWords}</Text>
+            <Text style={[styles.labelText, {color: colors.utilityGrey}]}>{text.homeScreen.dictionaryStatsTags.allWords}</Text>
           </View>
           <View style={[styles.numberTextBox, {color: colors.utilityGrey}]}>
-            <Text style={styles.numberText}>{allCards.length}</Text>
+            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{allCards.length}</Text>
           </View>
         </View>
-        <View style={styles.divider} />
+        <View style={[styles.divider, {backgroundColor: colors.divider}]} />
         <View style={styles.statSegment}>
           <View style={styles.labelTextBox}>
-            <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.youngWords}</Text>
+            <Text style={[styles.labelText, {color: colors.utilityGrey}]}>{text.homeScreen.dictionaryStatsTags.youngWords}</Text>
           </View>
-          <View style={[styles.numberTextBox, {color: colors.utilityGrey}]}>
-            <Text style={styles.numberText}>{youngCards.length}</Text>
+          <View style={[styles.numberTextBox]}>
+            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{youngCards.length}</Text>
           </View>
         </View>
-        <View style={styles.divider} />
+        <View style={[styles.divider, {backgroundColor: colors.divider}]} />
         <View style={styles.statSegment}>
           <View style={styles.labelTextBox}>
-            <Text style={styles.labelText}>{text.homeScreen.dictionaryStatsTags.matureWords}</Text>
+            <Text style={[styles.labelText, {color: colors.utilityGrey}]}>{text.homeScreen.dictionaryStatsTags.matureWords}</Text>
           </View>
-          <View style={[styles.numberTextBox, {color: colors.utilityGrey}]}>
-            <Text style={styles.numberText}>{matureCards.length}</Text>
+          <View style={[styles.numberTextBox]}>
+            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{matureCards.length}</Text>
           </View>
         </View>
       </View>
@@ -47,7 +47,6 @@ export default function StatBoxMax() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     borderRadius: layout.borderRadius.homeScreenWidgets,
     borderBottomEndRadius: layout.borderRadius.homeScreenWidgetsSandwich,
     borderBottomStartRadius: layout.borderRadius.homeScreenWidgetsSandwich,
@@ -66,7 +65,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: 1,
-    backgroundColor: "black",
     marginBottom: 40,
     height: 40,
     top: 30,

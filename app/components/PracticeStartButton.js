@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import layout from '../config/layout';
+import { useThemeColors } from '../config/colors';
 
 export default function PracticeStartButton({ text, deactivated }) {
+  const colors = useThemeColors();
   return (
     <View style={[
       styles.container,
+      {backgroundColor: colors.mainComponentBackground},
       deactivated ? styles.deactivatedContainer : styles.activatedContainer
     ]}>
       <Text style={[
@@ -20,7 +23,6 @@ export default function PracticeStartButton({ text, deactivated }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
     borderRadius: layout.borderRadius.startButton,
     borderColor: "#e0e0e0",
     justifyContent: "center",

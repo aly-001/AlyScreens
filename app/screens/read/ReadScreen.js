@@ -42,7 +42,7 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
     : bookTitle;
 
   return (
-    <Animated.View style={[styles.headerContainer, style, { backgroundColor: colors.readScreen.primary }]}>
+    <Animated.View style={[styles.headerContainer, style, { backgroundColor: colors.mainComponentBackground }]}>
       <SafeAreaView>
         <View style={styles.header}>
           <TouchableWithoutFeedback onPress={onTocPress}>
@@ -283,8 +283,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     height: layout.margins.readScreen.headerHeight,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
     paddingHorizontal: 10,
   },
   headerTitle: {

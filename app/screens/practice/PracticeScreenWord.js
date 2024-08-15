@@ -33,7 +33,7 @@ export default function PracticeScreenWord({ navigation }) {
     }
     return (
       <View style={styles.contentContainer}>
-        <FlashcardModuleBoxGeneral color="white" openable={false}>
+        <FlashcardModuleBoxGeneral color={colors.mainComponentBackground} openable={false}>
           <View
             style={{
               flexDirection: "row",
@@ -49,7 +49,23 @@ export default function PracticeScreenWord({ navigation }) {
         )}
         {frontData.grammarExplanation && (
           <FlashcardModuleBoxGeneral color={colors.translationPopup.grammarModuleShade}>
-            <Markdown>
+            <Markdown
+              style={{
+                body: { color: colors.utilityGrey },
+                heading1: { color: colors.utilityGrey },
+                heading2: { color: colors.utilityGrey },
+                heading3: { color: colors.utilityGrey },
+                heading4: { color: colors.utilityGrey },
+                heading5: { color: colors.utilityGrey },
+                heading6: { color: colors.utilityGrey },
+                paragraph: { color: colors.utilityGrey },
+                link: { color: colors.appleBlue },
+                list: { color: colors.utilityGrey },
+                listItem: { color: colors.utilityGrey },
+                strong: { color: colors.utilityGrey },
+                em: { color: colors.utilityGrey },
+              }}
+            >
               {frontData.grammarExplanation}
             </Markdown>
           </FlashcardModuleBoxGeneral>
