@@ -5,7 +5,7 @@ import fonts from "../config/fonts";
 import shortenText from "../utils/shortenText"; // Adjust the path according to your file structure
 import layout from "../config/layout";
 
-export default function BookCoverThumb({ title, subtitle, color, status }) {
+export default function BookCoverThumb({ title, color, status }) {
   // Access the theme colors using the hook
   const colors = useThemeColors();
 
@@ -62,5 +62,6 @@ const styles = StyleSheet.create({
   },
   status: {
     height: 25,
+    backgroundColor: "black",
   },
 });

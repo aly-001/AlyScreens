@@ -103,7 +103,7 @@ export const injectedScript = `
           font-size: 18pt !important;
           font-weight: 500 !important;
           line-height: 1.6 !important;
-          color: #FFFFFF !important;
+          color: "#ffffff" !important;
         }
       \`;
       doc.head.appendChild(style);
@@ -130,7 +130,7 @@ export const injectedScript = `
       wrapWordsInSpans();
       addLongPressListener();
       // window.ReactNativeWebView.postMessage(JSON.stringify({ type: "...functions called"}));
-    }, 50);
+    }, 100);
 
     // Stop the interval after one minute
     setTimeout(() => {

@@ -1,22 +1,20 @@
 import { useState, useCallback, useEffect } from 'react';
 import { loadBooks as loadBooksService, deleteBook as deleteBookService } from "../services/BookManager";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 
 export const useBooks = () => {
   const [books, setBooks] = useState([]);
-  const [bookStatus, setBookStatus] = useState(0);
-  
 
   const loadBooks = useCallback(async () => {
     try {
       const storedBooks = await AsyncStorage.getItem('bookMetadata');
       if (storedBooks) {
-        setBooks(JSON.parse(storedBooks));
+        const storedBooksParsed = JSON.parse(storedBooks);
+        setBooks(storedBooksParsed);
+        storedBooksParsed.forEach((book) => {
+        });
       } else {
-        const initialBooks = await loadBooksService();
-        setBooks(initialBooks);
-        await AsyncStorage.setItem('bookMetadata', JSON.stringify(initialBooks));
+        console.log("NULLNULLNULLNULLNULLNULLNULL")
       }
     } catch (error) {
       console.error("useBooks: Error loading books:", error);
@@ -28,40 +26,18 @@ export const useBooks = () => {
   }, [loadBooks]);
 
   const addBook = useCallback(async (newBook) => {
-    try {
-      const currentBooks = await AsyncStorage.getItem('bookMetadata');
-      let updatedBooks = [];
-      if (currentBooks) {
-        updatedBooks = JSON.parse(currentBooks);
-      }
-      // Check if the book already exists
-      const bookExists = updatedBooks.some(book => book.uri === newBook.uri);
-      
-      if (bookExists) {
-        Alert.alert(
-          "Duplicate Book",
-          "This book is already in your library.",
-          [{ text: "OK" }]
-        );
-        return false;
-      }
-      updatedBooks.push(newBook);
-      await AsyncStorage.setItem('bookMetadata', JSON.stringify(updatedBooks));
-      setBooks(updatedBooks);
-      return true;
-    } catch (error) {
-      Alert.alert(
-        "Error",
-        "Failed to add the book to your library. Please try again.",
-        [{ text: "OK" }]
-      );
-      return false;
-    }
-  }, []);
+    console.log("adding a new book");
+    const updatedBooks = [...books, newBook];
+    console.log("storing book inBookMetadata");
+    await AsyncStorage.setItem('bookMetadata', JSON.stringify(updatedBooks));
+    console.log("Stored book in bookMetadata")
+    setBooks(updatedBooks);
+    console.log("calling loadBooks");
+  }, [books]);
 
   const updateBookStatus = useCallback(async (uri, status, cfi) => {
-    console.log(`useBooks: Updating status for book ${uri} to ${status}`);
-    setBookStatus(status);
+    console.log("UPDATING STATUS YEAH!!")
+    books.map(book => {console.log(book.title, book.status)})
     const updatedBooks = books.map(book => {
       if (book.uri === uri) {
         return { ...book, status, cfi };
@@ -69,11 +45,8 @@ export const useBooks = () => {
       return book;
     });
     setBooks(updatedBooks);
-    try {
-      await AsyncStorage.setItem('bookMetadata', JSON.stringify(updatedBooks));
-    } catch (error) {
-      console.error("useBooks: Error saving updated book status to AsyncStorage:", error);
-    }
+    await AsyncStorage.setItem('bookMetadata', JSON.stringify(updatedBooks));
+    updatedBooks.map((book) => {console.log(book.title,book.status)})
   }, [books]);
 
   const getBookStatus = useCallback((uri) => {

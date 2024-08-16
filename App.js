@@ -68,10 +68,8 @@ export default function App() {
     <APIKeyProvider>
       <TabBarVisibilityProvider>
         <SettingsProvider>
-          <BooksProvider>
             <StatusBar hidden={true} />
             <MainApp />
-          </BooksProvider>
         </SettingsProvider>
       </TabBarVisibilityProvider>
     </APIKeyProvider>

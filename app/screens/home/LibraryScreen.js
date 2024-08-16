@@ -126,7 +126,7 @@ const LibraryScreen = () => {
 
 
   return (
-    <View style={[styles.superContainer,     {backgroundColor: colors.homeScreenBackground}]}>
+    <View style={[styles.superContainer,{backgroundColor: colors.homeScreenBackground}]}>
       <Screen>
         <View style={styles.contentContainer}>
           <View style={styles.headerContainer}>

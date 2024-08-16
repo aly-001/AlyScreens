@@ -33,13 +33,6 @@ const MainSettingsScreen = ({ navigation }) => {
         { backgroundColor: colors.homeScreenBackground },
       ]}
     >
-      <SettingsGroup colors={colors}>
-        <SettingsItem
-          label="Appearance"
-          onPress={() => navigation.navigate("Appearance")}
-          colors={colors}
-        />
-      </SettingsGroup>
 
       <SettingsGroup colors={colors}>
         <SettingsItem

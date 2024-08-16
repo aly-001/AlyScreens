@@ -188,10 +188,6 @@ export default function ReadScreen() {
     if (settings.flashcardsEnabled) {
       addCardFromMessage(message);
     }
-
-    if (message.progress) {
-      console.log("Progress update received");
-    }
   };
 
 
@@ -216,7 +212,7 @@ export default function ReadScreen() {
                 handleWebViewMessage={handleWebViewMessage}
                 tableOfContents={tableOfContents}
                 setTableOfContents={setTableOfContents}
-                handleStatus={(status) => setBossStatus(status)}
+                handleStatus={setBossStatus}
               />
               <DefinitionPopup
                 location={location}

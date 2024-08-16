@@ -55,14 +55,6 @@ const CustomDrawerContent = (props) => {
         </View>
       </View>
       <View style={styles.drawerGroup}>
-      <DrawerItem
-          label="Appearance"
-          onPress={() => props.navigation.navigate('Appearance')}
-          isSelected={currentRouteName === 'Appearance'}
-          colors={colors}
-        />
-      </View>
-      <View style={styles.drawerGroup}>
         <DrawerItem
           label="Configure AI Key"
           onPress={() => props.navigation.navigate('LLM Key')}
