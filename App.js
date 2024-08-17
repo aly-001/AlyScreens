@@ -17,7 +17,7 @@ SplashScreen.preventAutoHideAsync();
 const MainApp = () => {
   const { apiKey } = useAPIKey();
   const [appIsReady, setAppIsReady] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
     async function prepare() {

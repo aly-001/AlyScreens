@@ -1,5 +1,8 @@
 {
   "expo": {
+    "updates": {
+      "url": "https://u.expo.dev/1eb07219-4ece-40f4-a564-cebe4d73f432"
+    },
     "name": "screens",
     "slug": "screens",
     "version": "1.0.0",
@@ -18,7 +21,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.alexandermackenzie.screens"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,6 +39,12 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1eb07219-4ece-40f4-a564-cebe4d73f432"
+      }
+    },
+    "owner": "alexandermackenzie"
   }
 }

@@ -14,7 +14,6 @@ export const useBooks = () => {
         storedBooksParsed.forEach((book) => {
         });
       } else {
-        console.log("NULLNULLNULLNULLNULLNULLNULL")
       }
     } catch (error) {
       console.error("useBooks: Error loading books:", error);
