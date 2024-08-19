@@ -35,8 +35,6 @@ export const useBooks = () => {
   }, [books]);
 
   const updateBookStatus = useCallback(async (uri, status, cfi) => {
-    console.log("UPDATING STATUS YEAH!!")
-    books.map(book => {console.log(book.title, book.status)})
     const updatedBooks = books.map(book => {
       if (book.uri === uri) {
         return { ...book, status, cfi };
@@ -45,7 +43,6 @@ export const useBooks = () => {
     });
     setBooks(updatedBooks);
     await AsyncStorage.setItem('bookMetadata', JSON.stringify(updatedBooks));
-    updatedBooks.map((book) => {console.log(book.title,book.status)})
   }, [books]);
 
   const getBookStatus = useCallback((uri) => {
