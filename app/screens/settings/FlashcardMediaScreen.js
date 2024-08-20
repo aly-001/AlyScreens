@@ -67,7 +67,7 @@ const FlashcardMediaScreen = () => {
         {renderSwitch("Custom Module B", "flashcardsFrontModuleB", () => setIsModuleBModalVisible(true))}
         
       </View>
-      <View style={[styles.group, {marginTop: 15, backgroundColor: colors.mainComponentBackground}]}>
+      <View style={[styles.group, {marginTop: 15, marginBottom: 50, backgroundColor: colors.mainComponentBackground}]}>
         <View style={styles.description}>
           <Text style={[styles.descriptionText, {color: colors.utilityGrey}]}>BACK</Text>
         </View>
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     flex: 1,
     paddingBottom: 50,
+    marginBottom: 100,
   },
   group: {
     marginHorizontal: 20,
