@@ -185,6 +185,7 @@ class DatabaseManager {
 export const dbManager = new DatabaseManager();
 
 export const addCard = async (apiKey, word, innerContext, outerContext, languageTag, settings) => {
+  console.log("Word in addCard:", word);
   const db = await dbManager.getConnection();
   const flashcardID = generateId();
   const imageID = `${flashcardID}-image`;

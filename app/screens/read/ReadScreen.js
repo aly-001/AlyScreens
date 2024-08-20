@@ -31,6 +31,8 @@ import { useAPIKey } from "../../context/APIKeyContext";
 import { useBooks } from "../../context/BooksContext";
 import layout from "../../config/layout";
 
+import { processWord } from "../../services/WordProcessRegex";
+
 const duration = 200; // Animation duration
 
 const BookHeader = ({ bookTitle, style, onTocPress }) => {
@@ -82,7 +84,6 @@ export default function ReadScreen() {
     width: 0,
     height: 0,
   });
-  const { handlePickComplete } = useEpubManager();
   
   const { uri, title, color } = route.params || {};
   const { status } = getBookStatus(uri);
@@ -161,9 +162,9 @@ export default function ReadScreen() {
     
     const addCardFromMessage = (message) => {
       if (message.word && message.innerContext && message.outerContext) {
-        const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
-        const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
+        
         const { innerContext, outerContext } = message;
+        const capitalizedWord = processWord(message.word);
         
         addCard(apiKey, capitalizedWord, innerContext, outerContext, 'en', settings)
           .then(() => {

@@ -1,30 +1,101 @@
-import React, { useCallback, useRef } from "react";
-import { View, StyleSheet, ScrollView, Animated } from "react-native";
+import React, { useCallback, useRef, useState, useEffect } from "react";
+import { View, StyleSheet, Animated } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
-import Screen from "../../components/Screen";
-import colors from "../../config/colors";
+import { useThemeColors } from "../../config/colors";
 import layout from "../../config/layout";
 import MyLibrary from "../../components/MyLibrary";
 import BottomWidget from "../../components/BottomWidget";
-import { TouchableWithoutFeedback, TouchableOpacity } from "react-native-gesture-handler";
-import { useBooks } from "../../context/BooksContext";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import StatBoxMax from "../../components/StatBoxMax";
-import { FlashcardProvider } from "../../context/FlashcardContext";
+import { DolphinSR } from "../../../lib/index";
+import * as SQLite from "expo-sqlite";
+import {
+  getAllCards,
+  getYoungCards,
+  getMatureCards,
+} from "../../context/FlashcardContext";
+import { useBooks } from "../../hooks/useBooks";
 
 export default function HomeScreen() {
+  const colors = useThemeColors();
   const navigation = useNavigation();
   const { books, loadBooks } = useBooks();
   const scrollY = useRef(new Animated.Value(0)).current;
+  
+  const [dolphinSR, setDolphinSR] = useState(null);
+  const [allCards, setAllCards] = useState([]);
+  const [youngCards, setYoungCards] = useState([]);
+  const [matureCards, setMatureCards] = useState([]);
+
+  useEffect(() => {
+    initializeDatabase();
+  }, []);
+
+  const initializeDatabase = async () => {
+    try {
+      const database = await SQLite.openDatabaseAsync("flashcards.db");
+
+      await database.execAsync(`
+        CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
+        CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
+      `);
+
+      const dolphinSRInstance = new DolphinSR();
+      setDolphinSR(dolphinSRInstance);
+      await loadDeck(database, dolphinSRInstance);
+    } catch (error) {
+      console.error("Database initialization error:", error);
+    }
+  };
+
+  const loadDeck = async (database, dolphinSRInstance) => {
+    try {
+      const mastersResult = await database.getAllAsync("SELECT * FROM masters");
+      const reviewsResult = await database.getAllAsync("SELECT * FROM reviews");
+
+      const loadedMasters = mastersResult.map((row) => ({
+        ...JSON.parse(row.data),
+        id: row.id,
+      }));
+      const loadedReviews = reviewsResult.map((row) => ({
+        ...JSON.parse(row.data),
+        id: row.id,
+        ts: new Date(JSON.parse(row.data).ts),
+      }));
+
+      dolphinSRInstance.addMasters(...loadedMasters);
+      dolphinSRInstance.addReviews(...loadedReviews);
+
+      updateWords(dolphinSRInstance);
+    } catch (error) {
+      console.error("Load deck error:", error);
+      console.error("Error stack:", error.stack);
+    }
+  };
+
+  const updateWords = (dolphinSRInstance) => {
+    const processCards = (cards) =>
+      cards.map((card) => ({
+        ...card,
+        id: card.id || `card-${Math.random().toString(36).substr(2, 9)}`,
+      }));
+
+    setAllCards(processCards(getAllCards(dolphinSRInstance)));
+    setYoungCards(processCards(getYoungCards(dolphinSRInstance)));
+    setMatureCards(processCards(getMatureCards(dolphinSRInstance)));
+  };
 
   useFocusEffect(
     useCallback(() => {
+      initializeDatabase();
       loadBooks();
     }, [loadBooks])
   );
 
   const handleBookPress = (bookName) => {
+    loadBooks();
     const book = books.find((b) => b.name === bookName);
     if (book) {
       navigation.navigate("Read", {
@@ -33,7 +104,7 @@ export default function HomeScreen() {
           uri: book.uri,
           title: book.title,
           color: book.color,
-          status: 40,
+          status: book.status,
         },
       });
     }
@@ -46,7 +117,7 @@ export default function HomeScreen() {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
       <Animated.View style={[styles.screenHeaderContainer, { opacity: headerOpacity }]}>
         <ScreenHeader text="Home" />
       </Animated.View>
@@ -61,16 +132,18 @@ export default function HomeScreen() {
       >
         <View style={styles.topWidgetContainer}>
           <TouchableOpacity
-          activeOpacity={0.7}
+            activeOpacity={0.7}
             onPress={() => navigation.navigate("Dictionary")}
           >
-            <FlashcardProvider>
-              <StatBoxMax />
-            </FlashcardProvider>
+            <StatBoxMax
+              allWordsCount={allCards.length}
+              youngWordsCount={youngCards.length}
+              matureWordsCount={matureCards.length}
+            />
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-        activeOpacity={0.7}
+          activeOpacity={0.7}
           onPress={() => navigation.navigate("Library")}
         >
           <View style={styles.libraryContainer}>
@@ -120,7 +193,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   screenHeaderContainer: {
     position: 'absolute',

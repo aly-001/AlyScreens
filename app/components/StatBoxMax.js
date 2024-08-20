@@ -1,14 +1,12 @@
 import { View, StyleSheet, Text } from "react-native";
 import React from "react";
-import { useFlashcards } from "../context/FlashcardContext";
 import WidgetHeader from "./WidgetHeader";
 import layout from "../config/layout";
 import { useThemeColors } from "../config/colors";
 import text from "../config/text";
 
-export default function StatBoxMax() {
+export default function StatBoxMax({ allWordsCount, youngWordsCount, matureWordsCount }) {
   const colors = useThemeColors();
-  const { allCards, youngCards, matureCards } = useFlashcards();
 
   return (
     <View style={[styles.container, {backgroundColor: colors.mainComponentBackground}]}>
@@ -19,7 +17,7 @@ export default function StatBoxMax() {
             <Text style={[styles.labelText, {color: colors.utilityGrey}]}>{text.homeScreen.dictionaryStatsTags.allWords}</Text>
           </View>
           <View style={[styles.numberTextBox, {color: colors.utilityGrey}]}>
-            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{allCards.length}</Text>
+            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{allWordsCount}</Text>
           </View>
         </View>
         <View style={[styles.divider, {backgroundColor: colors.divider}]} />
@@ -28,7 +26,7 @@ export default function StatBoxMax() {
             <Text style={[styles.labelText, {color: colors.utilityGrey}]}>{text.homeScreen.dictionaryStatsTags.youngWords}</Text>
           </View>
           <View style={[styles.numberTextBox]}>
-            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{youngCards.length}</Text>
+            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{youngWordsCount}</Text>
           </View>
         </View>
         <View style={[styles.divider, {backgroundColor: colors.divider}]} />
@@ -37,7 +35,7 @@ export default function StatBoxMax() {
             <Text style={[styles.labelText, {color: colors.utilityGrey}]}>{text.homeScreen.dictionaryStatsTags.matureWords}</Text>
           </View>
           <View style={[styles.numberTextBox]}>
-            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{matureCards.length}</Text>
+            <Text style={[styles.numberText, {color: colors.utilityGrey}]}>{matureWordsCount}</Text>
           </View>
         </View>
       </View>

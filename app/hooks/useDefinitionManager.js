@@ -3,6 +3,7 @@ import { Alert } from "react-native";
 import { callLLM, generateAudio } from "../services/LLMManager";
 import { useSettingsContext } from "../context/useSettingsContext";
 import { useAPIKey } from "../context/APIKeyContext";
+import { processWord } from "../services/WordProcessRegex";
 
 export default function useDefinitionManager() {
   const { apiKey } = useAPIKey();
@@ -39,9 +40,8 @@ export default function useDefinitionManager() {
     setCurrentGrammar("");
     setAudioLoading(false);
     
-    const cleanWord = message.word.replace(/^[".,\s]+|[".,\s]+$/g, "").trim();
-    const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
-    setCurrentWord(capitalizedWord);
+    const processedWord = processWord(message.word);
+    setCurrentWord(processedWord);
     const { innerContext, outerContext } = message;
   
 
@@ -52,7 +52,7 @@ export default function useDefinitionManager() {
     const promises = [];
 
     // Start the LLM request for the definition
-    const definitionPrompt = `Give a translation of the word "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.translationPrompt}`;
+    const definitionPrompt = `Give a translation of the word "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.translationPrompt}`;
     
     const definitionPromise = callLLM(apiKey, definitionPrompt)
       .then((definitionResponse) => {
@@ -72,7 +72,7 @@ export default function useDefinitionManager() {
     if (settings.translationPopupGrammar) {
       setGrammarStarted(true);
       setGrammarLoading(true);
-      const grammarPrompt = `Give a grammar explanation of the word "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
+      const grammarPrompt = `Give a grammar explanation of the word "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
       const grammarPromise = callLLM(apiKey, grammarPrompt)
         .then((grammarResponse) => {
           setCurrentGrammar(grammarResponse);
@@ -91,7 +91,7 @@ export default function useDefinitionManager() {
     // Generate audio if enabled in settings
     if (settings.translationPopupAudio) {
       setAudioLoading(true);
-      const audioPromise = generateAudio(apiKey, capitalizedWord)
+      const audioPromise = generateAudio(apiKey, processedWord)
         .then((audio) => {
           setAudioBase64(audio);
         })
@@ -108,7 +108,7 @@ export default function useDefinitionManager() {
     // Start the parallel LLM request for ModuleA if enabled
     if (settings.translationPopupModuleA) {
       setModuleALoading(true);
-      const moduleAPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleAPrompt}`;
+      const moduleAPrompt = `Use "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleAPrompt}`;
       const moduleAPromise = callLLM(apiKey, moduleAPrompt)
         .then((moduleAResponse) => {
           setCurrentModuleA(moduleAResponse);
@@ -126,7 +126,7 @@ export default function useDefinitionManager() {
     // Start the parallel LLM request for ModuleB if enabled
     if (settings.translationPopupModuleB) {
       setModuleBLoading(true);
-      const moduleBPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleBPrompt}`;
+      const moduleBPrompt = `Use "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleBPrompt}`;
       const moduleBPromise = callLLM(apiKey, moduleBPrompt)
         .then((moduleBResponse) => {
           setCurrentModuleB(moduleBResponse);
