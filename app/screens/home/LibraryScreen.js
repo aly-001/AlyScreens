@@ -11,8 +11,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import  {useThemeColors} from "../../config/colors"; // Change this import to your config folder
-import { useBooks } from "../../hooks/useBooks"; // Change this import to your hooks folder
+import colors from "../../config/colors";
+import { useBooks } from "../../context/BooksContext";
 import BookCoverThumb from "../../components/BookCoverThumb";
 import Screen from "../../components/Screen";
 import ScreenHeader from "../../components/ScreenHeader";
@@ -21,9 +21,8 @@ import layout from "../../config/layout";
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const LibraryScreen = () => {
-  const colors = useThemeColors(); // Use the hook here
   const navigation = useNavigation();
-  const { books, addBook, deleteBook } = useBooks(); // Use the hook here
+  const { books, addBook, deleteBook } = useBooks();
 
   const handleBookPress = (book) => {
     navigation.navigate("Read", {
@@ -68,12 +67,17 @@ const LibraryScreen = () => {
       "#ae898a", "#89AEAD", "#d2c6b9"
     ];
   
+    // Get the colors of existing books
     const existingColors = books.map(book => book.color);
+  
+    // Filter out colors that are already in use
     const availableColors = bookColors.filter(color => !existingColors.includes(color));
   
     if (availableColors.length === 0) {
+      // If all colors are used, generate a completely random color
       return '#' + Math.floor(Math.random()*16777215).toString(16);
     } else {
+      // Select a random color from the available colors
       const randomIndex = Math.floor(Math.random() * availableColors.length);
       return availableColors[randomIndex];
     }
@@ -124,9 +128,8 @@ const LibraryScreen = () => {
     }
   };
 
-
   return (
-    <View style={[styles.superContainer,{backgroundColor: colors.homeScreenBackground}]}>
+    <View style={styles.superContainer}>
       <Screen>
         <View style={styles.contentContainer}>
           <View style={styles.headerContainer}>
@@ -161,8 +164,8 @@ const LibraryScreen = () => {
               <Text style={styles.buttonText}>Upload</Text>
             </TouchableOpacity>
             <View style={styles.footerTextContainer}>
-              <Text style={[styles.footerText, {color: colors.utilityGrey}]}>PDF support is coming soon!</Text> 
-              <Text style={[styles.footerText, {color: colors.utilityGrey}]}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
+              <Text style={styles.footerText}>PDF support is coming soon!</Text> 
+              <Text style={styles.footerText}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
             </View>
           </View>
         </View>
@@ -175,6 +178,7 @@ const styles = StyleSheet.create({
   superContainer: {
 
     flex: 1,
+    backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
     flex: 1,

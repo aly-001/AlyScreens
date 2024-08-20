@@ -10,23 +10,28 @@ export const BooksProvider = ({ children }) => {
   const [books, setBooks] = useState([]);
 
   const loadBooks = useCallback(async () => {
+    if (books) {
     try {
       const storedBooks = await AsyncStorage.getItem('bookMetadata');
       if (storedBooks) {
-        setBooks(JSON.parse(storedBooks));
+        const storedBooksParsed = JSON.parse(storedBooks);
+        setBooks(storedBooksParsed);
+        storedBooksParsed.forEach((book) => {
+        });
       } else {
-        const initialBooks = await loadBooksService();
-        setBooks(initialBooks);
-        await AsyncStorage.setItem('bookMetadata', JSON.stringify(initialBooks));
       }
     } catch (error) {
-      console.error("BooksContext: Error loading books:", error);
+      console.error("useBooks: Error loading books:", error);
     }
+  } else{
+    console.log("books isn't set");
+  }
   }, []);
 
   useEffect(() => {
     loadBooks();
   }, [loadBooks]);
+
   const addBook = useCallback(async (newBook) => {
     try {
       const currentBooks = await AsyncStorage.getItem('bookMetadata');

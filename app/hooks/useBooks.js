@@ -6,6 +6,7 @@ export const useBooks = () => {
   const [books, setBooks] = useState([]);
 
   const loadBooks = useCallback(async () => {
+    if (books) {
     try {
       const storedBooks = await AsyncStorage.getItem('bookMetadata');
       if (storedBooks) {
@@ -18,6 +19,9 @@ export const useBooks = () => {
     } catch (error) {
       console.error("useBooks: Error loading books:", error);
     }
+  } else{
+    console.log("books isn't set");
+  }
   }, []);
 
   useEffect(() => {

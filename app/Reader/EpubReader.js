@@ -3,22 +3,21 @@ import { View, StyleSheet } from "react-native";
 import { Reader, useReader } from "@epubjs-react-native/core";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { injectedScript } from "./injectedScript";
-import { useBooks } from "../hooks/useBooks";
+import { useBooks } from "../context/BooksContext";
 
 export default function EpubReader({ uri, handleWebViewMessage, tableOfContents, setTableOfContents, handleStatus }) {
   const { injectJavascript, getCurrentLocation, goToLocation } = useReader();
+  const { books, updateBookStatus } = useBooks();
   const [initialLocation, setInitialLocation] = useState(null);
   const prevTableOfContentsRef = useRef(false);
-  
-  const { getBookByUri, updateBookStatus } = useBooks(); // Use the hook to get necessary functions
-  
+
   useEffect(() => {
-    const book = getBookByUri(uri);
+    const book = books.find(book => book.uri === uri);
     if (book?.cfi) {
       setInitialLocation(book.cfi);
-    handleStatus(book.status);
+      handleStatus(book.status);
     }
-  }, [getBookByUri, uri]);
+  }, [books, uri]);
 
   useEffect(() => {
     if (tableOfContents && !prevTableOfContentsRef.current) {
@@ -30,20 +29,18 @@ export default function EpubReader({ uri, handleWebViewMessage, tableOfContents,
 
   const handleCallFunctions = useCallback(() => {
     injectJavascript("window.runFunctionsForOneMinute();");
-    // handleLocationChange();
   }, [injectJavascript]);
 
   const handleLocationChange = useCallback(() => {
-    console.log("location change")
+    if (!updateBookStatus) return;
     try {
       const location = getCurrentLocation();
       if (!location?.end?.percentage) return;
-      const percentage = Math.round(location.end.percentage * 100);
+      const percentage = location.end.percentage * 100;
       const cfi = location.start.cfi;
       
-      console.log("Location changed:", percentage, cfi);
-      updateBookStatus(uri, percentage, cfi);
-      handleStatus(percentage);
+      updateBookStatus(uri, percentage, cfi)
+        .catch(error => console.error("Error updating book status:", error));
     } catch (error) {
       console.error("Error in handleLocationChange:", error);
     }
@@ -60,6 +57,7 @@ export default function EpubReader({ uri, handleWebViewMessage, tableOfContents,
         onReady={handleCallFunctions}
         onSwipeLeft={handleCallFunctions}
         onSwipeRight={handleCallFunctions}
+        onLocationsReady={handleLocationChange}
         onLocationChange={handleLocationChange}
       />
     </View>

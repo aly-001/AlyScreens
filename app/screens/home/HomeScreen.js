@@ -1,22 +1,21 @@
-import React, { useCallback, useRef, useState } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import React, { useCallback, useRef } from "react";
+import { View, StyleSheet, ScrollView, Animated } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
-import { useThemeColors } from "../../config/colors";
+import Screen from "../../components/Screen";
+import colors from "../../config/colors";
 import layout from "../../config/layout";
 import MyLibrary from "../../components/MyLibrary";
 import BottomWidget from "../../components/BottomWidget";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback, TouchableOpacity } from "react-native-gesture-handler";
+import { useBooks } from "../../context/BooksContext";
 import StatBoxMax from "../../components/StatBoxMax";
 import { FlashcardProvider } from "../../context/FlashcardContext";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useBooks } from "../../hooks/useBooks";
 
 export default function HomeScreen() {
-  const colors = useThemeColors();
   const navigation = useNavigation();
-  const {books, loadBooks} = useBooks();
+  const { books, loadBooks } = useBooks();
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useFocusEffect(
@@ -25,9 +24,7 @@ export default function HomeScreen() {
     }, [loadBooks])
   );
 
-
   const handleBookPress = (bookName) => {
-    loadBooks();
     const book = books.find((b) => b.name === bookName);
     if (book) {
       navigation.navigate("Read", {
@@ -36,7 +33,7 @@ export default function HomeScreen() {
           uri: book.uri,
           title: book.title,
           color: book.color,
-          status: book.status,
+          status: 40,
         },
       });
     }
@@ -48,9 +45,8 @@ export default function HomeScreen() {
     extrapolate: 'clamp',
   });
 
-
   return (
-    <View style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
+    <View style={styles.container}>
       <Animated.View style={[styles.screenHeaderContainer, { opacity: headerOpacity }]}>
         <ScreenHeader text="Home" />
       </Animated.View>
@@ -65,7 +61,7 @@ export default function HomeScreen() {
       >
         <View style={styles.topWidgetContainer}>
           <TouchableOpacity
-            activeOpacity={0.7}
+          activeOpacity={0.7}
             onPress={() => navigation.navigate("Dictionary")}
           >
             <FlashcardProvider>
@@ -74,7 +70,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          activeOpacity={0.7}
+        activeOpacity={0.7}
           onPress={() => navigation.navigate("Library")}
         >
           <View style={styles.libraryContainer}>
@@ -124,6 +120,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.homeScreenBackground,
   },
   screenHeaderContainer: {
     position: 'absolute',

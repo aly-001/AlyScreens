@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -20,20 +21,19 @@ import DefinitionPopup from "../../components/DefinitionPopup";
 import useEpubManager from "../../hooks/useEpubManager";
 import useDefinitionManager from "../../hooks/useDefinitionManager";
 import LocationPointer from "../../components/LocationPointer";
-import { useThemeColors } from "../../config/colors";
+import colors from "../../config/colors";
 import BookHiddenFooter from "../../components/BookHiddenFooter";
 import { useTabBarVisibility } from "../../navigation/TabBarVisibilityContext";
 import { addCard } from "../../services/CardManager";
 
 import { useSettingsContext } from "../../context/useSettingsContext";
 import { useAPIKey } from "../../context/APIKeyContext";
-import { useBooks } from "../../hooks/useBooks"; // Update this import
+import { useBooks } from "../../context/BooksContext";
 import layout from "../../config/layout";
+
 const duration = 200; // Animation duration
 
 const BookHeader = ({ bookTitle, style, onTocPress }) => {
-  const colors = useThemeColors();
-
   if (!bookTitle) {
     return null;
   }
@@ -42,7 +42,7 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
     : bookTitle;
 
   return (
-    <Animated.View style={[styles.headerContainer, style, { backgroundColor: colors.mainComponentBackground }]}>
+    <Animated.View style={[styles.headerContainer, style]}>
       <SafeAreaView>
         <View style={styles.header}>
           <TouchableWithoutFeedback onPress={onTocPress}>
@@ -54,7 +54,7 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
               />
             </View>
           </TouchableWithoutFeedback>
-          <Text style={[styles.headerTitle, {color: colors.utilityGrey}]} numberOfLines={1} ellipsizeMode="tail">
+          <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">
             {truncatedTitle}
           </Text>
           <View style={styles.headerIconContainer}>
@@ -67,17 +67,13 @@ const BookHeader = ({ bookTitle, style, onTocPress }) => {
 };
 
 export default function ReadScreen() {
-  const colors = useThemeColors();
-  const [bossStatus, setBossStatus] = useState(0);
-  const { getBookByUri, updateBookStatus } = useBooks();
-  const [currentBook, setCurrentBook] = useState(null);
-
+  const { getBookStatus } = useBooks();
   const { apiKey } = useAPIKey();
   const { setTabBarVisible } = useTabBarVisibility();
   const isFocused = useIsFocused();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [tableOfContents, setTableOfContents] = useState(false);
-
+  const [progressBarStatus, setProgressBarStatus] = useState(0);
   const settings = useSettingsContext().settings;
   const route = useRoute();
   const [location, setLocation] = useState({
@@ -89,6 +85,7 @@ export default function ReadScreen() {
   const { handlePickComplete } = useEpubManager();
   
   const { uri, title, color } = route.params || {};
+  const { status } = getBookStatus(uri);
 
   const {
     popupVisible,
@@ -113,13 +110,6 @@ export default function ReadScreen() {
 
   const headerOpacity = useRef(new Animated.Value(1)).current;
   const footerOpacity = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    if (uri) {
-      const book = getBookByUri(uri);
-      setCurrentBook(book);
-    }
-  }, [uri, getBookByUri]);
 
   useEffect(() => {
     if (isFocused) {
@@ -190,7 +180,6 @@ export default function ReadScreen() {
     }
   };
 
-
   const handleMiddlePress = () => {
     setIsFullscreen((prev) => !prev);
   };
@@ -199,12 +188,15 @@ export default function ReadScreen() {
     setTableOfContents(true);
   };
 
+  const handleStatus = (status) => {
+    setProgressBarStatus(status);
+  };
   if (uri) {
     return (
-      <View style={[styles.container, { backgroundColor: colors.readScreen.primary }]}>
+      <View style={styles.container}>
         <StatusBar hidden={true} />
         <TouchableWithoutFeedback onPress={handleMiddlePress}>
-          <View style={[styles.readerContainer, { backgroundColor: colors.readScreen.primary }]}>
+          <View style={styles.readerContainer}>
             <ReaderProvider>
               <EpubReader
                 uri={uri}
@@ -212,7 +204,7 @@ export default function ReadScreen() {
                 handleWebViewMessage={handleWebViewMessage}
                 tableOfContents={tableOfContents}
                 setTableOfContents={setTableOfContents}
-                handleStatus={setBossStatus}
+                handleStatus={handleStatus}
               />
               <DefinitionPopup
                 location={location}
@@ -244,7 +236,7 @@ export default function ReadScreen() {
           onTocPress={handleTocPress}
         />
         <BookHiddenFooter 
-          progress={bossStatus}
+          progress={progressBarStatus}
           color={color}
           style={{ opacity: footerOpacity }}
         />
@@ -252,7 +244,7 @@ export default function ReadScreen() {
     );
   } else {
     return (
-      <View style={[styles.container, { backgroundColor: colors.readScreen.primary }]}>
+      <View style={styles.container}>
         <BookHeader bookTitle={title} />
         <View style={styles.pickerContainer}>
           <Text>No EPUB file selected</Text>
@@ -266,12 +258,14 @@ export default function ReadScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   headerContainer: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
+    backgroundColor: "white",
     zIndex: 1,
   },
   header: {
@@ -279,10 +273,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     height: layout.margins.readScreen.headerHeight,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
     paddingHorizontal: 10,
   },
   headerTitle: {
-
+    color: colors.utilityGrey,
     fontSize: 18,
     fontWeight: "bold",
     flex: 1,
@@ -298,6 +294,7 @@ const styles = StyleSheet.create({
   },
   readerContainer: {
     flex: 1,
+    backgroundColor: "white",
     paddingBottom: 20,
   },
   pickerContainer: {
