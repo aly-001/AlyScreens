@@ -1,10 +1,10 @@
 {
   "expo": {
     "updates": {
-      "url": "https://u.expo.dev/1eb07219-4ece-40f4-a564-cebe4d73f432"
+      "url": "https://u.expo.dev/34793815-a243-48d0-98ba-44f1a134e2c8"
     },
-    "name": "screens",
-    "slug": "screens",
+    "name": "Aly",
+    "slug": "Aly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,7 +16,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.alexandermackenzie.screens"
+      "bundleIdentifier": "com.alexandermackenzie.aly",
+      "buildNumber": "3"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,7 +28,7 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
-      "package": "com.alexandermackenzie.screens"
+      "package": "com.alexandermackenzie.aly"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -43,9 +44,12 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "1eb07219-4ece-40f4-a564-cebe4d73f432"
+        "projectId": "34793815-a243-48d0-98ba-44f1a134e2c8"
       }
     },
-    "owner": "alexandermackenzie"
+    "owner": "alexandermackenzie",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
   }
 }
