@@ -22,7 +22,7 @@ const useSettings = () => {
     flashcardsBackContextTranslation: true,
     flashcardsBackAudio: true,
     flashcardsBackContextAudio: false,
-    flashcardsBackImage: false,
+    flashcardsBackImage: true,
     flashcardsBackGrammar: false,
     flahscardsBackModuleA: false,
     flashcardsBackModuleB: false,

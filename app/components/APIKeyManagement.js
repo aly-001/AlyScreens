@@ -8,6 +8,9 @@ import {
   StyleSheet,
   Alert,
   Linking,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
 } from "react-native";
 import { useAPIKey } from "../context/APIKeyContext";
 import { useThemeColors } from "../config/colors";
@@ -60,50 +63,55 @@ const APIKeyManagement = () => {
 
     return (
       <Modal transparent={true} visible={isVisible} onRequestClose={onClose}>
-        <View style={styles.centeredView}>
-          <View style={[styles.modalView, { backgroundColor: colors.mainComponentBackground }]}>
-            <View style={styles.greyPartContainer}>
-              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Manage API Key</Text>
-              <TouchableOpacity
-                onPress={handleInfoPress}
-                style={styles.infoIcon}
-              >
-                <Ionicons
-                  name="information-circle-outline"
-                  size={24}
-                  color={colors.appleBlue}
-                />
-              </TouchableOpacity>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={[styles.centeredView, {backgroundColor: colors.modalBackground}]}
+        >
+          <ScrollView contentContainerStyle={styles.scrollViewContent}>
+            <View style={[styles.modalView, { backgroundColor: colors.mainComponentBackground }]}>
+              <View style={styles.greyPartContainer}>
+                <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Manage API Key</Text>
+                <TouchableOpacity
+                  onPress={handleInfoPress}
+                  style={styles.infoIcon}
+                >
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={24}
+                    color={colors.appleBlue}
+                  />
+                </TouchableOpacity>
+              </View>
+              <TextInput
+                style={[styles.input]}
+                value={key}
+                onChangeText={setKey}
+                multiline
+                placeholder="Enter new key"
+              />
+              
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.cancelButton, {borderWidth: 1, borderColor: colors.appleBlue}]}
+                  onPress={onClose}
+                >
+                  <Text style={[styles.cancelButtonText, { color: colors.appleBlue }]}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.saveButton, { backgroundColor: colors.appleBlue }]}
+                  onPress={handleSave}
+                >
+                  <Text style={[styles.saveButtonText, { color: "white" }]}>Save</Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={[styles.disclaimer]}>
+                Note: While we utilize the OpenAI API, we are not endorsed,
+                sponsored by, or affiliated with OpenAI. We're an independent
+                application striving to provide value through AI technology.
+              </Text>
             </View>
-            <TextInput
-              style={[styles.input]}
-              value={key}
-              onChangeText={setKey}
-              multiline
-              placeholder="Enter new key"
-            />
-            
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.cancelButton, {borderWidth: 1, borderColor: colors.appleBlue}]}
-                onPress={onClose}
-              >
-                <Text style={[styles.cancelButtonText, { color: colors.appleBlue }]}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.saveButton, { backgroundColor: colors.appleBlue }]}
-                onPress={handleSave}
-              >
-                <Text style={[styles.saveButtonText, { color: "white" }]}>Save</Text>
-              </TouchableOpacity>
-            </View>
-            <Text style={[styles.disclaimer]}>
-              Note: While we utilize the OpenAI API, we are not endorsed,
-              sponsored by, or affiliated with OpenAI. We're an independent
-              application striving to provide value through AI technology.
-            </Text>
-          </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </Modal>
     );
   };
@@ -142,8 +150,11 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "center",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
   modalView: {
     borderRadius: 15,

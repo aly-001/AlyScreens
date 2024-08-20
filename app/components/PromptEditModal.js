@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Text, TouchableOpacity, Modal, Button } from 'react-native';
+import { 
+  View, 
+  TextInput, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  Modal, 
+  Button,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
+} from 'react-native';
 import { useSettingsContext } from "../context/useSettingsContext";
 import { useThemeColors } from '../config/colors';
 import layout from '../config/layout';
@@ -24,31 +35,36 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
       visible={isVisible}
       onRequestClose={onClose}
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View style={styles.greyPartContainer}>
-            <Text style={[styles.greyPromptPart, { color: colors.utilityGrey }]}>{greyPromptPart}</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.centeredView}
+      >
+        <ScrollView contentContainerStyle={[styles.scrollViewContent, {backgroundColor: colors.modalBackground}]}>
+          <View style={styles.modalView}>
+            <View style={styles.greyPartContainer}>
+              <Text style={[styles.greyPromptPart, { color: colors.utilityGrey }]}>{greyPromptPart}</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              value={prompt}
+              onChangeText={setPrompt}
+              multiline
+              placeholder={`Enter ${promptType} prompt`}
+            />
+            <View style={styles.resetButtonContainer}>
+              <Button title="Reset" onPress={onReset} color={colors.appleBlue} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+                <Text style={[styles.cancelButtonText, { color: colors.appleBlue }]}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.saveButton, { backgroundColor: colors.appleBlue }]} onPress={handleSave}>
+                <Text style={styles.saveButtonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <TextInput
-            style={styles.input}
-            value={prompt}
-            onChangeText={setPrompt}
-            multiline
-            placeholder={`Enter ${promptType} prompt`}
-          />
-          <View style={styles.resetButtonContainer}>
-            <Button title="Reset" onPress={onReset} color={colors.appleBlue} />
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-              <Text style={[styles.cancelButtonText, { color: colors.appleBlue }]}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.saveButton, { backgroundColor: colors.appleBlue }]} onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Save</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -56,10 +72,14 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: layout.components.inputModals.justifyContent,
-    marginVertical: 60,
-    alignItems: 'center',
     backgroundColor: layout.components.inputModals.backgroundColor,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: layout.components.inputModals.justifyContent,
+    alignItems: 'center',
+    paddingVertical: 60,
+    justifyContent: 'center',
   },
   modalView: {
     backgroundColor: 'white',
