@@ -52,7 +52,7 @@ const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPr
               placeholder={`Enter ${promptType} prompt`}
             />
             <View style={styles.resetButtonContainer}>
-              <Button title="Reset" onPress={onReset} color={colors.appleBlue} />
+              <Button title="Reset" onPress={onReset} color={colors.utilityGrey} />
             </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.cancelButton} onPress={onClose}>

@@ -7,6 +7,7 @@ import SettingsNavigator from "./SettingsNavigator";
 import DictionaryScreen from "../screens/home/DictionaryScreen";
 
 import { useThemeColors } from "../config/colors";
+import AIGenScreen from "../screens/home/AIGenScreen";
 const Stack = createStackNavigator();
 
 const ModalScreen = ({ children }) => {
@@ -40,6 +41,13 @@ const HomeNavigator = () => {
         {(props) => (
           <ModalScreen>
             <SettingsNavigator {...props} />
+          </ModalScreen>
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="AIGen">
+        {(props) => (
+          <ModalScreen>
+          <AIGenScreen/>
           </ModalScreen>
         )}
       </Stack.Screen>

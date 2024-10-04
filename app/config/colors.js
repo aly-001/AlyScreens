@@ -18,7 +18,7 @@ const lightColors = {
   utilityGreyLight: "#A6A6A6",
   utilityGreyUltraLight: "#CDCDCD",
   utilityGrayCrazyLight: "#F1F1F5",
-  appleBlue: "#007AFF",
+  appleBlue: "#3498DC",
   appleBlueShade: "#007AFF",
   newWords: "#447a83",
   learnWords: "#D15A6C",
