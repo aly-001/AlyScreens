@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';rom 'react';
 import { View, Button, ActivityIndicator, Alert } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import {
+import { BooksContext } from '../context/BooksContext'; // Import BooksContext
   loadEpubFromUri,
   parseContainerXml,
   parseContentOpf,
@@ -15,7 +15,7 @@ import ChapterContent from './ChapterContent';
 
 function Reader() {
   const [zip, setZip] = useState(null);
-  const [chapters, setChapters] = useState([]);
+  const { addBook } = useContext(BooksContext); // Use BooksContext
   const [currentChapterContent, setCurrentChapterContent] = useState([]);
   const [showToc, setShowToc] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,55 +23,55 @@ function Reader() {
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
   const [bookDirectory, setBookDirectory] = useState(null);
 
-  const pickDocument = async () => {
-    console.log('Picking document...');
-    setIsLoading(true);
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/epub+zip',
-        copyToCacheDirectory: true,
-      });
+  const [savedBooks, setSavedBooks] = useState([]);
 
-      console.log('Document picker result:', result);
-
-      if (!result.canceled) {
-        const fileUri = result.assets[0].uri;
-        console.log('Selected file URI:', fileUri);
-        await loadEpub(fileUri);
-      } else {
-        console.log('Document picking cancelled');
-        setIsLoading(false);
+  useEffect(() => {
+    const findSavedBooks = async () => {
+      try {
+        const bookjsDir = `${FileSystem.documentDirectory}bookjs/`;
+        const dirInfo = await FileSystem.getInfoAsync(bookjsDir);
+        
+        if (dirInfo.exists) {
+          const bookDirs = await FileSystem.readDirectoryAsync(bookjsDir);
+          const books = await Promise.all(bookDirs.map(async (bookId) => {
+            const tocPath = `${bookjsDir}${bookId}/toc.js`;
+            const tocExists = await FileSystem.getInfoAsync(tocPath);
+            if (tocExists.exists) {
+              const tocContent = await FileSystem.readAsStringAsync(tocPath);
+              const toc = JSON.parse(tocContent);
+              return { id: bookId, title: bookId.replace(/_/g, ' '), chapters: toc.chapters };
+            }
+            return null;
+          }));
+          setSavedBooks(books.filter(book => book !== null));
+        }
+      } catch (error) {
+        console.error('Error finding saved books:', error);
       }
-    } catch (error) {
-      console.error('Error picking document:', error);
-      setIsLoading(false);
-    }
-  };
+    };
 
-  const loadEpub = async (fileUri) => {
-    console.log('Loading EPUB from URI:', fileUri);
-    setIsLoading(true);
-    try {
-      const zipFile = await loadEpubFromUri(fileUri);
+    findSavedBooks();
+  }, []);
+
       setZip(zipFile);
       console.log('EPUB loaded successfully');
 
-      const rootfilePath = await parseContainerXml(zipFile);
+    console.log('Picking document...');
       console.log('Root file path:', rootfilePath);
 
       const { metadata, manifestItems, spineItems } = await parseContentOpf(zipFile, rootfilePath);
       console.log('Metadata:', metadata);
       console.log('Manifest items count:', manifestItems.length);
-      console.log('Spine items count:', spineItems.length);
+      console.log('Spine items count:', spineIuri
 
-      // Extract the book title for the book identifier
+      console.log('Document picker result:', result);
+
+      if (!result.canceled) {
       const bookTitleObj = extractBookTitle(metadata);
-      console.log('Book title object:', bookTitleObj);
+        console.log('Selected file URI:', fileUri);
       const bookTitle = bookTitleObj['#text'] || 'Unknown Title';
-      console.log('Book title:', bookTitle);
-      const bookId = bookTitle.replace(/\s+/g, '_');
-
-      // Create directory for the book
+      // Cre
+        console.log('Document picking cancelled');rectory for the book
       const bookDir = `${FileSystem.documentDirectory}bookjs/${bookId}/`;
       await FileSystem.makeDirectoryAsync(bookDir, { intermediates: true });
 
@@ -81,25 +81,25 @@ function Reader() {
       let chaptersList = [];
       try {
         chaptersList = await parseTableOfContents(zipFile, manifestItems);
-        console.log('Table of contents parsed successfully');
+    console.log('Loading EPUB from URI:', fileUri);
       } catch (error) {
         console.warn('TOC not found, using spine items:', error);
         // Fallback to spine items
-        chaptersList = spineItems.map((itemref, index) => {
-          const manifestItem = manifestItems.find((item) => item.id === itemref.idref);
-          return {
+        chaptersList = spineItems.map((itemref, index) tems.find((item) => item.id === itemref.idref);
+      console.log('EPUB loaded successfully');
             id: manifestItem.id,
-            label: manifestItem.href,
-            contentSrc: manifestItem.href,
-            index: index,
+    
+      console.log('Book title:', bookTitle);        label: manifestItem.href,
+      console.log('Root file path:', rootfilePath);
+
           };
-        });
-      }
-
+      console.log('Metadata:', metadata);
+      console.log('Manifest items count:', manifestItems.length);
+      console.log('Spine items count:', spineItems.length);
       console.log('Chapters list:', chaptersList);
-
-      // Save TOC to a file
-      const tocData = JSON.stringify({ chapters: chaptersList }, null, 2);
+      const bookTitleObj = extractBookTitle(metadata);
+      console.log('Book title object:', bookTitleObj);
+      const bookTitle = bookTitleObj['#text'] || 'Unknown Title';null, 2);
       await FileSystem.writeAsStringAsync(`${bookDir}toc.js`, tocData);
 
       // Process and save each chapter
@@ -107,15 +107,16 @@ function Reader() {
         const chapter = chaptersList[i];
         const contentSrc = chapter.contentSrc;
 
-        // Resolve the path relative to the rootfile
-        const chapterPath = resolvePath(rootfilePath, contentSrc);
+      console.log('Book directory created:', bookDir);
+
         const htmlText = await zipFile.file(chapterPath).async('text');
 
         // Process HTML content into JSON structure
         const parsedContent = processHtmlContent(htmlText);
-
+        console.log('Table of contents parsed successfully');
         // Save parsed content as a .js file
-        const chapterFileName = `ch${String(i + 1).padStart(2, '0')}.js`;
+        console.warn('TOC not found, using spine items:', error);')
+      }.js`;
         const chapterData = JSON.stringify(parsedContent, null, 2);
         await FileSystem.writeAsStringAsync(`${bookDir}${chapterFileName}`, chapterData);
 
@@ -125,27 +126,27 @@ function Reader() {
 
       // Save updated TOC with updated contentSrc paths
       const updatedTocData = JSON.stringify({ chapters: chaptersList }, null, 2);
-      await FileSystem.writeAsStringAsync(`${bookDir}toc.js`, updatedTocData);
+      await FileSystem.writeAsString${bookDir}toc.js`, updatedTocData);
 
       console.log('All chapters processed and saved');
+      console.log('Chapters list:', chaptersList);
 
-      setBookDirectory(bookDir);
       setChapters(chaptersList);
       setShowToc(true);
     } catch (error) {
       console.error('Error loading EPUB:', error);
-      Alert.alert('Error', 'Failed to load EPUB file.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  /**
-   * Resolves the chapter path relative to the rootfile directory.
-   * @param {string} rootfilePath - The path to the `content.opf` file.
-   * @param {string} relativePath - The relative path from the manifest.
-   * @returns {string} The resolved path.
-   */
+      // **Save the book to the library**
+      const newBook = {
+        uri: fileUri,
+        title: bookTitle,
+        id: bookId,
+        directory: bookDir,
+        chapters: chaptersList.length,
+      };
+      await addBook(newBook);
+      console.log('Book added to library:', newBook);
+      Alert.alert('Success', `${bookTitle} has been added to your library.`);
   const resolvePath = (rootfilePath, relativePath) => {
     const rootDir = rootfilePath.substring(0, rootfilePath.lastIndexOf('/') + 1);
     const resolvedPath = rootDir + relativePath;
@@ -159,23 +160,23 @@ function Reader() {
       setCurrentChapterIndex(index);
 
       // Read from the saved chapter file
-      const chapter = chapters[index];
-      const chapterFilePath = `${bookDirectory}${chapter.contentSrc}`;
+      console.log('All chapters processed and saved');
+
       console.log('Loading chapter from:', chapterFilePath);
 
       const chapterContent = await FileSystem.readAsStringAsync(chapterFilePath);
-      console.log('Chapter content loaded, length:', chapterContent.length);
 
-      const parsedChapter = JSON.parse(chapterContent);
-      console.log('Chapter parsed successfully');
-
-      setCurrentChapterContent(parsedChapter);
-      setShowToc(false);
-    } catch (error) {
-      console.error('Error loading chapter:', error);
-      Alert.alert('Error', 'Failed to load chapter content.');
-    } finally {
-      setIsLoading(false);
+      // **Save the book to the library**
+      const newBook = {
+        uri: fileUri,
+        title: bookTitle,
+        id: bookId,
+        directory: bookDir,
+        chapters: chaptersList.length,
+      };
+      await addBook(newBook);
+      console.log('Book added to library:', newBook);
+      Alert.alert('Success', `${bookTitle} has been added to your library.`);
     }
   };
 
@@ -197,7 +198,7 @@ function Reader() {
       } catch (error) {
         console.error('Error loading next chapter:', error);
         Alert.alert('Error', 'Failed to load next chapter.');
-      } finally {
+    console.log('Selecting chapter at index:', index);
         setIsLoading(false);
       }
     } else {
@@ -205,13 +206,13 @@ function Reader() {
     }
   };
 
-  const handlePrevChapter = async () => {
-    if (currentChapterIndex > 0) {
+      console.log('Loading chapter from:', chapterFilePath);
+
       setIsLoading(true);
-      try {
+      console.log('Chapter content loaded, length:', chapterContent.length);
         const prevIndex = currentChapterIndex - 1;
         setCurrentChapterIndex(prevIndex);
-
+      console.log('Chapter parsed successfully');
         // Read from the saved chapter file
         const chapter = chapters[prevIndex];
         const chapterFilePath = `${bookDirectory}${chapter.contentSrc}`;
@@ -264,4 +265,15 @@ function Reader() {
   );
 }
 
-export default Reader;
+export default Reader;  onShowToc={() => setShowToc(true)}
+                <Button title="Pick an EPUB file" onPress={pickDocument} />red    console.log('Word pressed:', word);
+ ,,, backgroundColor: "red"     console.log('Word pressed:', word);
+pink, justifyContent: "center", alignItems: "center"  onShowToc={() => setShowToc(true)}
+                <>
+          <Button title="Pick an EPUB file" onPress={pickDocument} />
+          {savedBooks.length > 0 && (
+            <View style={{ marginTop: 20 }}>
+              <Button title="Load Saved Book" onPress={() => {/* TODO: Implement book selection */}} />
+            </View>
+          )}
+        </>
