@@ -4,6 +4,7 @@ import HomeNavigator from './HomeNavigator';
 import Reader from '../nativeReader/reader';
 import PracticeNavigator from './PracticeNavigator';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Optional: For tab icons
+import SettingsNavigator from './SettingsNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +23,8 @@ export default function AppNavigator() {
             iconName = focused ? 'book' : 'book-outline';
           } else if (route.name === 'Practice') {
             iconName = focused ? 'hammer' : 'hammer-outline';
+          } else if (route.name === 'Settings') {
+            iconName = focused ? 'settings' : 'settings-outline'; // Added icon for Settings
           }
 
           // Return the appropriate icon
@@ -29,11 +32,13 @@ export default function AppNavigator() {
         },
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
+        headerShown: false, // Disable navigation headers
       })}
     >
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Reader" component={Reader} />
       <Tab.Screen name="Practice" component={PracticeNavigator} />
+      <Tab.Screen name="Settings" component={SettingsNavigator} />
     </Tab.Navigator>
   );
 }

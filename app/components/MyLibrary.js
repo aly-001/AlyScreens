@@ -34,7 +34,9 @@ export default function MyLibrary({ books, onBookPress, onPressLibrary }) {
               accessibilityHint="Tap to open the book for reading"
               style={[
                 styles.bookItem,
-                { borderColor: book.color || "green" }, // Apply book-specific border color
+                // Remove or comment out the borderColor and borderWidth
+                // { borderColor: book.color || "green" }, 
+                // borderWidth: 2, // Remove this line
               ]}
             >
               <BookCoverThumb
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
   },
   bookItem: {
     marginRight: 10, // Space between books
-    borderWidth: 2, // Visible border to showcase the book's color
+    // borderWidth: 2, // Remove this line
     borderRadius: 8, // Rounded corners for each book item
     overflow: "hidden", // Ensure child components don't overflow the border
   },

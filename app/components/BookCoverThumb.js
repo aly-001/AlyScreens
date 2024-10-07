@@ -33,8 +33,8 @@ export default function BookCoverThumb({ title, subtitle, color, status }) {
   const shortenedTitle = shortenText(title, maxTitleChars);
   const shortenedSubtitle = shortenText(subtitle, maxSubtitleChars);
 
-  // Determine text color based on background color brightness
-  const textColor = isLightColor(color) ? "#000000" : "#FFFFFF";
+  // Set text color to always be dark
+  const textColor = "#000000";
 
   return (
     <View style={styles.bookContainer}>

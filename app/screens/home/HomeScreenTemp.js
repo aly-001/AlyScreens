@@ -1,15 +1,24 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet, Animated, Alert } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
+import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import { useThemeColors } from "../../config/colors";
 import layout from "../../config/layout";
 import MyLibrary from "../../components/MyLibrary";
 import BottomWidget from "../../components/BottomWidget";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import StatBoxMax from "../../components/StatBoxMax";
+import { DolphinSR } from "../../../lib/index";
 import * as SQLite from "expo-sqlite";
-import * as FileSystem from "expo-file-system";
-import { readBookColor, readBookTitle } from "../../nativeReader/BookUtils";
+import {
+  getAllCards,
+  getYoungCards,
+  getMatureCards,
+} from "../../context/FlashcardContext";
+import * as FileSystem from 'expo-file-system';
+import * as DocumentPicker from 'expo-document-picker';
+import BookCoverThumb from "../../components/BookCoverThumb";
 
 export default function HomeScreenTemp() {
   const colors = useThemeColors();
@@ -20,18 +29,14 @@ export default function HomeScreenTemp() {
   const [allCards, setAllCards] = useState([]);
   const [youngCards, setYoungCards] = useState([]);
   const [matureCards, setMatureCards] = useState([]);
+  
   const [books, setBooks] = useState([]);
+  const bookDirectory = `${FileSystem.documentDirectory}bookjs/`;
 
   useEffect(() => {
     initializeDatabase();
-    fetchBooks();
+    loadBooks();
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchBooks();
-    }, [])
-  );
 
   const initializeDatabase = async () => {
     try {
@@ -39,91 +44,217 @@ export default function HomeScreenTemp() {
 
       database.transaction(tx => {
         tx.executeSql(
-          `
-          CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY NOT NULL, data TEXT);
-          CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY NOT NULL, data TEXT);
-          `,
-          [],
-          () => {
-            console.log("Tables created successfully");
-          },
-          (txObj, error) => {
-            console.error("Error creating tables:", error);
-          }
+          `CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);`
+        );
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);`
         );
       });
 
-      setDolphinSR(new DolphinSR(database));
+      const dolphinSRInstance = new DolphinSR();
+      setDolphinSR(dolphinSRInstance);
+      await loadDeck(database, dolphinSRInstance);
     } catch (error) {
-      console.error("Error initializing database:", error);
+      console.error("Database initialization error:", error);
     }
   };
 
-  const fetchBooks = async () => {
+  const loadDeck = async (database, dolphinSRInstance) => {
     try {
-      const booksDir = FileSystem.documentDirectory + "bookjs/";
-      const dirInfo = await FileSystem.getInfoAsync(booksDir);
+      const mastersResult = await new Promise((resolve, reject) => {
+        database.transaction(tx => {
+          tx.executeSql("SELECT * FROM masters", [], (_, { rows }) => {
+            resolve(rows._array);
+          }, (_, error) => {
+            reject(error);
+          });
+        });
+      });
 
-      if (!dirInfo.exists) {
-        console.log("Books directory does not exist.");
-        setBooks([]);
-        return;
-      }
+      const reviewsResult = await new Promise((resolve, reject) => {
+        database.transaction(tx => {
+          tx.executeSql("SELECT * FROM reviews", [], (_, { rows }) => {
+            resolve(rows._array);
+          }, (_, error) => {
+            reject(error);
+          });
+        });
+      });
 
-      const dirContents = await FileSystem.readDirectoryAsync(booksDir);
-      const bookDirs = dirContents.filter(item => item !== "." && item !== "..");
-
-      const fetchedBooks = await Promise.all(bookDirs.map(async (bookDirName) => {
-        const bookDir = `${booksDir}${bookDirName}/`;
-        const color = await readBookColor(bookDir);
-        const title = await readBookTitle(bookDir);
-        return {
-          name: bookDirName,
-          title: title,
-          subtitle: "Your Subtitle Here",
-          color: color,
-          status: 0,
-        };
+      const loadedMasters = mastersResult.map((row) => ({
+        ...JSON.parse(row.data),
+        id: row.id,
+      }));
+      const loadedReviews = reviewsResult.map((row) => ({
+        ...JSON.parse(row.data),
+        id: row.id,
+        ts: new Date(JSON.parse(row.data).ts),
       }));
 
-      setBooks(fetchedBooks);
+      dolphinSRInstance.addMasters(...loadedMasters);
+      dolphinSRInstance.addReviews(...loadedReviews);
+
+      updateWords(dolphinSRInstance);
     } catch (error) {
-      console.error("Error fetching books:", error);
-      setBooks([]);
+      console.error("Load deck error:", error);
+      console.error("Error stack:", error.stack);
+    }
+  };
+
+  const updateWords = (dolphinSRInstance) => {
+    const processCards = (cards) =>
+      cards.map((card) => ({
+        ...card,
+        id: card.id || `card-${Math.random().toString(36).substr(2, 9)}`,
+      }));
+
+    setAllCards(processCards(getAllCards(dolphinSRInstance)));
+    setYoungCards(processCards(getYoungCards(dolphinSRInstance)));
+    setMatureCards(processCards(getMatureCards(dolphinSRInstance)));
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      initializeDatabase();
+      loadBooks();
+    }, [])
+  );
+
+  const loadBooks = async () => {
+    try {
+      const dirInfo = await FileSystem.getInfoAsync(bookDirectory);
+      if (!dirInfo.exists) {
+        console.log('Book directory does not exist, creating it...');
+        await FileSystem.makeDirectoryAsync(bookDirectory, { intermediates: true });
+        console.log('Book directory created successfully');
+      }
+
+      console.log('Reading book directory...');
+      const booksList = await FileSystem.readDirectoryAsync(bookDirectory);
+      console.log(`Found ${booksList.length} books in the directory`);
+
+      const loadedBooks = await Promise.all(booksList.map(async (bookDir) => {
+        const bookInfoPath = `${bookDirectory}${bookDir}/bookInfo.js`;
+        try {
+          const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+          const bookInfo = JSON.parse(bookInfoContent);
+          return { id: bookDir, ...bookInfo };
+        } catch (error) {
+          console.error(`Failed to load book info for ${bookDir}:`, error);
+          return null;
+        }
+      }));
+
+      setBooks(loadedBooks.filter(book => book !== null));
+    } catch (error) {
+      console.error('Error in loadBooks:', error);
+      Alert.alert('Error', 'Failed to load books. Check console for details.');
     }
   };
 
   const handleBookPress = (book) => {
-    navigation.navigate("Reader", {
-      bookDirName: book.name,
-    });
+    navigation.navigate('Reader', { bookDirName: book.id });
   };
 
-  const handleLibraryPress = () => {
-    navigation.navigate("Library");
+  const handleBookLongPress = (book) => {
+    Alert.alert(
+      "Delete Book",
+      `Are you sure you want to delete "${book.title}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              await FileSystem.deleteAsync(`${bookDirectory}${book.id}`, { idempotent: true });
+              await loadBooks(); // Refresh the book list
+              Alert.alert("Success", "Book deleted successfully");
+            } catch (error) {
+              console.error("Failed to delete book:", error);
+              Alert.alert("Error", "Failed to delete book");
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
   };
+
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.homeScreenBackground }]}>
-      <ScreenHeader />
+    <View style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
+      <Animated.View style={[styles.screenHeaderContainer, { opacity: headerOpacity }]}>
+        <ScreenHeader text="Home" />
+      </Animated.View>
       <Animated.ScrollView
         contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: true }
         )}
+        scrollEventThrottle={16}
       >
         <View style={styles.topWidgetContainer}>
-          <StatBoxMax value={allCards.length} label="All Cards" />
-          <StatBoxMax value={youngCards.length} label="Young Cards" />
-          <StatBoxMax value={matureCards.length} label="Mature Cards" />
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate("Dictionary")}
+          >
+            <StatBoxMax
+              allWordsCount={allCards.length}
+              youngWordsCount={youngCards.length}
+              matureWordsCount={matureCards.length}
+            />
+          </TouchableOpacity>
         </View>
-        <MyLibrary 
-          books={books} 
-          onBookPress={handleBookPress} 
-          onPressLibrary={handleLibraryPress}
-        />
-        <BottomWidget />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => navigation.navigate("Library")}
+        >
+          <View style={styles.libraryContainer}>
+            <MyLibrary books={books} onBookPress={handleBookPress} onBookLongPress={handleBookLongPress} />
+          </View>
+        </TouchableOpacity>
+        <View style={styles.bottomWidgetContainer}>
+          <BottomWidget
+            style={{
+              borderBottomEndRadius:
+                layout.borderRadius.homeScreenWidgetsSandwich,
+            }}
+            header="Help"
+            IconComponent={(props) => (
+              <FontAwesome5
+                name="question"
+                size={layout.icons.homeScreenBottomWidget}
+                color={colors.homeScreenIcon}
+                style={styles.icon}
+                {...props}
+              />
+            )}
+          />
+          <BottomWidget
+            style={{
+              borderBottomStartRadius:
+                layout.borderRadius.homeScreenWidgetsSandwich,
+            }}
+            header="Settings"
+            IconComponent={(props) => (
+              <FontAwesome6
+                name="gear"
+                size={layout.icons.homeScreenBottomWidget}
+                color={colors.homeScreenIcon}
+                style={styles.icon}
+                {...props}
+              />
+            )}
+            onPress={() => navigation.navigate("Settings")} // Added onPress handler
+          />
+        </View>
       </Animated.ScrollView>
     </View>
   );
@@ -132,16 +263,38 @@ export default function HomeScreenTemp() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF", // Ensure this matches your theme
+  },
+  screenHeaderContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
   scrollContent: {
-    padding: 10,
-    paddingVertical: 30,
+    flexGrow: 1,
+    padding: layout.margins.homeScreenWidgets / 2,
+    paddingTop: layout.margins.homeScreen.betweenHeaderAndWidgets + 60, // Add extra padding to account for the header
   },
   topWidgetContainer: {
     marginHorizontal: layout.margins.homeScreenWidgets / 2,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: layout.margins.homeScreenWidgets,
+  },
+  libraryContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    marginBottom: layout.margins.homeScreenWidgets,
+  },
+  bottomWidgetContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 100,
+  },
+  icon: {
+    bottom: 20,
+    paddingBottom: 30,
   },
 });

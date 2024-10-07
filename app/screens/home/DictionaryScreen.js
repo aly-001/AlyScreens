@@ -127,9 +127,6 @@ const DictionaryScreen = () => {
   return (
     <View style={[styles.superContainer, {backgroundColor: colors.homeScreenBackground}]}>
       <Screen>
-        <View style={styles.headerContainer}>
-          <ScreenHeader text="Dictionary" />
-        </View>
         <ScrollView contentContainerStyle={styles.contentContainer}>
           <View style={styles.container}>
             {renderSection("All Words", allCards)}

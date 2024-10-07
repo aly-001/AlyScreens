@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import { View, StyleSheet, Animated, Alert } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
@@ -16,31 +16,40 @@ import {
   getYoungCards,
   getMatureCards,
 } from "../../context/FlashcardContext";
-import { useBooks } from "../../hooks/useBooks";
+import * as FileSystem from 'expo-file-system';
+import * as DocumentPicker from 'expo-document-picker';
+import BookCoverThumb from "../../components/BookCoverThumb";
 
 export default function HomeScreen() {
   const colors = useThemeColors();
   const navigation = useNavigation();
-  const { books, loadBooks } = useBooks();
   const scrollY = useRef(new Animated.Value(0)).current;
   
   const [dolphinSR, setDolphinSR] = useState(null);
   const [allCards, setAllCards] = useState([]);
   const [youngCards, setYoungCards] = useState([]);
   const [matureCards, setMatureCards] = useState([]);
+  
+  const [books, setBooks] = useState([]);
+  const bookDirectory = `${FileSystem.documentDirectory}bookjs/`;
 
   useEffect(() => {
     initializeDatabase();
+    loadBooks();
   }, []);
 
   const initializeDatabase = async () => {
     try {
-      const database = await SQLite.openDatabaseAsync("flashcards.db");
+      const database = SQLite.openDatabase("flashcards.db");
 
-      await database.execAsync(`
-        CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
-        CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
-      `);
+      database.transaction(tx => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);`
+        );
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);`
+        );
+      });
 
       const dolphinSRInstance = new DolphinSR();
       setDolphinSR(dolphinSRInstance);
@@ -52,8 +61,25 @@ export default function HomeScreen() {
 
   const loadDeck = async (database, dolphinSRInstance) => {
     try {
-      const mastersResult = await database.getAllAsync("SELECT * FROM masters");
-      const reviewsResult = await database.getAllAsync("SELECT * FROM reviews");
+      const mastersResult = await new Promise((resolve, reject) => {
+        database.transaction(tx => {
+          tx.executeSql("SELECT * FROM masters", [], (_, { rows }) => {
+            resolve(rows._array);
+          }, (_, error) => {
+            reject(error);
+          });
+        });
+      });
+
+      const reviewsResult = await new Promise((resolve, reject) => {
+        database.transaction(tx => {
+          tx.executeSql("SELECT * FROM reviews", [], (_, { rows }) => {
+            resolve(rows._array);
+          }, (_, error) => {
+            reject(error);
+          });
+        });
+      });
 
       const loadedMasters = mastersResult.map((row) => ({
         ...JSON.parse(row.data),
@@ -91,23 +117,67 @@ export default function HomeScreen() {
     useCallback(() => {
       initializeDatabase();
       loadBooks();
-    }, [loadBooks])
+    }, [])
   );
 
-  const handleBookPress = (bookName) => {
-    loadBooks();
-    const book = books.find((b) => b.name === bookName);
-    if (book) {
-      navigation.navigate("Read", {
-        screen: "ReadScreen",
-        params: {
-          uri: book.uri,
-          title: book.title,
-          color: book.color,
-          status: book.status,
-        },
-      });
+  const loadBooks = async () => {
+    try {
+      const dirInfo = await FileSystem.getInfoAsync(bookDirectory);
+      if (!dirInfo.exists) {
+        console.log('Book directory does not exist, creating it...');
+        await FileSystem.makeDirectoryAsync(bookDirectory, { intermediates: true });
+        console.log('Book directory created successfully');
+      }
+
+      console.log('Reading book directory...');
+      const booksList = await FileSystem.readDirectoryAsync(bookDirectory);
+      console.log(`Found ${booksList.length} books in the directory`);
+
+      const loadedBooks = await Promise.all(booksList.map(async (bookDir) => {
+        const bookInfoPath = `${bookDirectory}${bookDir}/bookInfo.js`;
+        try {
+          const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+          const bookInfo = JSON.parse(bookInfoContent);
+          return { id: bookDir, ...bookInfo };
+        } catch (error) {
+          console.error(`Failed to load book info for ${bookDir}:`, error);
+          return null;
+        }
+      }));
+
+      setBooks(loadedBooks.filter(book => book !== null));
+    } catch (error) {
+      console.error('Error in loadBooks:', error);
+      Alert.alert('Error', 'Failed to load books. Check console for details.');
     }
+  };
+
+  const handleBookPress = (book) => {
+    navigation.navigate('Reader', { bookDirName: book.id });
+  };
+
+  const handleBookLongPress = (book) => {
+    Alert.alert(
+      "Delete Book",
+      `Are you sure you want to delete "${book.title}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              await FileSystem.deleteAsync(`${bookDirectory}${book.id}`, { idempotent: true });
+              await loadBooks(); // Refresh the book list
+              Alert.alert("Success", "Book deleted successfully");
+            } catch (error) {
+              console.error("Failed to delete book:", error);
+              Alert.alert("Error", "Failed to delete book");
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
   };
 
   const headerOpacity = scrollY.interpolate({
@@ -147,7 +217,7 @@ export default function HomeScreen() {
           onPress={() => navigation.navigate("Library")}
         >
           <View style={styles.libraryContainer}>
-            <MyLibrary books={books} onBookPress={handleBookPress} />
+            <MyLibrary books={books} onBookPress={handleBookPress} onBookLongPress={handleBookLongPress} />
           </View>
         </TouchableOpacity>
         <View style={styles.bottomWidgetContainer}>
@@ -214,7 +284,8 @@ const styles = StyleSheet.create({
   },
   libraryContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
     marginBottom: layout.margins.homeScreenWidgets,
   },
   bottomWidgetContainer: {
