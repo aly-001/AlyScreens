@@ -1,232 +1,112 @@
-import React, { useState, useEffect } from 'react';rom 'react';
-import { View, Button, ActivityIndicator, Alert } from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import { BooksContext } from '../context/BooksContext'; // Import BooksContext
-  loadEpubFromUri,
+import {
   parseContainerXml,
   parseContentOpf,
   parseTableOfContents,
   extractBookTitle,
   processHtmlContent,
 } from './epubHandler';
-import TableOfContents from './TableOfContents';
 import ChapterContent from './ChapterContent';
+import TableOfContents from './TableOfContents';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 function Reader() {
-  const [zip, setZip] = useState(null);
-  const { addBook } = useContext(BooksContext); // Use BooksContext
+  const route = useRoute();
+  const navigation = useNavigation();
+  const { bookDirName } = route.params || {}; // Receive bookDirName via navigation if available
+
+  const bookDirectory = bookDirName
+    ? `${FileSystem.documentDirectory}bookjs/${bookDirName}/`
+    : null;
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [chapters, setChapters] = useState([]);
   const [currentChapterContent, setCurrentChapterContent] = useState([]);
-  const [showToc, setShowToc] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
-  const [bookDirectory, setBookDirectory] = useState(null);
-
-  const [savedBooks, setSavedBooks] = useState([]);
+  const [showToc, setShowToc] = useState(false);
+  const [bookTitle, setBookTitle] = useState('');
 
   useEffect(() => {
-    const findSavedBooks = async () => {
-      try {
-        const bookjsDir = `${FileSystem.documentDirectory}bookjs/`;
-        const dirInfo = await FileSystem.getInfoAsync(bookjsDir);
-        
-        if (dirInfo.exists) {
-          const bookDirs = await FileSystem.readDirectoryAsync(bookjsDir);
-          const books = await Promise.all(bookDirs.map(async (bookId) => {
-            const tocPath = `${bookjsDir}${bookId}/toc.js`;
-            const tocExists = await FileSystem.getInfoAsync(tocPath);
-            if (tocExists.exists) {
-              const tocContent = await FileSystem.readAsStringAsync(tocPath);
-              const toc = JSON.parse(tocContent);
-              return { id: bookId, title: bookId.replace(/_/g, ' '), chapters: toc.chapters };
-            }
-            return null;
-          }));
-          setSavedBooks(books.filter(book => book !== null));
-        }
-      } catch (error) {
-        console.error('Error finding saved books:', error);
-      }
-    };
+    if (bookDirName) {
+      loadBook();
+    } else {
+      setIsLoading(false);
+    }
+  }, [bookDirName]);
 
-    findSavedBooks();
-  }, []);
-
-      setZip(zipFile);
-      console.log('EPUB loaded successfully');
-
-    console.log('Picking document...');
-      console.log('Root file path:', rootfilePath);
-
-      const { metadata, manifestItems, spineItems } = await parseContentOpf(zipFile, rootfilePath);
-      console.log('Metadata:', metadata);
-      console.log('Manifest items count:', manifestItems.length);
-      console.log('Spine items count:', spineIuri
-
-      console.log('Document picker result:', result);
-
-      if (!result.canceled) {
-      const bookTitleObj = extractBookTitle(metadata);
-        console.log('Selected file URI:', fileUri);
-      const bookTitle = bookTitleObj['#text'] || 'Unknown Title';
-      // Cre
-        console.log('Document picking cancelled');rectory for the book
-      const bookDir = `${FileSystem.documentDirectory}bookjs/${bookId}/`;
-      await FileSystem.makeDirectoryAsync(bookDir, { intermediates: true });
-
-      console.log('Book directory created:', bookDir);
-
-      // Parse the table of contents
-      let chaptersList = [];
-      try {
-        chaptersList = await parseTableOfContents(zipFile, manifestItems);
-    console.log('Loading EPUB from URI:', fileUri);
-      } catch (error) {
-        console.warn('TOC not found, using spine items:', error);
-        // Fallback to spine items
-        chaptersList = spineItems.map((itemref, index) tems.find((item) => item.id === itemref.idref);
-      console.log('EPUB loaded successfully');
-            id: manifestItem.id,
-    
-      console.log('Book title:', bookTitle);        label: manifestItem.href,
-      console.log('Root file path:', rootfilePath);
-
-          };
-      console.log('Metadata:', metadata);
-      console.log('Manifest items count:', manifestItems.length);
-      console.log('Spine items count:', spineItems.length);
-      console.log('Chapters list:', chaptersList);
-      const bookTitleObj = extractBookTitle(metadata);
-      console.log('Book title object:', bookTitleObj);
-      const bookTitle = bookTitleObj['#text'] || 'Unknown Title';null, 2);
-      await FileSystem.writeAsStringAsync(`${bookDir}toc.js`, tocData);
-
-      // Process and save each chapter
-      for (let i = 0; i < chaptersList.length; i++) {
-        const chapter = chaptersList[i];
-        const contentSrc = chapter.contentSrc;
-
-      console.log('Book directory created:', bookDir);
-
-        const htmlText = await zipFile.file(chapterPath).async('text');
-
-        // Process HTML content into JSON structure
-        const parsedContent = processHtmlContent(htmlText);
-        console.log('Table of contents parsed successfully');
-        // Save parsed content as a .js file
-        console.warn('TOC not found, using spine items:', error);')
-      }.js`;
-        const chapterData = JSON.stringify(parsedContent, null, 2);
-        await FileSystem.writeAsStringAsync(`${bookDir}${chapterFileName}`, chapterData);
-
-        // Update the chapter's contentSrc to point to the saved file
-        chapter.contentSrc = chapterFileName;
+  const loadBook = async () => {
+    setIsLoading(true);
+    try {
+      // Read TOC
+      const tocPath = `${bookDirectory}toc.js`;
+      const tocExists = await FileSystem.getInfoAsync(tocPath);
+      if (!tocExists.exists) {
+        throw new Error('TOC not found.');
       }
 
-      // Save updated TOC with updated contentSrc paths
-      const updatedTocData = JSON.stringify({ chapters: chaptersList }, null, 2);
-      await FileSystem.writeAsString${bookDir}toc.js`, updatedTocData);
+      const tocContent = await FileSystem.readAsStringAsync(tocPath);
+      const toc = JSON.parse(tocContent);
 
-      console.log('All chapters processed and saved');
-      console.log('Chapters list:', chaptersList);
+      setChapters(toc.chapters);
 
-      setChapters(chaptersList);
-      setShowToc(true);
+      // Load the first chapter
+      if (toc.chapters.length > 0) {
+        await loadChapter(0, toc.chapters[0].contentSrc);
+      }
+
+      // Optionally, set the book title
+      setBookTitle(formatBookTitle(bookDirName));
     } catch (error) {
-      console.error('Error loading EPUB:', error);
+      console.error('Error loading book:', error);
+      Alert.alert('Error', 'Failed to load the book.');
+      navigation.navigate('Home'); // Navigate to Home if there's an error
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      // **Save the book to the library**
-      const newBook = {
-        uri: fileUri,
-        title: bookTitle,
-        id: bookId,
-        directory: bookDir,
-        chapters: chaptersList.length,
-      };
-      await addBook(newBook);
-      console.log('Book added to library:', newBook);
-      Alert.alert('Success', `${bookTitle} has been added to your library.`);
-  const resolvePath = (rootfilePath, relativePath) => {
-    const rootDir = rootfilePath.substring(0, rootfilePath.lastIndexOf('/') + 1);
-    const resolvedPath = rootDir + relativePath;
-    return resolvedPath;
+  const loadChapter = async (index, chapterFileName) => {
+    setIsLoading(true); // Start loading indicator
+    try {
+      const chapterPath = `${bookDirectory}${chapterFileName}`;
+      const chapterContent = await FileSystem.readAsStringAsync(chapterPath);
+      const parsedChapter = JSON.parse(chapterContent);
+      setCurrentChapterContent(parsedChapter);
+      setCurrentChapterIndex(index);
+      setShowToc(false);
+    } catch (error) {
+      console.error('Error loading chapter:', error);
+      Alert.alert('Error', 'Failed to load chapter content.');
+    } finally {
+      setIsLoading(false); // Stop loading indicator
+    }
   };
 
   const handleSelectChapter = async (index) => {
-    console.log('Selecting chapter at index:', index);
-    setIsLoading(true);
-    try {
-      setCurrentChapterIndex(index);
-
-      // Read from the saved chapter file
-      console.log('All chapters processed and saved');
-
-      console.log('Loading chapter from:', chapterFilePath);
-
-      const chapterContent = await FileSystem.readAsStringAsync(chapterFilePath);
-
-      // **Save the book to the library**
-      const newBook = {
-        uri: fileUri,
-        title: bookTitle,
-        id: bookId,
-        directory: bookDir,
-        chapters: chaptersList.length,
-      };
-      await addBook(newBook);
-      console.log('Book added to library:', newBook);
-      Alert.alert('Success', `${bookTitle} has been added to your library.`);
-    }
+    await loadChapter(index, chapters[index].contentSrc);
   };
 
   const handleNextChapter = async () => {
     if (currentChapterIndex + 1 < chapters.length) {
-      setIsLoading(true);
-      try {
-        const nextIndex = currentChapterIndex + 1;
-        setCurrentChapterIndex(nextIndex);
-
-        // Read from the saved chapter file
-        const chapter = chapters[nextIndex];
-        const chapterFilePath = `${bookDirectory}${chapter.contentSrc}`;
-        const chapterContent = await FileSystem.readAsStringAsync(chapterFilePath);
-
-        const parsedChapter = JSON.parse(chapterContent);
-
-        setCurrentChapterContent(parsedChapter);
-      } catch (error) {
-        console.error('Error loading next chapter:', error);
-        Alert.alert('Error', 'Failed to load next chapter.');
-    console.log('Selecting chapter at index:', index);
-        setIsLoading(false);
-      }
+      await loadChapter(currentChapterIndex + 1, chapters[currentChapterIndex + 1].contentSrc);
     } else {
       Alert.alert('Info', 'This is the last chapter.');
     }
   };
 
-      console.log('Loading chapter from:', chapterFilePath);
-
-      setIsLoading(true);
-      console.log('Chapter content loaded, length:', chapterContent.length);
-        const prevIndex = currentChapterIndex - 1;
-        setCurrentChapterIndex(prevIndex);
-      console.log('Chapter parsed successfully');
-        // Read from the saved chapter file
-        const chapter = chapters[prevIndex];
-        const chapterFilePath = `${bookDirectory}${chapter.contentSrc}`;
-        const chapterContent = await FileSystem.readAsStringAsync(chapterFilePath);
-
-        const parsedChapter = JSON.parse(chapterContent);
-
-        setCurrentChapterContent(parsedChapter);
-      } catch (error) {
-        console.error('Error loading previous chapter:', error);
-        Alert.alert('Error', 'Failed to load previous chapter.');
-      } finally {
-        setIsLoading(false);
-      }
+  const handlePrevChapter = async () => {
+    if (currentChapterIndex > 0) {
+      await loadChapter(currentChapterIndex - 1, chapters[currentChapterIndex - 1].contentSrc);
     } else {
       Alert.alert('Info', 'This is the first chapter.');
     }
@@ -235,29 +115,63 @@ function Reader() {
   const handleWordPress = (word) => {
     console.log('Word pressed:', word);
     // Handle the word interaction here
-    // For example, you could display a modal with the word's definition
+    // For example, display a modal with the word's definition
   };
 
+  const formatBookTitle = (dirName) => {
+    // Replace underscores and remove invalid characters for display
+    return dirName.replace(/_/g, ' ').replace(/[^a-zA-Z0-9 _-]/g, '');
+  };
+
+  const promptSelectBook = () => {
+    Alert.alert(
+      'No Book Selected',
+      'Please select a book from the Library to read.',
+      [
+        {
+          text: 'Go to Library',
+          onPress: () => navigation.navigate('Home', { screen: 'Library' }),
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (!bookDirName) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.infoText}>Select a book to read from the Library.</Text>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home', { screen: 'Library' })}>
+          <Text style={styles.buttonText}>Go to Library</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
-    <View style={{ flex: 1, backgroundColor: "pink", justifyContent: "center", alignItems: "center" }}>
-      {!zip && !isLoading && (
-        <Button title="Pick an EPUB file" onPress={pickDocument} />
-      )}
-      {isLoading && (
-        <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />
-      )}
-      {zip && showToc && (
-        <TableOfContents
-          chapters={chapters}
-          onSelectChapter={(index) => handleSelectChapter(index)}
-        />
-      )}
-      {zip && !showToc && (
+    <View style={styles.container}>
+      {showToc ? (
+        <TableOfContents chapters={chapters} onSelectChapter={handleSelectChapter} />
+      ) : (
         <ChapterContent
           chapterContent={currentChapterContent}
           onWordPress={handleWordPress}
           onNextChapter={handleNextChapter}
           onPrevChapter={handlePrevChapter}
+          setShowToc={setShowToc}
+          bookTitle={bookTitle}
           onShowToc={() => setShowToc(true)}
         />
       )}
@@ -265,15 +179,32 @@ function Reader() {
   );
 }
 
-export default Reader;  onShowToc={() => setShowToc(true)}
-                <Button title="Pick an EPUB file" onPress={pickDocument} />red    console.log('Word pressed:', word);
- ,,, backgroundColor: "red"     console.log('Word pressed:', word);
-pink, justifyContent: "center", alignItems: "center"  onShowToc={() => setShowToc(true)}
-                <>
-          <Button title="Pick an EPUB file" onPress={pickDocument} />
-          {savedBooks.length > 0 && (
-            <View style={{ marginTop: 20 }}>
-              <Button title="Load Saved Book" onPress={() => {/* TODO: Implement book selection */}} />
-            </View>
-          )}
-        </>
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  infoText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#555555',
+    fontSize: 16,
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: '#4e8cff',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+  },
+});
+
+export default Reader;

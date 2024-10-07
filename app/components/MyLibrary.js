@@ -3,55 +3,78 @@ import React from "react";
 import BookCoverThumb from "./BookCoverThumb";
 import layout from "../config/layout";
 import WidgetHeader from "./WidgetHeader";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { useThemeColors } from "../config/colors";
 
-export default function MyLibrary({ books, onBookPress, onPress }) {
+export default function MyLibrary({ books, onBookPress, onPressLibrary }) {
   const colors = useThemeColors();
+
   return (
-    <View
+    <TouchableOpacity
+      onPress={onPressLibrary}
+      activeOpacity={0.8}
       style={[
-        styles.container,
+        styles.pressableContainer,
         { backgroundColor: colors.mainComponentBackground },
       ]}
     >
-      <WidgetHeader text="Library" />
-      <ScrollView horizontal style={styles.booksContainer}>
-        <View style={styles.hiddenStrip}></View>
-        {books.map((book, index) => (
-          <TouchableOpacity
-            key={index}
-            activeOpacity={0.8}
-            onPress={() => onBookPress(book.name)}
-          >
-            <BookCoverThumb
-              title={book.title}
-              subtitle={book.subtitle}
-              color={book.color}
-              status={book.status}
-            />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+      <View style={styles.container}>
+        <WidgetHeader text="Library" />
+        <ScrollView 
+          horizontal 
+          style={styles.booksContainer} 
+          showsHorizontalScrollIndicator={false}
+        >
+          <View style={styles.hiddenStrip}></View>
+          {books.map((book) => (
+            <TouchableOpacity
+              key={book.id || book.name} // Prefer using a unique ID if available
+              activeOpacity={0.8}
+              onPress={() => onBookPress(book)} // Pass the entire book object
+              accessibilityLabel={`Book titled ${book.title}`}
+              accessibilityHint="Tap to open the book for reading"
+              style={[
+                styles.bookItem,
+                { borderColor: book.color || "green" }, // Apply book-specific border color
+              ]}
+            >
+              <BookCoverThumb
+                title={book.title || "Untitled"}
+                subtitle={book.subtitle || "No Subtitle"}
+                color={book.color || "green"}
+                status={book.status || 0}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  hiddenStrip: {
-    width: layout.components.hiddenStrip.width,
-  },
-  booksContainer: {},
-  container: {
-    paddingBottom: 35,
-    flex: 1,
-    marginHorizontal: layout.margins.homeScreenWidgets / 2,
+  pressableContainer: {
+    padding: 10, // Adjust as needed
     borderRadius: layout.borderRadius.homeScreenWidgetsSandwich,
-
     shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
     shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,
     shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
     shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
     elevation: layout.shadows.homeScreenWidgets.elevation,
+  },
+  container: {
+    flex: 1,
+  },
+  hiddenStrip: {
+    width: layout.components.hiddenStrip.width,
+  },
+  booksContainer: {
+    marginTop: 10, // Adjust as needed
+    paddingLeft: layout.components.hiddenStrip.width, // Ensure alignment with hiddenStrip
+  },
+  bookItem: {
+    marginRight: 10, // Space between books
+    borderWidth: 2, // Visible border to showcase the book's color
+    borderRadius: 8, // Rounded corners for each book item
+    overflow: "hidden", // Ensure child components don't overflow the border
   },
 });
