@@ -67,16 +67,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   hiddenStrip: {
-    width: layout.components.hiddenStrip.width,
   },
   booksContainer: {
     marginTop: 10, // Adjust as needed
-    paddingLeft: layout.components.hiddenStrip.width, // Ensure alignment with hiddenStrip
+    paddingLeft: layout.components.hiddenStrip.width, 
   },
   bookItem: {
-    marginRight: 10, // Space between books
-    // borderWidth: 2, // Remove this line
-    borderRadius: 8, // Rounded corners for each book item
-    overflow: "hidden", // Ensure child components don't overflow the border
+    borderRadius: 8, 
+    overflow: "hidden", 
   },
 });

@@ -25,32 +25,28 @@ export default function BookCoverThumb({ title, subtitle, color, status }) {
 
   // Adjust status
   const statusRounded = status > 90 ? 100 : status;
-  const statusPercent = `${statusRounded}%`;
 
   // Shorten titles if necessary
   const maxTitleChars = 30;
-  const maxSubtitleChars = 50;
   const shortenedTitle = shortenText(title, maxTitleChars);
-  const shortenedSubtitle = shortenText(subtitle, maxSubtitleChars);
 
   // Set text color to always be dark
   const textColor = "#000000";
 
   return (
     <View style={styles.bookContainer}>
-      <View style={styles.strip}></View>
+      {/* Remove or comment out the strip View if not needed */}
+      {/* <View style={styles.strip}></View> */}
       <View style={[{ backgroundColor: color }, styles.book]}>
         <View style={styles.statusSection}>
           <View
             style={[
-              { width: statusPercent, backgroundColor: colors.black, opacity: 0.4 },
               styles.status,
             ]}
           ></View>
         </View>
       </View>
       <Text style={[styles.title, { color: textColor }]}>{shortenedTitle}</Text>
-      <Text style={[styles.subtitle, { color: textColor }]}>{shortenedSubtitle}</Text>
     </View>
   );
 }
@@ -80,7 +76,6 @@ const styles = StyleSheet.create({
   statusSection: {
     backgroundColor: "white",
     opacity: 0.3,
-    borderTopColor: "white",
   },
   status: {
     height: 25,

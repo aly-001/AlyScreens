@@ -11,7 +11,7 @@ import {
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { useNavigation } from '@react-navigation/native';
-import colors from "../config/colors";
+import colors, { useThemeColors } from "../config/colors";
 import BookCoverThumb from "../components/BookCoverThumb";
 import Screen from "../components/Screen";
 import ScreenHeader from "../components/ScreenHeader";
@@ -24,14 +24,17 @@ import {
   extractBookTitle,
   processHtmlContent,
 } from "./epubHandler";
+import { hexToHSL, generateUniqueSoftColor } from "./BookUtils";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
 
 function NativeLibrary() {
   const [isLoading, setIsLoading] = useState(false);
   const [books, setBooks] = useState([]);
   const navigation = useNavigation();
   const bookDirectory = `${FileSystem.documentDirectory}bookjs/`;
+  const colors = useThemeColors(); // Use the hook to get theme colors
 
   useEffect(() => {
     loadBooks();
@@ -167,12 +170,26 @@ function NativeLibrary() {
       await FileSystem.makeDirectoryAsync(bookDir, { intermediates: true });
       console.log('Book directory created successfully');
 
-      const randomColor = generateRandomColor();
-      console.log('Generated random color for the book:', randomColor);
+      // Extract existing colors from the current books
+      const existingColors = books.map(book => book.color);
+      console.log('Existing colors:', existingColors);
+
+      // Create a set of used hues based on existing colors
+      const usedHues = new Set();
+      existingColors.forEach(hex => {
+        const hsl = hexToHSL(hex);
+        if (hsl) {
+          usedHues.add(Math.round(hsl.h));
+        }
+      });
+
+      // Generate a unique soft color
+      const randomColor = generateUniqueSoftColor(existingColors, usedHues);
+      console.log('Generated unique soft color for the book:', randomColor);
 
       const bookInfo = {
         title: bookTitle,
-        color: randomColor,
+        color: randomColor, // This color is now unique and soft
       };
 
       console.log('Saving book info...');
@@ -298,13 +315,13 @@ function NativeLibrary() {
   };
 
   return (
-    <View style={styles.superContainer}>
+    <View style={[styles.superContainer, { backgroundColor: colors.homeScreenBackground }]}>
       <Screen>
         <View style={styles.contentContainer}>
 
-          <View style={styles.booksContainerWrapper}>
+          <View style={[styles.booksContainerWrapper]}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
-              <View style={styles.booksContainer}>
+              <View style={[styles.booksContainer]}>
                 {books.map((book) => (
                   <TouchableOpacity
                     key={book.id}
@@ -343,10 +360,10 @@ function NativeLibrary() {
 const styles = StyleSheet.create({
   superContainer: {
     flex: 1,
-    backgroundColor: colors.homeScreenBackground,
   },
   contentContainer: {
     flex: 1,
+    marginTop: 50,
   },
   headerContainer: {
     marginBottom: 10,
@@ -386,14 +403,5 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 });
-
-const generateRandomColor = () => {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
 
 export default NativeLibrary;

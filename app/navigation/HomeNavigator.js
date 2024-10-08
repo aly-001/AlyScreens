@@ -4,6 +4,7 @@ import HomeScreenTemp from '../screens/home/HomeScreenTemp';
 import NativeLibrary from '../nativeReader/NativeLibrary';
 import SettingsNavigator from './SettingsNavigator';
 import DictionaryScreen from '../screens/home/DictionaryScreen';
+import DonateScreen from '../screens/home/DonateScreen';
 const Stack = createStackNavigator();
 
 const HomeNavigator = () => {
@@ -34,6 +35,15 @@ const HomeNavigator = () => {
         options={{ 
           title: 'Settings', 
           headerShown: true, // Show header for Settings
+          headerBackTitle: 'Home' // Customize back button title
+        }}
+      />
+      <Stack.Screen
+        name="Donate"
+        component={DonateScreen}
+        options={{ 
+          title: 'Donate', 
+          headerShown: true, // Show header for Donate
           headerBackTitle: 'Home' // Customize back button title
         }}
       />

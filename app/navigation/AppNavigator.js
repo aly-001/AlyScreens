@@ -5,6 +5,7 @@ import Reader from '../nativeReader/reader';
 import PracticeNavigator from './PracticeNavigator';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Optional: For tab icons
 import SettingsNavigator from './SettingsNavigator';
+import DonateScreen from '../screens/home/DonateScreen';
 
 const Tab = createBottomTabNavigator();
 

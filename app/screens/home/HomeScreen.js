@@ -40,16 +40,12 @@ export default function HomeScreen() {
 
   const initializeDatabase = async () => {
     try {
-      const database = SQLite.openDatabase("flashcards.db");
+      const database = await SQLite.openDatabaseAsync("flashcards.db");
 
-      database.transaction(tx => {
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);`
-        );
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);`
-        );
-      });
+      await database.execAsync(`
+        CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
+        CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
+      `);
 
       const dolphinSRInstance = new DolphinSR();
       setDolphinSR(dolphinSRInstance);
@@ -61,25 +57,8 @@ export default function HomeScreen() {
 
   const loadDeck = async (database, dolphinSRInstance) => {
     try {
-      const mastersResult = await new Promise((resolve, reject) => {
-        database.transaction(tx => {
-          tx.executeSql("SELECT * FROM masters", [], (_, { rows }) => {
-            resolve(rows._array);
-          }, (_, error) => {
-            reject(error);
-          });
-        });
-      });
-
-      const reviewsResult = await new Promise((resolve, reject) => {
-        database.transaction(tx => {
-          tx.executeSql("SELECT * FROM reviews", [], (_, { rows }) => {
-            resolve(rows._array);
-          }, (_, error) => {
-            reject(error);
-          });
-        });
-      });
+      const mastersResult = await database.getAllAsync("SELECT * FROM masters");
+      const reviewsResult = await database.getAllAsync("SELECT * FROM reviews");
 
       const loadedMasters = mastersResult.map((row) => ({
         ...JSON.parse(row.data),

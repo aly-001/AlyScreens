@@ -40,16 +40,12 @@ export default function HomeScreenTemp() {
 
   const initializeDatabase = async () => {
     try {
-      const database = SQLite.openDatabase("flashcards.db");
+      const database = await SQLite.openDatabaseAsync("flashcards.db");
 
-      database.transaction(tx => {
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);`
-        );
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);`
-        );
-      });
+      await database.execAsync(`
+        CREATE TABLE IF NOT EXISTS masters (id TEXT PRIMARY KEY, data TEXT);
+        CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, data TEXT);
+      `);
 
       const dolphinSRInstance = new DolphinSR();
       setDolphinSR(dolphinSRInstance);
@@ -61,25 +57,8 @@ export default function HomeScreenTemp() {
 
   const loadDeck = async (database, dolphinSRInstance) => {
     try {
-      const mastersResult = await new Promise((resolve, reject) => {
-        database.transaction(tx => {
-          tx.executeSql("SELECT * FROM masters", [], (_, { rows }) => {
-            resolve(rows._array);
-          }, (_, error) => {
-            reject(error);
-          });
-        });
-      });
-
-      const reviewsResult = await new Promise((resolve, reject) => {
-        database.transaction(tx => {
-          tx.executeSql("SELECT * FROM reviews", [], (_, { rows }) => {
-            resolve(rows._array);
-          }, (_, error) => {
-            reject(error);
-          });
-        });
-      });
+      const mastersResult = await database.getAllAsync("SELECT * FROM masters");
+      const reviewsResult = await database.getAllAsync("SELECT * FROM reviews");
 
       const loadedMasters = mastersResult.map((row) => ({
         ...JSON.parse(row.data),
@@ -216,7 +195,7 @@ export default function HomeScreenTemp() {
           activeOpacity={0.7}
           onPress={() => navigation.navigate("Library")}
         >
-          <View style={styles.libraryContainer}>
+          <View style={[styles.libraryContainer]}>
             <MyLibrary books={books} onBookPress={handleBookPress} onBookLongPress={handleBookLongPress} />
           </View>
         </TouchableOpacity>
@@ -242,17 +221,17 @@ export default function HomeScreenTemp() {
               borderBottomStartRadius:
                 layout.borderRadius.homeScreenWidgetsSandwich,
             }}
-            header="Settings"
+            header="Donate"
             IconComponent={(props) => (
               <FontAwesome6
-                name="gear"
+                name="hand-holding-heart"
                 size={layout.icons.homeScreenBottomWidget}
                 color={colors.homeScreenIcon}
                 style={styles.icon}
                 {...props}
               />
             )}
-            onPress={() => navigation.navigate("Settings")} // Added onPress handler
+            onPress={() => navigation.navigate("Donate")} // Added onPress handler
           />
         </View>
       </Animated.ScrollView>
