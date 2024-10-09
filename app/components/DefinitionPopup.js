@@ -41,6 +41,7 @@ const DefinitionPopup = ({
   moduleBLoading,
   currentModuleB,
 }) => {
+  console.log("location", location);
   const [addText, setAddText] = useState("");
   const [direction, setDirection] = useState("D");
   const [locationTop, setLocationTop] = useState(0);
@@ -53,17 +54,25 @@ const DefinitionPopup = ({
   const widthRatio = layout.translationPopup.widthRatio;
 
   useEffect(() => {
+    console.log("DefinitionPopup: visible changed to", visible);
     if (visible) {
       setAddText("");
     }
   }, [visible]);
 
   useEffect(() => {
-    const maxHeightMiddle = layout.translationPopup.maxHeightMiddle;
-    const maxHeightTop = layout.translationPopup.maxHeightTop;
+    console.log("DefinitionPopup: location changed to", location);
     if (location) {
       const { top, left } = calculatePosition(location);
+      if (isNaN(top) || isNaN(left)) {
+        console.error(
+          "calculatePosition returned NaN values. Ensure location has valid 'top', 'left', 'height', and 'width'."
+        );
+        return;
+      }
+      console.log("DefinitionPopup: Calculated position - top:", top, "left:", left);
       const newDirection = calculateDirection(top, left);
+      console.log("DefinitionPopup: New direction:", newDirection);
       updateDirection(newDirection);
       setLocationTop(top);
       setLocationLeft(left);
@@ -71,23 +80,39 @@ const DefinitionPopup = ({
       // Determine the maxHeight based on the location
       const screenThird = height / 3;
       if (top > screenThird && top < 2 * screenThird) {
-        setMaxHeight(maxHeightMiddle);
+        setMaxHeight(layout.translationPopup.maxHeightMiddle);
+        console.log("DefinitionPopup: maxHeight set to maxHeightMiddle:", layout.translationPopup.maxHeightMiddle);
       } else {
-        setMaxHeight(maxHeightTop);
+        setMaxHeight(layout.translationPopup.maxHeightTop);
+        console.log("DefinitionPopup: maxHeight set to maxHeightTop:", layout.translationPopup.maxHeightTop);
       }
     }
   }, [location]);
 
   useEffect(() => {
+    console.log("DefinitionPopup: finished or visible changed - finished:", finished, "visible:", visible);
     if (finished && visible) {
       animateAddText();
     }
   }, [finished, visible]);
 
-  const calculatePosition = (loc) => ({
-    top: loc.top + loc.height * 2 + 5,
-    left: loc.left + loc.width / 2 + 15,
-  });
+  const calculatePosition = (loc) => {
+    const locHeight = loc.height;
+    const locWidth = loc.width;
+
+    if (typeof locHeight !== "number" || typeof locWidth !== "number") {
+      // Provide default values or handle the error as needed
+      return {
+        top: loc.top || 0,
+        left: loc.left || 0,
+      };
+    }
+
+    return {
+      top: loc.top + locHeight * 2 + 5,
+      left: loc.left + locWidth / 2 + 15,
+    };
+  };
 
   const calculateDirection = (top, left) => {
     if (top < 450) {
@@ -100,9 +125,9 @@ const DefinitionPopup = ({
   const updateDirection = (newDirection) => {
     setDirection((prevDirection) => {
       if (prevDirection !== newDirection) {
-        // console.log("New Direction:", newDirection);
-        // console.log("Position:", { top: location.top, left: location.left });
-        // console.log("Screen:", { width, height });
+        console.log("New Direction:", newDirection);
+        console.log("Position:", { top: locationTop, left: locationLeft });
+        console.log("Screen:", { width, height });
       }
       return newDirection;
     });
@@ -113,42 +138,102 @@ const DefinitionPopup = ({
     const words = text.split(" ");
     let index = 0;
 
+    console.log("[animateAddText] Starting text animation.");
+
     const interval = setInterval(() => {
-      setAddText((prev) => (prev ? `${prev} ${words[index]}` : words[index]));
+      setAddText((prev) => {
+        const newText = prev ? `${prev} ${words[index]}` : words[index];
+        console.log(`[animateAddText] Adding word "${words[index]}" -> "${newText}"`);
+        return newText;
+      });
       index += 1;
       if (index === words.length) {
+        console.log("[animateAddText] Animation complete.");
         clearInterval(interval);
       }
     }, 50);
 
-    return () => clearInterval(interval);
+    return () => {
+      console.log("[animateAddText] Cleaning up interval.");
+      clearInterval(interval);
+    };
   };
 
   const calculateModalLeft = () => {
+    if (widthRatio == null) {
+      console.error("[calculateModalLeft] widthRatio is null or undefined!");
+      return 0; // Fallback value
+    }
+
+    if (locationLeft == null) {
+      console.error("[calculateModalLeft] locationLeft is null or undefined!");
+      return 0; // Fallback value
+    }
+
     const modalWidth = width * widthRatio;
+    console.log("[calculateModalLeft] modalWidth:", modalWidth);
+
     let x = locationLeft - modalWidth / 2;
+    console.log("[calculateModalLeft] Initial x:", x);
+
     const padding = 20;
 
     if (x < 0) {
       x = 0 + padding;
+      console.log("[calculateModalLeft] x adjusted for left padding:", x);
     } else if (x + modalWidth > width) {
       x = width - modalWidth - padding;
+      console.log("[calculateModalLeft] x adjusted for right padding:", x);
+    } else {
+      console.log("[calculateModalLeft] x within bounds:", x);
+    }
+
+    if (isNaN(x)) {
+      console.error("[calculateModalLeft] Computed x is NaN!");
+    } else {
+      console.log("[calculateModalLeft] Final x:", x);
     }
 
     return x;
   };
 
   const calculatePointerLeft = () => {
+    if (widthRatio == null) {
+      console.error("[calculatePointerLeft] widthRatio is null or undefined!");
+      return 0; // Fallback value
+    }
+
+    if (locationLeft == null) {
+      console.error("[calculatePointerLeft] locationLeft is null or undefined!");
+      return 0; // Fallback value
+    }
+
     const modalWidth = width * widthRatio;
+    console.log("[calculatePointerLeft] modalWidth:", modalWidth);
+
     let x = locationLeft - modalWidth / 2;
+    console.log("[calculatePointerLeft] Initial x:", x);
+
     let z = modalWidth / 2;
+    console.log("[calculatePointerLeft] Initial z:", z);
+
     const padding = 20;
 
     if (x < 0) {
       // pushed right
       z = locationLeft - padding;
+      console.log("[calculatePointerLeft] z adjusted for left padding:", z);
     } else if (x + modalWidth > width) {
       z = modalWidth + locationLeft - width + padding;
+      console.log("[calculatePointerLeft] z adjusted for right padding:", z);
+    } else {
+      console.log("[calculatePointerLeft] z within bounds:", z);
+    }
+
+    if (isNaN(z)) {
+      console.error("[calculatePointerLeft] Computed z is NaN!");
+    } else {
+      console.log("[calculatePointerLeft] Final z:", z);
     }
 
     return z;
@@ -190,13 +275,29 @@ const DefinitionPopup = ({
                 <View
                   style={[
                     styles.modalViewContainer,
-                    {
-                      backgroundColor: colors.translationPopup.background,
-                      width: width * widthRatio,
-                      position: "absolute",
-                      left: calculateModalLeft(),
-                      maxHeight: maxHeight, // Apply the dynamic maxHeight here
-                    },
+                    (() => {
+                      const computedLeft = calculateModalLeft();
+                      console.log("[DefinitionPopup] Applying left:", computedLeft);
+
+                      if (isNaN(computedLeft)) {
+                        console.error("[DefinitionPopup] left is NaN! Setting to 0 as fallback.");
+                        return {
+                          backgroundColor: colors.translationPopup.background,
+                          width: width * widthRatio,
+                          position: "absolute",
+                          left: 0, // Fallback value
+                          maxHeight: maxHeight,
+                        };
+                      }
+
+                      return {
+                        backgroundColor: colors.translationPopup.background,
+                        width: width * widthRatio,
+                        position: "absolute",
+                        left: computedLeft,
+                        maxHeight: maxHeight,
+                      };
+                    })(),
                   ]}
                 >
                   <ScrollView
@@ -252,7 +353,17 @@ const DefinitionPopup = ({
                       direction === "U"
                         ? styles.pointerBottom
                         : styles.pointerTop,
-                      { left: calculatePointerLeft() - 6 },
+                      (() => {
+                        const pointerLeft = calculatePointerLeft() - 6;
+                        console.log("[DefinitionPopup] Applying pointer left:", pointerLeft);
+
+                        if (isNaN(pointerLeft)) {
+                          console.error("[DefinitionPopup] pointerLeft is NaN! Setting to 0 as fallback.");
+                          return { left: 0 };
+                        }
+
+                        return { left: pointerLeft };
+                      })(),
                     ]}
                   >
                     <Pointer direction={direction} />
@@ -511,13 +622,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.main,
     fontWeight: "500",
   },
-  // ****************************
   content: {
     padding: 10,
     marginHorizontal: 15,
     borderRadius: 10,
   },
-  // ****************************
   definitionText: {
     fontFamily: fonts.main,
     fontWeight: "400",

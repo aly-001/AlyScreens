@@ -62,17 +62,23 @@ const MainApp = () => {
   );
 };
 
+// export default function App() {
+//   return (
+//     <APIKeyProvider>
+//       <TabBarVisibilityProvider>
+//         <SettingsProvider>
+//           <FlashcardProvider>
+//             <StatusBar hidden={true} />
+//             <MainApp />
+//           </FlashcardProvider>
+//         </SettingsProvider>
+//       </TabBarVisibilityProvider>
+//     </APIKeyProvider>
+//   );
+// }
+
+import Pager from "./app/components/Pager";
+
 export default function App() {
-  return (
-    <APIKeyProvider>
-      <TabBarVisibilityProvider>
-        <SettingsProvider>
-          <FlashcardProvider>
-            <StatusBar hidden={true} />
-            <MainApp />
-          </FlashcardProvider>
-        </SettingsProvider>
-      </TabBarVisibilityProvider>
-    </APIKeyProvider>
-  );
+  return <Pager />;
 }
