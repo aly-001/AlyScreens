@@ -55,7 +55,6 @@ export default function MyLibrary({ books, onBookPress, onPressLibrary }) {
 
 const styles = StyleSheet.create({
   pressableContainer: {
-    padding: 10, // Adjust as needed
     borderRadius: layout.borderRadius.homeScreenWidgetsSandwich,
     shadowColor: layout.shadows.homeScreenWidgets.shadowColor,
     shadowOffset: layout.shadows.homeScreenWidgets.shadowOffset,

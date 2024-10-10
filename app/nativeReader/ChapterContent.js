@@ -243,7 +243,7 @@ function ChapterContent({
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView 
         ref={scrollViewRef}
-        style={{ flex: 1, padding: 16 }}
+        style={{ flex: 1, padding: 16, paddingTop: 100}}
         onScroll={(event) => {
           handleScroll(event);
           const yOffset = event.nativeEvent.contentOffset.y;
@@ -257,6 +257,7 @@ function ChapterContent({
         onContentSizeChange={handleContentSizeChange}
       >
         {renderedContent}
+        <View style={{ height: 400 }} />
       </ScrollView>
 
       {/* **Navigation Controls** */}

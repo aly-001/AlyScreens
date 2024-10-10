@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
+import colors from "../config/colors";
 
 export default function Pointer({ direction }) {
   return (
@@ -23,12 +24,12 @@ const styles = StyleSheet.create({
     borderRightColor: 'transparent',
   },
   triangleUp: {
-    borderBottomColor: 'rgba(200, 200, 200, 1)',
+    borderBottomColor: colors.translationPopup.background,
     bottom: 6,
   },
   triangleDown: {
     transform: [{ rotate: '180deg' }],
-    borderBottomColor: 'rgba(200, 200, 200, 1)',
+    borderBottomColor: colors.translationPopup.background,
     top: 6,
   },
 });

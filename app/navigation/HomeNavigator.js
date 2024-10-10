@@ -30,15 +30,6 @@ const HomeNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="Settings"
-        component={SettingsNavigator}
-        options={{ 
-          title: 'Settings', 
-          headerShown: true, // Show header for Settings
-          headerBackTitle: 'Home' // Customize back button title
-        }}
-      />
-      <Stack.Screen
         name="Donate"
         component={DonateScreen}
         options={{ 

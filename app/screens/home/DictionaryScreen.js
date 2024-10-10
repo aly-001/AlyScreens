@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingVertical: 30,
     flexGrow: 1,
+    paddingTop: 70,
   },
   headerContainer: {
     marginBottom: 10,
@@ -163,7 +164,8 @@ const styles = StyleSheet.create({
     marginBottom: layout.margins.dictionaryScreen.widgetsVertical,
     paddingHorizontal: 30,
     paddingTop: 30,
-    borderRadius: layout.borderRadius.dictionaryScreenWidgets,
+    borderRadius: 57,
+    height: 300,
   },
   sectionTitle: {
     fontSize: layout.fontSize.dictionary.sectionTitle,
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     color: "purple",
   },
   scrollView: {
-    maxHeight: layout.margins.dictionaryScreen.maxScrollViewHeight,
+    maxHeight: 200,
     borderRadius: 10,
   },
   wordsContainer: {
