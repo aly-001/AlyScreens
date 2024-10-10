@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View, PixelRatio, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Importing Ionicons for icons
 import { useThemeColors } from "../config/colors";
+import { vexo, customEvent } from "vexo-analytics";
+vexo("0295f771-1900-4c74-8126-407feeb91d05");
 
 function ChapterContent({ 
   chapterContent, 
@@ -180,6 +182,9 @@ function ChapterContent({
       outerContext,
       location
     });
+
+    // Trigger custom Vexo event
+    customEvent('word-click', { word });
   };
 
   // Map HTML tags to native components
