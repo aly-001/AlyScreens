@@ -1,0 +1,1737 @@
+[
+  {
+    "type": {},
+    "key": "-0",
+    "ref": null,
+    "props": {
+      "children": [
+        {
+          "type": {},
+          "key": "-0-0",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-0-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "This"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "is"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "a"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "6",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "work"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "8",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "of"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "10",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "fiction."
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "12",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Names,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "14",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "characters,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "16",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "organizations,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "18",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "places,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "20",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "events,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "22",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "and"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "24",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "incidents"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "26",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "are"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "28",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "either"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "30",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "products"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "32",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "of"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "34",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "the"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "36",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "author’s"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "38",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "imagination"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "40",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "42",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "are"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "44",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "used"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "46",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "fictitiously."
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "48",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Any"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "50",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "resemblance"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "52",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "to"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "54",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "actual"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "56",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "persons,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "58",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "living"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "60",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "62",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "dead,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "64",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "66",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "actual"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "68",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "events"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "70",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "is"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "72",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "purely"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "74",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "coincidental."
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-1",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-1-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "All"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "rights"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "reserved."
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-2",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-2-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "No"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "part"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "of"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "6",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "this"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "8",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "work"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "10",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "may"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "12",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "be"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "14",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "reproduced,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "16",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "18",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "stored"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "20",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "in"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "22",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "a"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "24",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "retrieval"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "26",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "system,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "28",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "30",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "transmitted"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "32",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "in"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "34",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "any"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "36",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "form"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "38",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "40",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "by"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "42",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "any"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "44",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "means,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "46",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "electronic,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "48",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "mechanical,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "50",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "photocopying,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "52",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "recording,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "54",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "56",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "otherwise,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "58",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "without"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "60",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "express"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "62",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "written"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "64",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "permission"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "66",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "of"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "68",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "the"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "70",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "publisher."
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-3",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-3-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Published"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "by"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "AmazonClassics,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "6",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Seattle"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-4",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-4-0",
+                "ref": null,
+                "props": {
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "-0-4-0-0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "flexWrap": "wrap" },
+                        "children": [
+                          {
+                            "type": {},
+                            "key": "0",
+                            "ref": null,
+                            "props": {
+                              "style": { "color": "black", "fontSize": 20 },
+                              "children": "www.apub.com"
+                            },
+                            "_owner": null,
+                            "_store": {}
+                          }
+                        ]
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-5",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-5-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Amazon,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "the"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Amazon"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "6",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "logo,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "8",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "and"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "10",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "AmazonClassics"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "12",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "are"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "14",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "trademarks"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "16",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "of"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": "-0-5-1",
+                "ref": null,
+                "props": {
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "-0-5-1-0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "flexWrap": "wrap" },
+                        "children": [
+                          {
+                            "type": {},
+                            "key": "0",
+                            "ref": null,
+                            "props": {
+                              "style": { "color": "black", "fontSize": 20 },
+                              "children": "Amazon.com"
+                            },
+                            "_owner": null,
+                            "_store": {}
+                          }
+                        ]
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              },
+              {
+                "type": {},
+                "key": "-0-5-2",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": ","
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Inc.,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "or"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "6",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "its"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "8",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "affiliates."
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-6",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-6-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "ISBN-13:"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "9781542026741"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "(hardcover)"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-7",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-7-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "ISBN-10:"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "1542026741"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "(hardcover)"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-8",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-8-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "ISBN-13:"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "9781542026734"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "(paperback)"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-9",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-9-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "ISBN-10:"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "1542026733"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "(paperback)"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-10",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-10-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "eISBN:"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "9781542026727"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        },
+        {
+          "type": {},
+          "key": "-0-11",
+          "ref": null,
+          "props": {
+            "children": [
+              {
+                "type": {},
+                "key": "-0-11-0",
+                "ref": null,
+                "props": {
+                  "style": { "color": "black", "flexWrap": "wrap" },
+                  "children": [
+                    {
+                      "type": {},
+                      "key": "0",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Series"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "2",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "design"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "4",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "by"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "6",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Jeff"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "8",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Miller,"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "10",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Faceout"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    },
+                    " ",
+                    {
+                      "type": {},
+                      "key": "12",
+                      "ref": null,
+                      "props": {
+                        "style": { "color": "black", "fontSize": 20 },
+                        "children": "Studio"
+                      },
+                      "_owner": null,
+                      "_store": {}
+                    }
+                  ]
+                },
+                "_owner": null,
+                "_store": {}
+              }
+            ]
+          },
+          "_owner": null,
+          "_store": {}
+        }
+      ]
+    },
+    "_owner": null,
+    "_store": {}
+  }
+]

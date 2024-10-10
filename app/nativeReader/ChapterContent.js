@@ -1,12 +1,24 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, PixelRatio } from 'react-native';
 
-function ChapterContent({ chapterContent, onWordPress, onNextChapter, onPrevChapter, onShowToc }) {
+function ChapterContent({ 
+  chapterContent, 
+  onWordPress, 
+  onNextChapter, 
+  onPrevChapter, 
+  onShowToc, 
+  startLocation, 
+  onLocationChange 
+}) {
   const wordsRef = useRef([]); // Reference to store all words with unique IDs
+  const scrollViewRef = useRef(null); // ScrollView ref
   const [wordsList, setWordsList] = useState([]); // State to hold the flat list of words with unique IDs
   const [renderedContent, setRenderedContent] = useState(null); // State to hold the rendered JSX content
 
-  // Preprocess chapterContent to extract all words into wordsList with unique IDs
+  // **Ref to Track Initial Scroll**
+  const hasScrolledInitial = useRef(false); // Ensures initial scroll happens only once
+
+  // Preprocess `chapterContent` to extract all words into `wordsList` with unique IDs
   useEffect(() => {
     const extractWords = (nodes) => {
       let words = [];
@@ -39,6 +51,29 @@ function ChapterContent({ chapterContent, onWordPress, onNextChapter, onPrevChap
     setRenderedContent(content);
   }, [chapterContent, wordsList]);
 
+  // **Scroll Handling: Perform Initial Scroll Once Content Size is Ready**
+  const handleContentSizeChange = (width, height) => {
+    console.log("Content size changed:", { width, height });
+    if (!hasScrolledInitial.current && scrollViewRef.current && startLocation !== undefined) {
+      // Use requestAnimationFrame to ensure layout is complete
+      requestAnimationFrame(() => {
+        if (scrollViewRef.current) {
+          console.log("Attempting to scroll to startLocation:", startLocation);
+          scrollViewRef.current.scrollTo({ y: startLocation, animated: false });
+          hasScrolledInitial.current = true; // Ensure scroll happens only once
+          console.log("Scroll to startLocation executed.");
+        }
+      });
+    }
+  };
+
+  // **Calculate Scroll Threshold Based on Physical Inches**
+  const inches = 2; // Number of inches for throttling
+  const dpi = PixelRatio.get(); // Get device pixel density
+  const scrollThreshold = inches * dpi; // Convert inches to pixels
+
+  const lastScrollY = useRef(0); // Ref to store the last scroll position
+
   // Recursive function to render content
   const renderContent = (nodes, keyPrefix = '', wordCounter = { current: 0 }) => {
     return nodes.map((node, index) => {
@@ -56,12 +91,11 @@ function ChapterContent({ chapterContent, onWordPress, onNextChapter, onPrevChap
 
               const currentWord = wordsRef.current[wordCounter.current];
               wordCounter.current += 1;
-              console.log("wordCounter", currentWord);
 
               return (
                 <Text
                   key={wIndex}
-                  style={{ color: 'black', fontSize: 20 }}
+                  style={{ color: 'black', fontSize: 20, fontFamily: 'Lora', fontWeight: 'bold' }}
                   onPress={(event) => handleWordPress(currentWord.text, currentWord.id, event)}
                 >
                   {word}
@@ -170,7 +204,20 @@ function ChapterContent({ chapterContent, onWordPress, onNextChapter, onPrevChap
 
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView style={{ flex: 1, padding: 16 }}>
+      <ScrollView 
+        ref={scrollViewRef}
+        style={{ flex: 1, padding: 16 }}
+        onScroll={(event) => {
+          const yOffset = event.nativeEvent.contentOffset.y;
+          if (Math.abs(yOffset - lastScrollY.current) > scrollThreshold) {
+            onLocationChange(yOffset);
+            lastScrollY.current = yOffset; // Update the last scroll position
+            console.log("onLocationChange triggered with yOffset:", yOffset);
+          }
+        }}
+        scrollEventThrottle={1000} // Adjust the throttle for performance
+        onContentSizeChange={handleContentSizeChange}
+      >
         {renderedContent}
       </ScrollView>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

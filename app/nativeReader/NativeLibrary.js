@@ -190,6 +190,8 @@ function NativeLibrary() {
       const bookInfo = {
         title: bookTitle,
         color: randomColor, // This color is now unique and soft
+        lastChapterLocation: 0,
+        lastScrollY: 0,
       };
 
       console.log('Saving book info...');

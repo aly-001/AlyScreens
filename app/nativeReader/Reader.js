@@ -34,6 +34,9 @@ function Reader() {
   // **New State for Word Press Location**
   const [wordPressLocation, setWordPressLocation] = useState(null);
 
+  // **New State for Last Scroll Y**
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   // Initialize the useDefinitionManager hook
   const {
     popupVisible,
@@ -80,9 +83,42 @@ function Reader() {
 
       setChapters(toc.chapters);
 
-      // Load the first chapter
+      // **Retrieve lastChapterLocation and lastScrollY from bookInfo.js**
+      const bookInfoPath = `${bookDirectory}bookInfo.js`;
+      let initialChapterIndex = 0; // Default to first chapter
+      let initialScrollY = 0; // Default scroll position
+
+      const bookInfoExists = await FileSystem.getInfoAsync(bookInfoPath);
+      if (bookInfoExists.exists) {
+        const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+        const bookInfo = JSON.parse(bookInfoContent);
+        if (
+          bookInfo.lastChapterLocation !== undefined &&
+          bookInfo.lastChapterLocation >= 0 &&
+          bookInfo.lastChapterLocation < toc.chapters.length
+        ) {
+          initialChapterIndex = bookInfo.lastChapterLocation;
+          console.log("lastChapterLocation:", initialChapterIndex);
+        }
+        if (
+          bookInfo.lastScrollY !== undefined &&
+          typeof bookInfo.lastScrollY === "number"
+        ) {
+          initialScrollY = bookInfo.lastScrollY;
+          console.log("lastScrollY:", initialScrollY);
+        }
+      }
+
+      setCurrentChapterIndex(initialChapterIndex);
+      setLastScrollY(initialScrollY);
+
+      // **Load the chapter based on initialChapterIndex**
       if (toc.chapters.length > 0) {
-        await loadChapter(0, toc.chapters[0].contentSrc);
+        await loadChapter(
+          initialChapterIndex,
+          toc.chapters[initialChapterIndex].contentSrc,
+          initialScrollY
+        );
       }
 
       // Optionally, set the book title
@@ -96,7 +132,7 @@ function Reader() {
     }
   };
 
-  const loadChapter = async (index, chapterFileName) => {
+  const loadChapter = async (index, chapterFileName, scrollY = 0) => {
     setIsLoading(true); // Start loading indicator
     try {
       const chapterPath = `${bookDirectory}${chapterFileName}`;
@@ -105,6 +141,8 @@ function Reader() {
       setCurrentChapterContent(parsedChapter);
       setCurrentChapterIndex(index);
       setShowToc(false);
+      // **Reset lastScrollY to the passed scrollY value**
+      setLastScrollY(scrollY);
     } catch (error) {
       console.error("Error loading chapter:", error);
       Alert.alert("Error", "Failed to load chapter content.");
@@ -114,17 +152,57 @@ function Reader() {
   };
 
   const handleSelectChapter = async (index) => {
-    await loadChapter(index, chapters[index].contentSrc);
+    await loadChapter(index, chapters[index].contentSrc, 0); // Reset scrollY when selecting a new chapter
+    // go to bookInfo and update lastChapterLocation and reset lastScrollY
+    const bookInfoPath = `${bookDirectory}bookInfo.js`;
+    const bookInfoExists = await FileSystem.getInfoAsync(bookInfoPath);
+    if (bookInfoExists.exists) {
+      const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+      const bookInfo = JSON.parse(bookInfoContent);
+      bookInfo.lastChapterLocation = index;
+      bookInfo.lastScrollY = 0; // Reset scroll position
+      await FileSystem.writeAsStringAsync(bookInfoPath, JSON.stringify(bookInfo));
+    }
   };
 
   const handleNextChapter = async () => {
     if (currentChapterIndex + 1 < chapters.length) {
       await loadChapter(
         currentChapterIndex + 1,
-        chapters[currentChapterIndex + 1].contentSrc
+        chapters[currentChapterIndex + 1].contentSrc,
+        0 // Reset scrollY when navigating to next chapter
       );
+      // go to bookInfo and update lastChapterLocation and reset lastScrollY
+      const bookInfoPath = `${bookDirectory}bookInfo.js`;
+      const bookInfoExists = await FileSystem.getInfoAsync(bookInfoPath);
+      if (bookInfoExists.exists) {
+        const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+        const bookInfo = JSON.parse(bookInfoContent);
+        bookInfo.lastChapterLocation = currentChapterIndex + 1;
+        bookInfo.lastScrollY = 0; // Reset scroll position
+        await FileSystem.writeAsStringAsync(bookInfoPath, JSON.stringify(bookInfo));
+        console.log("bookInfo updated:", bookInfo);
+      }
     } else {
       Alert.alert("Info", "This is the last chapter.");
+    }
+
+    // log the entire bookjs folder in the documents directory
+    console.log(
+      "bookjs folder:",
+      await FileSystem.readDirectoryAsync(`${FileSystem.documentDirectory}bookjs/${bookDirName}/`)
+    );
+    // log the contents of the bookInfo.js file and then update the "lastChapterLocation" property
+    const bookInfoPath = `${bookDirectory}bookInfo.js`;
+    const bookInfoExists = await FileSystem.getInfoAsync(bookInfoPath);
+    if (bookInfoExists.exists) {
+      const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+      console.log("bookInfo:", bookInfoContent);
+      const bookInfo = JSON.parse(bookInfoContent);
+      bookInfo.lastChapterLocation = currentChapterIndex + 1;
+      bookInfo.lastScrollY = 0; // Reset scroll position
+      await FileSystem.writeAsStringAsync(bookInfoPath, JSON.stringify(bookInfo));
+      console.log("bookInfo updated:", bookInfo);
     }
   };
 
@@ -132,8 +210,19 @@ function Reader() {
     if (currentChapterIndex > 0) {
       await loadChapter(
         currentChapterIndex - 1,
-        chapters[currentChapterIndex - 1].contentSrc
+        chapters[currentChapterIndex - 1].contentSrc,
+        0 // Reset scrollY when navigating to previous chapter
       );
+      // go to bookInfo and update lastChapterLocation and reset lastScrollY
+      const bookInfoPath = `${bookDirectory}bookInfo.js`;
+      const bookInfoExists = await FileSystem.getInfoAsync(bookInfoPath);
+      if (bookInfoExists.exists) {
+        const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+        const bookInfo = JSON.parse(bookInfoContent);
+        bookInfo.lastChapterLocation = currentChapterIndex - 1;
+        bookInfo.lastScrollY = 0; // Reset scroll position
+        await FileSystem.writeAsStringAsync(bookInfoPath, JSON.stringify(bookInfo));
+      }
     } else {
       Alert.alert("Info", "This is the first chapter.");
     }
@@ -152,6 +241,22 @@ function Reader() {
     handleWebViewMessageDefinition(pressObject);
     // pressObject is {word, innerContext, outerContext, location}
     // location is {x, y}
+  };
+
+  // **New Handler to Update lastScrollY**
+  const handleLocationChange = async (location) => {
+    console.log("Location changed:", location);
+    setLastScrollY(location);
+    // Update bookInfo.js with the new scroll position
+    const bookInfoPath = `${bookDirectory}bookInfo.js`;
+    const bookInfoExists = await FileSystem.getInfoAsync(bookInfoPath);
+    if (bookInfoExists.exists) {
+      const bookInfoContent = await FileSystem.readAsStringAsync(bookInfoPath);
+      const bookInfo = JSON.parse(bookInfoContent);
+      bookInfo.lastScrollY = location;
+      await FileSystem.writeAsStringAsync(bookInfoPath, JSON.stringify(bookInfo));
+      console.log("lastScrollY updated:", location);
+    }
   };
 
   const handleClosePopupWithLocationReset = () => {
@@ -200,6 +305,8 @@ function Reader() {
           bookTitle={bookTitle}
           onShowToc={() => setShowToc(true)}
           onWordPress={handlePress} // Updated prop to handle pressObject
+          onLocationChange={handleLocationChange} // **Use the new handler**
+          startLocation={lastScrollY} // **Pass the lastScrollY here**
         />
       )}
       {/* Definition Popup */}
