@@ -266,6 +266,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "flex-start",
     marginBottom: layout.margins.homeScreenWidgets,
+    marginLeft: 0,
   },
   bottomWidgetContainer: {
     flexDirection: "row",

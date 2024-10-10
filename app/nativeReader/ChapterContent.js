@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, PixelRatio } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, PixelRatio, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; // Importing Ionicons for icons
+import { useThemeColors } from "../config/colors";
 
 function ChapterContent({ 
   chapterContent, 
@@ -10,6 +12,7 @@ function ChapterContent({
   startLocation, 
   onLocationChange 
 }) {
+  const colors = useThemeColors();
   const wordsRef = useRef([]); // Reference to store all words with unique IDs
   const scrollViewRef = useRef(null); // ScrollView ref
   const [wordsList, setWordsList] = useState([]); // State to hold the flat list of words with unique IDs
@@ -17,6 +20,40 @@ function ChapterContent({
 
   // **Ref to Track Initial Scroll**
   const hasScrolledInitial = useRef(false); // Ensures initial scroll happens only once
+
+  // **State to Manage Controls Visibility**
+  const [controlsVisible, setControlsVisible] = useState(false);
+
+  // **Ref to Track Previous Scroll Position**
+  const previousScrollY = useRef(0);
+
+  // **Scroll Threshold for Detecting Significant Scroll**
+  const FooterScrollThreshold = 20; // Adjust as needed
+
+  // **Handle Scroll Events to Toggle Controls Visibility**
+  const handleScroll = (event) => {
+    const currentScrollY = event.nativeEvent.contentOffset.y;
+    const scrollDifference = currentScrollY - previousScrollY.current;
+
+    if (Math.abs(scrollDifference) < FooterScrollThreshold) {
+      // Ignore small scrolls
+      return;
+    }
+
+    if (scrollDifference > 0) {
+      // Scrolling Down
+      if (controlsVisible) {
+        setControlsVisible(false);
+      }
+    } else {
+      // Scrolling Up
+      if (!controlsVisible) {
+        setControlsVisible(true);
+      }
+    }
+
+    previousScrollY.current = currentScrollY;
+  };
 
   // Preprocess `chapterContent` to extract all words into `wordsList` with unique IDs
   useEffect(() => {
@@ -95,7 +132,7 @@ function ChapterContent({
               return (
                 <Text
                   key={wIndex}
-                  style={{ color: 'black', fontSize: 20, fontFamily: 'Lora', fontWeight: 'bold' }}
+                  style={{ color: 'black', fontSize: 20, fontFamily: 'LibreBaskerville', lineHeight: 40 }}
                   onPress={(event) => handleWordPress(currentWord.text, currentWord.id, event)}
                 >
                   {word}
@@ -203,11 +240,12 @@ function ChapterContent({
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView 
         ref={scrollViewRef}
         style={{ flex: 1, padding: 16 }}
         onScroll={(event) => {
+          handleScroll(event);
           const yOffset = event.nativeEvent.contentOffset.y;
           if (Math.abs(yOffset - lastScrollY.current) > scrollThreshold) {
             onLocationChange(yOffset);
@@ -215,24 +253,57 @@ function ChapterContent({
             console.log("onLocationChange triggered with yOffset:", yOffset);
           }
         }}
-        scrollEventThrottle={1000} // Adjust the throttle for performance
+        scrollEventThrottle={16} // Increased throttle for smoother detection
         onContentSizeChange={handleContentSizeChange}
       >
         {renderedContent}
       </ScrollView>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <TouchableOpacity onPress={onPrevChapter}>
-          <Text style={{ padding: 16, fontSize: 16 }}>Previous</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onShowToc}>
-          <Text style={{ padding: 16, fontSize: 16 }}>Contents</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onNextChapter}>
-          <Text style={{ padding: 16, fontSize: 16 }}>Next</Text>
-        </TouchableOpacity>
-      </View>
+
+      {/* **Navigation Controls** */}
+      {controlsVisible && (
+        <View style={styles.navigationControls}>
+          <TouchableOpacity onPress={onPrevChapter} style={styles.controlButton}>
+            <Ionicons name="chevron-back" size={24} color={colors.highlightColor} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onShowToc} style={styles.controlButton}>
+            <Ionicons name="list" size={24} color={colors.highlightColor} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onNextChapter} style={styles.controlButton}>
+            <Ionicons name="chevron-forward" size={24} color={colors.highlightColor} />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
+
+// **Styles for Navigation Controls**
+const styles = StyleSheet.create({
+  navigationControls: {
+    position: 'absolute',
+    bottom: 100, // Adjust as needed
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    // Remove background color if using opaque buttons
+    // backgroundColor: 'rgba(255, 255, 255, 0.8)', 
+    paddingVertical: 10,
+    marginHorizontal: 20,
+  },
+  controlButton: {
+    backgroundColor: 'rgba(245, 245, 245, 1)',
+    width: 80,
+    height: 50,
+    borderRadius: 25, // Makes the button circular
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  controlText: {
+    // Remove text styles as icons are used
+    // fontSize: 16,
+    // color: 'blue',
+  },
+});
 
 export default ChapterContent;

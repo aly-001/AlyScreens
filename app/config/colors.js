@@ -3,6 +3,7 @@ import { useColorScheme } from 'react-native';
 import { useSettingsContext } from "../context/useSettingsContext";
 
 const lightColors = {
+  highlightColor: "tomato",
   modalBackground: "lightgrey",
   wordBorder: "lightgrey",
   bottomWidgetIcon: "lightgrey",
@@ -72,6 +73,7 @@ const lightColors = {
 };
 
 const darkColors = {
+  highlightColor: "blue",
   modalBackground: "lightgrey",
   wordBorder: "lightpink",
   bottomWidgetIcon: "lightgrey",

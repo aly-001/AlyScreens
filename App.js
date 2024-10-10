@@ -69,6 +69,7 @@ export default function App() {
   const loadFonts = async () => {
     await Font.loadAsync({
       'Lora': require('./assets/fonts/lora-standard.ttf'),
+      'LibreBaskerville': require('./assets/fonts/libre-baskerville.ttf'),
       // Add other fonts here
     });
     setFontsLoaded(true);

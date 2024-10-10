@@ -275,7 +275,7 @@ function Reader() {
 
   if (!bookDirName) {
     return (
-      <View style={styles.container}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', }}>
         <Text style={styles.infoText}>
           Select a book to read from the Library.
         </Text>
@@ -290,7 +290,7 @@ function Reader() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       {showToc ? (
         <TableOfContents
           chapters={chapters}
@@ -338,7 +338,8 @@ function Reader() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
   },
   loadingContainer: {
     flex: 1,

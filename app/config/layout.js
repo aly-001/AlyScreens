@@ -16,7 +16,7 @@ const getResponsiveValue = (smallDeviceValue, largeDeviceValue) => {
 
 const layout = {
   borderRadius: {
-    homeScreenWidgets: getResponsiveValue(50, 20),
+    homeScreenWidgets: getResponsiveValue(57, 20),
     homeScreenWidgetsSandwich: getResponsiveValue(0, 20),
     dictionaryScreenWidgets: getResponsiveValue(15, 20),
     startButton: getResponsiveValue(0, 15),
