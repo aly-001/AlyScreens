@@ -11,6 +11,7 @@ import { TabBarVisibilityProvider } from "./app/navigation/TabBarVisibilityConte
 import { FlashcardProvider } from "./app/context/FlashcardContext";
 import AppNavigator from "./app/navigation/AppNavigator";
 import * as Font from 'expo-font';
+
 // Keep the splash screen visible while we fetch the resources
 SplashScreen.preventAutoHideAsync();
 

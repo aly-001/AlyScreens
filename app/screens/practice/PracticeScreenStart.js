@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   StatusBar,
+  Animated,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
@@ -29,6 +30,7 @@ export default function PracticeScreenStart() {
     dueCards,
   } = useFlashcards();
   const navigation = useNavigation();
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   const handleRefresh = async () => {
     try {
@@ -37,7 +39,6 @@ export default function PracticeScreenStart() {
       console.error("Database initialization error:", error);
     }
   };
-
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -51,51 +52,77 @@ export default function PracticeScreenStart() {
     navigation.navigate("Word");
   };
 
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const handleWordPress = (word) => {
+    // Optional: Handle word press event
+    // For example, navigate to a word detail screen
+    navigation.navigate("WordDetail", { wordId: word.id });
+  };
+
   return (
-    <View style={[styles.superContainer, {backgroundColor: colors.homeScreenBackground}]}>
+    <View style={[styles.superContainer, { backgroundColor: colors.homeScreenBackground }]}>
       <StatusBar hidden={true} />
+      <Animated.View style={[styles.screenHeaderContainer, { opacity: headerOpacity }]}>
+        <ScreenHeader text="Practice" />
+      </Animated.View>
       <Screen>
-        <ScrollView showsVerticalScrollIndicator={false}  contentContainerStyle={styles.contentContainer}>
-          <View style={styles.headerContainer}>
-            <ScreenHeader text="Practice" />
-          </View>
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.contentContainer}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: true }
+          )}
+          scrollEventThrottle={16}
+        >
           <View style={styles.allBoxContainer}>
-            <View style={styles.wordBoxContainer}>
-              <WordBox
-                brt={true}
-                words={newCards.map((card) => ({
-                  id: card.id,
-                  word: card.front,
-                }))}
-                color={colors.newWords}
-                title="New"
-              />
-            </View>
-            <View style={styles.wordBoxContainer}>
-              <WordBox
-                words={learningCards.map((card) => ({
-                  id: card.id,
-                  word: card.front,
-                }))}
-                color={colors.learnWords}
-                title="Learn"
-              />
-            </View>
-            <View style={styles.wordBoxContainer}></View>
-            <View style={styles.wordBoxContainer}>
-              <WordBox
-                extraPadding={true}
-                brb={true}
-                words={dueCards.concat(overdueCards).map((card) => ({
-                  id: card.id,
-                  word: card.front,
-                }))}
-                color={colors.dueWords}
-                title="Due"
-              />
-            </View>
+            {/* New Cards */}
+            <WordBox
+              words={newCards.map((card) => ({
+                id: card.id,
+                word: card.front,
+              }))}
+              color={colors.newWords}
+              title="New"
+              containerStyle={styles.wordBoxContainer}
+              titleStyle={styles.sectionTitle}
+              onWordPress={handleWordPress} // Optional
+            />
+
+            {/* Learning Cards */}
+            <WordBox
+              words={learningCards.map((card) => ({
+                id: card.id,
+                word: card.front,
+              }))}
+              color={colors.learnWords}
+              title="Learn"
+              containerStyle={styles.wordBoxContainer}
+              titleStyle={styles.sectionTitle}
+              onWordPress={handleWordPress} // Optional
+            />
+
+            {/* Due Cards */}
+            <WordBox
+              words={dueCards.concat(overdueCards).map((card) => ({
+                id: card.id,
+                word: card.front,
+              }))}
+              color={colors.dueWords}
+              title="Due"
+              containerStyle={styles.wordBoxContainer}
+              titleStyle={styles.sectionTitle}
+              onWordPress={handleWordPress} // Optional
+            />
           </View>
-        </ScrollView>
+        </Animated.ScrollView>
+
+        {/* Start Button */}
         {newCards.length === 0 &&
         learningCards.length === 0 &&
         dueCards.length === 0 &&
@@ -104,9 +131,9 @@ export default function PracticeScreenStart() {
             <PracticeStartButton text="Start" deactivated={true} />
           </View>
         ) : (
-          <TouchableOpacity activeOpacity={0.5} onPress={startReview} style={styles.startBoxContainer}>
-            <PracticeStartButton text="Start" deactivated={false} />
-          </TouchableOpacity>
+          <View style={styles.startBoxContainer}>
+            <PracticeStartButton text="Start" deactivated={false} onPress={startReview} />
+          </View>
         )}
       </Screen>
     </View>
@@ -117,16 +144,16 @@ const styles = StyleSheet.create({
   superContainer: {
     flex: 1,
   },
+  screenHeaderContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
   contentContainer: {
     padding: layout.margins.homeScreenWidgets / 2,
-    paddingTop: 210,
-    paddingBottom: 120, // Add extra padding at the bottom to account for the start box
-  },
-  headerContainer: {
-    position: "absolute",
-    marginBottom: 10,
-    top: 18,
-    left: 18,
+    paddingTop: 100,
   },
   allBoxContainer: {
     borderRadius: 20,
@@ -135,15 +162,21 @@ const styles = StyleSheet.create({
     shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
     shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
     elevation: layout.shadows.homeScreenWidgets.elevation,
+    padding: 10,
   },
   wordBoxContainer: {
-    paddingHorizontal: layout.margins.homeScreenWidgets - 15,
+    marginBottom: 30,
   },
   startBoxContainer: {
-    position: "absolute",
-    bottom: layout.margins.practiceScreenStart.startButton, // Position 100px from the bottom
-    left: 0,
-    right: 0,
-    paddingHorizontal: layout.margins.practiceScreenStart.startButtonHorizontal,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    bottom: 70,
+   },
+  sectionTitle: {
+    fontSize: layout.fontSize.dictionary.sectionTitle,
+    fontWeight: "bold",
+    marginBottom: 10,
+    // color is handled via props
   },
 });

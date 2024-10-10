@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Button, StyleSheet, Linking } from 'react-native';
+import { View, StyleSheet, Linking } from 'react-native';
 import colors from '../../config/colors';
+import PracticeStartButton from '../../components/PracticeStartButton';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const DonateScreen = () => {
   const handleDonatePress = () => {
@@ -10,10 +12,7 @@ const DonateScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Button
-        title="Donate Now"
-        onPress={handleDonatePress}
-      />
+      <PracticeStartButton text="Donate to Aly Reader" onPress={handleDonatePress} width={240} hearts={true} />
     </View>
   );
 };
@@ -24,6 +23,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.homeScreenBackground,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  heartContainer: {
+    position: 'absolute',
+    top: 0,
+    left: '50%',
+    marginLeft: -25, // Half of the heart size to center it
+  },
+  heart: {
+    marginHorizontal: 10,
   },
 });
 

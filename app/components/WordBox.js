@@ -8,10 +8,10 @@ export default function WordBox({ words = [], color = "black", title = "", brb =
   const colors = useThemeColors();
   return (
     <View style={[
-      {backgroundColor: colors.mainComponentBackground}, 
+      {backgroundColor: colors.mainComponentBackground, marginBottom: 50, borderRadius: 20}, 
       brt && styles.topBorderRadius,
       brb && styles.bottomBorderRadius,
-      extraPadding && {paddingBottom: 30}
+      extraPadding && {paddingBottom: 30},
     ]}>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.utilityGrey }]}>{title}</Text>

@@ -22,7 +22,7 @@ function ChapterContent({
   const hasScrolledInitial = useRef(false); // Ensures initial scroll happens only once
 
   // **State to Manage Controls Visibility**
-  const [controlsVisible, setControlsVisible] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
 
   // **Ref to Track Previous Scroll Position**
   const previousScrollY = useRef(0);
@@ -39,17 +39,18 @@ function ChapterContent({
       // Ignore small scrolls
       return;
     }
+    if (currentScrollY < 100 ) {
+      setControlsVisible(true);
+    }
 
-    if (scrollDifference > 0) {
+    if (scrollDifference > 0 && currentScrollY > 100) {
       // Scrolling Down
       if (controlsVisible) {
         setControlsVisible(false);
       }
     } else {
       // Scrolling Up
-      if (!controlsVisible) {
         setControlsVisible(true);
-      }
     }
 
     previousScrollY.current = currentScrollY;
@@ -247,7 +248,7 @@ function ChapterContent({
         onScroll={(event) => {
           handleScroll(event);
           const yOffset = event.nativeEvent.contentOffset.y;
-          if (Math.abs(yOffset - lastScrollY.current) > scrollThreshold) {
+          if (Math.abs(yOffset - lastScrollY.current) > 80) {
             onLocationChange(yOffset);
             lastScrollY.current = yOffset; // Update the last scroll position
             console.log("onLocationChange triggered with yOffset:", yOffset);

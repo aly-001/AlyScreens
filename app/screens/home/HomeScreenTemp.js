@@ -17,8 +17,6 @@ import {
   getMatureCards,
 } from "../../context/FlashcardContext";
 import * as FileSystem from 'expo-file-system';
-import * as DocumentPicker from 'expo-document-picker';
-import BookCoverThumb from "../../components/BookCoverThumb";
 
 export default function HomeScreenTemp() {
   const colors = useThemeColors();
