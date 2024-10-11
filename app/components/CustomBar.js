@@ -83,9 +83,12 @@
        flexDirection: 'row',
        justifyContent: 'space-around',
        alignItems: 'center',
-       bottom: 0,
+       bottom: 12,
        position: 'absolute',
-       width: '100%',
+       alignSelf: 'center',
+
+       // make the width 100% minus 20 pixels on each side
+       width: '93%',
        height: 100,
        backgroundColor: 'rgba(245, 245, 245, 1)',
        borderRadius: 57,

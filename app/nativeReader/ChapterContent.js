@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, PixelRatio, StyleSheet } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View, PixelRatio, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Importing Ionicons for icons
 import { useThemeColors } from "../config/colors";
 import { vexo, customEvent } from "vexo-analytics";
@@ -183,14 +183,8 @@ function ChapterContent({
       location
     });
 
-    // **Trigger custom Vexo event with additional details**
-    customEvent('word-click', { 
-      word, 
-      wordId: id, 
-      location, 
-      innerContext, 
-      outerContext 
-    });
+    // Trigger custom Vexo event
+    customEvent('word-click', { word });
   };
 
   // Map HTML tags to native components
@@ -253,27 +247,33 @@ function ChapterContent({
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <ScrollView 
-        ref={scrollViewRef}
-        style={{ flex: 1, padding: 16, paddingTop: 100}}
-        onScroll={(event) => {
-          handleScroll(event);
-          const yOffset = event.nativeEvent.contentOffset.y;
-          if (Math.abs(yOffset - lastScrollY.current) > 80) {
-            onLocationChange(yOffset);
-            lastScrollY.current = yOffset; // Update the last scroll position
-            console.log("onLocationChange triggered with yOffset:", yOffset);
-          }
-        }}
-        scrollEventThrottle={16} // Increased throttle for smoother detection
-        onContentSizeChange={handleContentSizeChange}
-      >
-        {renderedContent}
-        <View style={{ height: 400 }} />
-      </ScrollView>
+      {renderedContent ? (
+        <ScrollView 
+          ref={scrollViewRef}
+          style={{ flex: 1, padding: 16, paddingTop: 100, marginBottom: 100}}
+          onScroll={(event) => {
+            handleScroll(event);
+            const yOffset = event.nativeEvent.contentOffset.y;
+            if (Math.abs(yOffset - lastScrollY.current) > 80) {
+              onLocationChange(yOffset);
+              lastScrollY.current = yOffset; // Update the last scroll position
+              console.log("onLocationChange triggered with yOffset:", yOffset);
+            }
+          }}
+          scrollEventThrottle={16} // Increased throttle for smoother detection
+          onContentSizeChange={handleContentSizeChange}
+        >
+          {renderedContent}
+          <View style={{ height: 400 }} />
+        </ScrollView>
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
 
       {/* **Navigation Controls** */}
-      {controlsVisible && (
+      {controlsVisible && renderedContent && (
         <View style={styles.navigationControls}>
           <TouchableOpacity onPress={onPrevChapter} style={styles.controlButton}>
             <Ionicons name="chevron-back" size={24} color={colors.highlightColor} />
@@ -294,7 +294,7 @@ function ChapterContent({
 const styles = StyleSheet.create({
   navigationControls: {
     position: 'absolute',
-    bottom: 100, // Adjust as needed
+    bottom: 110, // Adjust as needed
     left: 0,
     right: 0,
     flexDirection: 'row',
