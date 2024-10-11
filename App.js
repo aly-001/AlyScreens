@@ -11,8 +11,6 @@ import { TabBarVisibilityProvider } from "./app/navigation/TabBarVisibilityConte
 import { FlashcardProvider } from "./app/context/FlashcardContext";
 import AppNavigator from "./app/navigation/AppNavigator";
 import * as Font from 'expo-font';
-import { vexo } from 'vexo-analytics';
-vexo("0295f771-1900-4c74-8126-407feeb91d05");
 
 // Keep the splash screen visible while we fetch the resources
 SplashScreen.preventAutoHideAsync();

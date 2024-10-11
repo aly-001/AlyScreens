@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
     shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
     elevation: layout.shadows.homeScreenWidgets.elevation,
+    width: "100%",
   },
   container: {
     flex: 1,

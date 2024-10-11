@@ -17,8 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.alexandermackenzie.aly",
-      "buildNumber": "3",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "buildNumber": "3"
     },
     "android": {
       "adaptiveIcon": {

@@ -183,8 +183,14 @@ function ChapterContent({
       location
     });
 
-    // Trigger custom Vexo event
-    customEvent('word-click', { word });
+    // **Trigger custom Vexo event with additional details**
+    customEvent('word-click', { 
+      word, 
+      wordId: id, 
+      location, 
+      innerContext, 
+      outerContext 
+    });
   };
 
   // Map HTML tags to native components
