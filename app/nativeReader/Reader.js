@@ -14,8 +14,14 @@ import TableOfContents from "./TableOfContents";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import useDefinitionManager from "../hooks/useDefinitionManager"; // Adjust the import path as needed
 import DefinitionPopup from "../components/DefinitionPopup";
+import { addCard } from "../services/CardManager";
+import { useAPIKey } from "../context/APIKeyContext";
+import { useSettingsContext } from "../context/useSettingsContext"
+
 
 function Reader() {
+  const { apiKey } = useAPIKey();
+  const settings = useSettingsContext().settings;
   const route = useRoute();
   const navigation = useNavigation();
   const { bookDirName } = route.params || {}; // Receive bookDirName via navigation if available
@@ -235,12 +241,25 @@ function Reader() {
 
   const handlePress = (pressObject) => {
     console.log("Pressed object:", pressObject);
-    // **Set the Word Press Location**
     setWordPressLocation(pressObject.location);
-    // Integrate with useDefinitionManager
     handleWebViewMessageDefinition(pressObject);
-    // pressObject is {word, innerContext, outerContext, location}
-    // location is {x, y}
+    handleAddCard(pressObject); // **Call the new function to add a card**
+  };
+
+  const handleAddCard = (message) => {
+    if (message.word && message.innerContext && message.outerContext) {
+      const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
+      const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
+      const { innerContext, outerContext } = message;
+
+      addCard(apiKey, capitalizedWord, innerContext, outerContext, 'en', settings)
+        .then(() => {
+          console.log('Card added successfully');
+        })
+        .catch((error) => {
+          console.error('Error adding card:', error);
+        });
+    }
   };
 
   // **New Handler to Update lastScrollY**

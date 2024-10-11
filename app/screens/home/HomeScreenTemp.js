@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: layout.margins.homeScreenWidgets / 2,
     paddingTop: layout.margins.homeScreen.betweenHeaderAndWidgets + 60, // Add extra padding to account for the header
+    paddingBottom: 40,
   },
   topWidgetContainer: {
     marginHorizontal: layout.margins.homeScreenWidgets / 2,
