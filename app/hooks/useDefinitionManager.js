@@ -52,7 +52,7 @@ export default function useDefinitionManager() {
     const promises = [];
 
     // Start the LLM request for the definition
-    const definitionPrompt = `Give a translation of the word "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.translationPrompt}`;
+    const definitionPrompt = `Give a translation of the word "${processedWord}" in the context of "${innerContext}". ${settings.translationPrompt}`;
     
     const definitionPromise = callLLM(apiKey, definitionPrompt)
       .then((definitionResponse) => {

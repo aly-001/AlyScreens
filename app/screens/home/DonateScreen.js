@@ -6,13 +6,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const DonateScreen = () => {
   const handleDonatePress = () => {
-    const url = 'https://patreon.com/aly_reader';
+    const url = 'https://buymeacoffee.com/amacken007';
     Linking.openURL(url).catch(err => console.error("Failed to open URL:", err));
   };
 
   return (
     <View style={styles.container}>
-      <PracticeStartButton text="Donate to Aly Reader" onPress={handleDonatePress} width={240} hearts={true} />
+      <PracticeStartButton text="Buy us a coffee" onPress={handleDonatePress} width={240} hearts={true} />
     </View>
   );
 };
