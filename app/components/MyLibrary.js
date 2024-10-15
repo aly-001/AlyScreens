@@ -18,7 +18,9 @@ export default function MyLibrary({ books, onBookPress, onPressLibrary }) {
       ]}
     >
       <View style={styles.container}>
-        <WidgetHeader text="Library" />
+        <View style={styles.headerContainer}>
+          <WidgetHeader text="Library" />
+        </View>
         <ScrollView 
           horizontal 
           style={styles.booksContainer} 
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     shadowOpacity: layout.shadows.homeScreenWidgets.shadowOpacity,
     shadowRadius: layout.shadows.homeScreenWidgets.shadowRadius,
     elevation: layout.shadows.homeScreenWidgets.elevation,
-    width: "100%",
+    width: "100%",    
   },
   container: {
     flex: 1,
@@ -75,5 +77,8 @@ const styles = StyleSheet.create({
   bookItem: {
     borderRadius: 8, 
     overflow: "hidden", 
+  },
+  headerContainer: {
+    marginLeft: layout.margins.homeScreen.MyLibraryHeaderMargin,
   },
 });

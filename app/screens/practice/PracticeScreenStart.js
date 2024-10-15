@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   Text,
   StatusBar,
   Animated,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
@@ -16,7 +17,6 @@ import layout from "../../config/layout";
 import WordBox from "../../components/WordBox";
 import PracticeStartButton from "../../components/PracticeStartButton";
 import { useFlashcards } from "../../context/FlashcardContext";
-
 export default function PracticeScreenStart() {
   const colors = useThemeColors();
   const {
@@ -31,6 +31,8 @@ export default function PracticeScreenStart() {
   } = useFlashcards();
   const navigation = useNavigation();
   const scrollY = useRef(new Animated.Value(0)).current;
+
+  const [orientation, setOrientation] = useState('Portrait'); // Added state for orientation
 
   const handleRefresh = async () => {
     try {
@@ -63,6 +65,31 @@ export default function PracticeScreenStart() {
     // For example, navigate to a word detail screen
     navigation.navigate("WordDetail", { wordId: word.id });
   };
+
+  useEffect(() => {
+    const handleOrientationChange = ({ window: { width, height } }) => {
+      const newOrientation = width > height ? 'Landscape' : 'Portrait';
+      setOrientation(newOrientation); // Update orientation state
+      console.log(`iPad Orientation: ${newOrientation}`);
+    };
+
+    // Add event listener for orientation changes
+    const subscription = Dimensions.addEventListener('change', handleOrientationChange);
+
+    // Initial log and state setting
+    const { width, height } = Dimensions.get('window');
+    handleOrientationChange({ window: { width, height } });
+
+    // Cleanup the event listener on unmount
+    return () => {
+      if (typeof subscription?.remove === 'function') {
+        subscription.remove();
+      } else {
+        // For React Native versions < 0.65
+        Dimensions.removeEventListener('change', handleOrientationChange);
+      }
+    };
+  }, []);
 
   return (
     <View style={[styles.superContainer, { backgroundColor: colors.homeScreenBackground }]}>
@@ -127,11 +154,21 @@ export default function PracticeScreenStart() {
         learningCards.length === 0 &&
         dueCards.length === 0 &&
         overdueCards.length === 0 ? (
-          <View style={styles.startBoxContainer}>
+          <View
+            style={[
+              styles.startBoxContainer,
+              orientation === 'Landscape' && { marginBottom: 50 }, // Lift up by 20 in Landscape
+            ]}
+          >
             <PracticeStartButton text="Start" deactivated={true} />
           </View>
         ) : (
-          <View style={styles.startBoxContainer}>
+          <View
+            style={[
+              styles.startBoxContainer,
+              orientation === 'Landscape' && { marginBottom: -20 }, // Lift up by 20 in Landscape
+            ]}
+          >
             <PracticeStartButton text="Start" deactivated={false} onPress={startReview} />
           </View>
         )}
@@ -153,7 +190,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: layout.margins.homeScreenWidgets / 2,
-    paddingTop: 100,
+    paddingTop: layout.margins.practiceScreenStart.betweenHeaderAndWidgets
   },
   allBoxContainer: {
     borderRadius: 20,
@@ -165,14 +202,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   wordBoxContainer: {
-    marginBottom: 30,
   },
   startBoxContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    bottom: 70,
-   },
+  },
   sectionTitle: {
     fontSize: layout.fontSize.dictionary.sectionTitle,
     fontWeight: "bold",

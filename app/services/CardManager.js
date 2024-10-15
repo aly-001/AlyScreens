@@ -39,11 +39,11 @@ const generateCustomModuleB = async (apiKey, word, innerContext, outerContext, p
   return callLLM(apiKey, fullPrompt);
 }
 
-const generateAndSaveImage = async (openai, word, innerContext, outerContext, imageID, imagePrompt) => {
+const generateAndSaveImage = async (openai, word, innerContext, imageID, imagePrompt) => {
   try {
     const response = await openai.images.generate({
       model: "dall-e-3",
-      prompt: `make a picture about ${word} in the context of ${innerContext} and ${outerContext}. do it in the following style: ${imagePrompt}`,
+      prompt: `make a picture about ${word} in the context of ${innerContext}. do it in the following style: ${imagePrompt}`,
       n: 1,
       size: "1024x1024",
     });
@@ -200,13 +200,13 @@ export const addCard = async (apiKey, word, innerContext, outerContext, language
     
     const mediaPromises = [];
     if (settings.flashcardsBackImage) {
-      mediaPromises.push(generateAndSaveImage(openai, word, innerContext, outerContext, imageID, settings.imagePrompt));
+      mediaPromises.push(generateAndSaveImage(openai, word, innerContext, imageID, settings.imagePrompt));
     }
     if (settings.flashcardsBackAudio) {
-      mediaPromises.push(generateAndSaveAudioWord(openai, word, audioWordID, languageTag));
+      mediaPromises.push(generateAndSaveAudioWord(openai, word, audioWordID));
     }
     if (settings.flashcardsBackContextAudio) {
-      mediaPromises.push(generateAndSaveAudioContext(openai, summarizedContext, audioContextID, languageTag));
+      mediaPromises.push(generateAndSaveAudioContext(openai, summarizedContext, audioContextID));
     }
    
     const grammarPrompt = `Give a grammar explanation of the word "${word}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;

@@ -5,6 +5,8 @@ import NativeLibrary from '../nativeReader/NativeLibrary';
 import SettingsNavigator from './SettingsNavigator';
 import DictionaryScreen from '../screens/home/DictionaryScreen';
 import DonateScreen from '../screens/home/DonateScreen';
+import HelpScreen from '../screens/home/HelpScreen'; // Import the HelpScreen
+
 const Stack = createStackNavigator();
 
 const HomeNavigator = () => {
@@ -35,6 +37,15 @@ const HomeNavigator = () => {
         options={{ 
           title: 'Donate', 
           headerShown: true, // Show header for Donate
+          headerBackTitle: 'Home' // Customize back button title
+        }}
+      />
+      <Stack.Screen
+        name="Help"
+        component={HelpScreen}
+        options={{ 
+          title: 'Help', 
+          headerShown: true, // Show header for Help
           headerBackTitle: 'Home' // Customize back button title
         }}
       />

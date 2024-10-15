@@ -329,7 +329,6 @@ const DefinitionPopup = ({
                       })(),
                     ]}
                   >
-                    <Pointer direction={direction} />
                   </View>
                   <View
                     style={[

@@ -25,6 +25,8 @@ const layout = {
     homeScreen: {
       betweenHeaderAndWidgets: getResponsiveValue(110, 140),
       widgetHeader: getResponsiveValue(20, 30),
+      MyLibraryPadding: getResponsiveValue(0, 18),
+      MyLibraryHeaderMargin: getResponsiveValue(-.5, 0),
     },
     dictionaryScreen:{
       widgetsVertical: getResponsiveValue(35, 35),
@@ -39,6 +41,7 @@ const layout = {
     practiceScreenStart: {
       startButton: getResponsiveValue(44, 100),
       startButtonHorizontal: getResponsiveValue(0, 35),
+      betweenHeaderAndWidgets: getResponsiveValue(100, 190),
     },
     practiceScreenBack :{
       allTabsContainerBottom: getResponsiveValue(60, 100),
@@ -128,6 +131,9 @@ const layout = {
       definition: getResponsiveValue(18, 22),
     },
   },
+  donateScreen:{
+    hearts: getResponsiveValue(true, false),
+  }
 };
 
 export default layout;

@@ -15,8 +15,12 @@ const TranslationPopupScreen = () => {
   const [isModuleBModalVisible, setIsModuleBModalVisible] = useState(false);
   const [isTranslationModalVisible, setIsTranslationModalVisible] = useState(false);
 
-  const toggleSetting = (setting) => {
-    updateSettings({ [setting]: !settings[setting] });
+  const toggleSetting = (setting, setModalVisible) => {
+    const newValue = !settings[setting];
+    updateSettings({ [setting]: newValue });
+    if (newValue) {
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -26,34 +30,34 @@ const TranslationPopupScreen = () => {
           label="Translation"
           disabled={true}
           value={settings.translationPopupTranslation}
-          onValueChange={() => toggleSetting('translationPopupTranslation')}
+          onValueChange={() => toggleSetting('translationPopupTranslation', setIsTranslationModalVisible)}
           onEdit={() => setIsTranslationModalVisible(true)}
         />
         <Divider />
         <SettingSwitch
           label="Audio"
           value={settings.translationPopupAudio}
-          onValueChange={() => toggleSetting('translationPopupAudio')}
+          onValueChange={() => toggleSetting('translationPopupAudio', () => {})} // No modal for Audio
         />
         <Divider />
         <SettingSwitch
           label="Grammar"
           value={settings.translationPopupGrammar}
-          onValueChange={() => toggleSetting('translationPopupGrammar')}
+          onValueChange={() => toggleSetting('translationPopupGrammar', setIsGrammarModalVisible)}
           onEdit={() => setIsGrammarModalVisible(true)}
         />
         <Divider />
         <SettingSwitch
           label="Custom Module A"
           value={settings.translationPopupModuleA}
-          onValueChange={() => toggleSetting('translationPopupModuleA')}
+          onValueChange={() => toggleSetting('translationPopupModuleA', setIsModuleAModalVisible)}
           onEdit={() => setIsModuleAModalVisible(true)}
         />
         <Divider />
         <SettingSwitch
           label="Custom Module B"
           value={settings.translationPopupModuleB}
-          onValueChange={() => toggleSetting('translationPopupModuleB')}
+          onValueChange={() => toggleSetting('translationPopupModuleB', setIsModuleBModalVisible)}
           onEdit={() => setIsModuleBModalVisible(true)}
         />
       </View>

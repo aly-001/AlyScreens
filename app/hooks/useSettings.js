@@ -10,16 +10,16 @@ const useSettings = () => {
     translationPopupAudio: false,
     translationPopupGrammar: false,
     translationPopupModuleA: false,
-    flashcardsEnabled: true,
+    flashcardsEnabled: false, // **Flashcards default to disabled**
     flashcardsFrontWord: true,
-    flashcardsFrontContext: true,
+    flashcardsFrontContext: false,
     flashcardsFrontGrammar: false,
     flashcardsFrontModuleA: false,
     flashcardsFrontModuleB: false,
     flashcardsBackWord: true,
     flashcardsBackWordTranslation: true,
-    flashcardsBackContext: true,
-    flashcardsBackContextTranslation: true,
+    flashcardsBackContext: false,
+    flashcardsBackContextTranslation: false,
     flashcardsBackAudio: true,
     flashcardsBackContextAudio: false,
     flashcardsBackImage: true,
@@ -33,6 +33,8 @@ const useSettings = () => {
     moduleAPrompt: defaultPrompts.defaultModuleAPrompt,
     moduleBPrompt: defaultPrompts.defaultModuleBPrompt,
     theme: 'light',
+    AIDecidesWhenToGeneratePrompt: defaultPrompts.defaultAIDecidesWhenToGeneratePrompt,
+    AIDecidesWhenToGenerate: false,
   });
 
   useEffect(() => {

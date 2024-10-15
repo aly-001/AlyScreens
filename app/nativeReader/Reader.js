@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   View,
   ActivityIndicator,
@@ -12,19 +12,29 @@ import * as FileSystem from "expo-file-system";
 import ChapterContent from "./ChapterContent";
 import TableOfContents from "./TableOfContents";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import useDefinitionManager from "../hooks/useDefinitionManager"; // Adjust the import path as needed
+import useDefinitionManager from "../hooks/useDefinitionManager";
 import DefinitionPopup from "../components/DefinitionPopup";
 import { addCard } from "../services/CardManager";
 import { useAPIKey } from "../context/APIKeyContext";
-import { useSettingsContext } from "../context/useSettingsContext"
-
+import { useSettingsContext } from "../context/useSettingsContext";
+import { callLLMTrueFalse } from "../services/LLMManager";
+import { ReadingContext } from '../context/ReadingContext'; // Import the ReadingContext
 
 function Reader() {
   const { apiKey } = useAPIKey();
   const settings = useSettingsContext().settings;
   const route = useRoute();
   const navigation = useNavigation();
-  const { bookDirName } = route.params || {}; // Receive bookDirName via navigation if available
+  const { bookDirName: routeBookDirName } = route.params || {};
+
+  const { bookDirName, setBookDirName } = useContext(ReadingContext); // Use the context
+
+  useEffect(() => {
+    // If bookDirName is not set in context but exists in navigation params, set it
+    if (!bookDirName && routeBookDirName) {
+      setBookDirName(routeBookDirName);
+    }
+  }, [bookDirName, routeBookDirName, setBookDirName]);
 
   const bookDirectory = bookDirName
     ? `${FileSystem.documentDirectory}bookjs/${bookDirName}/`
@@ -36,7 +46,7 @@ function Reader() {
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
   const [showToc, setShowToc] = useState(false);
   const [bookTitle, setBookTitle] = useState("");
-  
+
   // **New State for Word Press Location**
   const [wordPressLocation, setWordPressLocation] = useState(null);
 
@@ -239,11 +249,17 @@ function Reader() {
     return dirName.replace(/_/g, " ").replace(/[^a-zA-Z0-9 _-]/g, "");
   };
 
-  const handlePress = (pressObject) => {
-    console.log("Pressed object:", pressObject);
+  const handlePress = async (pressObject) => {
     setWordPressLocation(pressObject.location);
     handleWebViewMessageDefinition(pressObject);
-    handleAddCard(pressObject); // **Call the new function to add a card**
+    const result = await callLLMTrueFalse(
+      apiKey,
+      `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`
+    );
+    console.log("LLM True/False:", result?.result);
+    if (settings.flashcardsEnabled && result?.result) {
+      handleAddCard(pressObject); // **Call the new function to add a card**
+    }
   };
 
   const handleAddCard = (message) => {

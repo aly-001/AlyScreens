@@ -4,8 +4,10 @@ import { callLLM, generateAudio } from "../services/LLMManager";
 import { useSettingsContext } from "../context/useSettingsContext";
 import { useAPIKey } from "../context/APIKeyContext";
 import { processWord } from "../services/WordProcessRegex";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation
 
 export default function useDefinitionManager() {
+  const navigation = useNavigation(); // Initialize navigation
   const { apiKey } = useAPIKey();
   const settings = useSettingsContext().settings;
   const [popupVisible, setPopupVisible] = useState(false);
@@ -29,6 +31,21 @@ export default function useDefinitionManager() {
   const [audioBase64, setAudioBase64] = useState(null);
   const [audioLoading, setAudioLoading] = useState(false);
 
+  const customErrorAlert = () => {
+    Alert.alert(
+      "Troubleshooting Steps",
+      "• Check your internet connection.\n• Verify your API key.\n• Ensure you have sufficient credits on your API key.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Go to Help", onPress: () => navigateToHelpScreen() } // Updated handler
+      ]
+    );
+  };
+
+  const navigateToHelpScreen = () => {
+    navigation.navigate("Help"); // Navigate to the Help screen
+  };
+
   const handleWebViewMessageDefinition = async (message) => {
     setGrammarFinished(false);
     setGrammarStarted(false);
@@ -43,7 +60,6 @@ export default function useDefinitionManager() {
     const processedWord = processWord(message.word);
     setCurrentWord(processedWord);
     const { innerContext, outerContext } = message;
-  
 
     setPopupVisible(true);
     setIsLoading(true);
@@ -61,7 +77,7 @@ export default function useDefinitionManager() {
       })
       .catch((error) => {
         console.error("Error fetching definition:", error);
-        Alert.alert("Error", "Unable to fetch definition. Please try again.");
+        customErrorAlert();
       })
       .finally(() => {
         setIsLoading(false);
@@ -73,6 +89,7 @@ export default function useDefinitionManager() {
       setGrammarStarted(true);
       setGrammarLoading(true);
       const grammarPrompt = `Give a grammar explanation of the word "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
+      
       const grammarPromise = callLLM(apiKey, grammarPrompt)
         .then((grammarResponse) => {
           setCurrentGrammar(grammarResponse);
@@ -80,7 +97,7 @@ export default function useDefinitionManager() {
         })
         .catch((error) => {
           console.error("Error fetching grammar explanation:", error);
-          Alert.alert("Error", "Unable to fetch grammar explanation. Please try again.");
+          customErrorAlert();
         })
         .finally(() => {
           setGrammarLoading(false);
@@ -91,13 +108,14 @@ export default function useDefinitionManager() {
     // Generate audio if enabled in settings
     if (settings.translationPopupAudio) {
       setAudioLoading(true);
+      
       const audioPromise = generateAudio(apiKey, processedWord)
         .then((audio) => {
           setAudioBase64(audio);
         })
         .catch((error) => {
           console.error("Error generating audio:", error);
-          Alert.alert("Error", "Unable to generate audio. Please try again.");
+          customErrorAlert();
         })
         .finally(() => {
           setAudioLoading(false);
@@ -109,13 +127,14 @@ export default function useDefinitionManager() {
     if (settings.translationPopupModuleA) {
       setModuleALoading(true);
       const moduleAPrompt = `Use "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleAPrompt}`;
+      
       const moduleAPromise = callLLM(apiKey, moduleAPrompt)
         .then((moduleAResponse) => {
           setCurrentModuleA(moduleAResponse);
         })
         .catch((error) => {
           console.error("Error fetching moduleA explanation:", error);
-          Alert.alert("Error", "Unable to fetch moduleA explanation. Please try again.");
+          customErrorAlert();
         })
         .finally(() => {
           setModuleALoading(false);
@@ -127,13 +146,14 @@ export default function useDefinitionManager() {
     if (settings.translationPopupModuleB) {
       setModuleBLoading(true);
       const moduleBPrompt = `Use "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleBPrompt}`;
+      
       const moduleBPromise = callLLM(apiKey, moduleBPrompt)
         .then((moduleBResponse) => {
           setCurrentModuleB(moduleBResponse);
         })
         .catch((error) => {
           console.error("Error fetching moduleB explanation:", error);
-          Alert.alert("Error", "Unable to fetch moduleB explanation. Please try again.");
+          customErrorAlert();
         })
         .finally(() => {
           setModuleBLoading(false);

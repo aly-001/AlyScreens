@@ -14,6 +14,19 @@ const FlashcardMediaScreen = () => {
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [isModuleAModalVisible, setIsModuleAModalVisible] = useState(false);
   const [isModuleBModalVisible, setIsModuleBModalVisible] = useState(false);
+  const [isAiDecideModalVisible, setIsAiDecideModalVisible] = useState(false);
+
+  // Mapping of settings to their corresponding modal setters
+  const settingToModalMap = {
+    aiDecidesWhenToGenerate: () => setIsAiDecideModalVisible(true),
+    flashcardsFrontGrammar: () => setIsGrammarModalVisible(true),
+    flashcardsBackGrammar: () => setIsGrammarModalVisible(true),
+    flashcardsBackImage: () => setIsImageModalVisible(true),
+    flashcardsFrontModuleA: () => setIsModuleAModalVisible(true),
+    flashcardsBackModuleA: () => setIsModuleAModalVisible(true),
+    flashcardsFrontModuleB: () => setIsModuleBModalVisible(true),
+    flashcardsBackModuleB: () => setIsModuleBModalVisible(true),
+  };
 
   const toggleSetting = (setting) => {
     let newSettings = { [setting]: !settings[setting] };
@@ -29,7 +42,18 @@ const FlashcardMediaScreen = () => {
         newSettings[context] = true;
       }
     });
+
+    // If "Generate Flashcards" is being turned off, also turn off "AI decides when to generate"
+    if (setting === "flashcardsEnabled" && !newSettings[setting]) {
+      newSettings.aiDecidesWhenToGenerate = false;
+    }
+
     updateSettings(newSettings);
+
+    // Check if the toggled setting has an associated modal
+    if (newSettings[setting] && settingToModalMap[setting]) {
+      settingToModalMap[setting]();
+    }
   };
 
   const renderSwitch = (label, setting, onEdit = null) => (
@@ -47,9 +71,16 @@ const FlashcardMediaScreen = () => {
     <ScrollView style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
       <View style={[styles.group, {backgroundColor: colors.mainComponentBackground}]}>
         <SettingSwitch
-          label="Enable Flashcards"
+          label="Generate Flashcards"
           value={settings.flashcardsEnabled}
           onValueChange={() => toggleSetting("flashcardsEnabled")}
+        />
+        <SettingSwitch
+          label="Choose when to generate flashcards"
+          value={settings.aiDecidesWhenToGenerate}
+          onValueChange={() => toggleSetting("aiDecidesWhenToGenerate")}
+          onEdit={() => setIsAiDecideModalVisible(true)}
+          disabled={!settings.flashcardsEnabled}
         />
       </View>
       <View style={[styles.group, {marginTop: 30, backgroundColor: colors.mainComponentBackground}]}>
@@ -123,6 +154,14 @@ const FlashcardMediaScreen = () => {
         initialPrompt={settings.moduleBPrompt}
         greyPromptPart={"Use *word* in the context of *context*."}
         onReset={() => updateSettings({ moduleBPrompt: defaultPrompts.defaultModuleBPrompt })}
+      />
+      <PromptEditModal
+        isVisible={isAiDecideModalVisible}
+        onClose={() => setIsAiDecideModalVisible(false)}
+        promptType="AIDecidesWhenToGeneratePrompt"
+        initialPrompt={settings.AIDecidesWhenToGeneratePrompt}
+        greyPromptPart={"Generate a flashcard when the below is true:"}
+        onReset={() => updateSettings({ AIDecidesWhenToGeneratePrompt: defaultPrompts.defaultAIDecidesWhenToGeneratePrompt })}
       />
       
     </ScrollView>

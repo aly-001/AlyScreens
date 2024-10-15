@@ -18,6 +18,7 @@ import layout from '../config/layout';
 const PromptEditModal = ({ isVisible, onClose, promptType, initialPrompt, greyPromptPart, onReset }) => {
   const colors = useThemeColors();
   const { settings, updateSettings } = useSettingsContext();
+  console.log("Prompt type: ", promptType);
   const [prompt, setPrompt] = useState(settings[promptType] || '');
 
   useEffect(() => {

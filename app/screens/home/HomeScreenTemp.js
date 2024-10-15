@@ -266,6 +266,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     marginBottom: layout.margins.homeScreenWidgets,
     marginLeft: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: layout.margins.homeScreen.MyLibraryPadding,
   },
   bottomWidgetContainer: {
     flexDirection: "row",

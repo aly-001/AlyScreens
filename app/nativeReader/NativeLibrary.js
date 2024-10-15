@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   ScrollView,
@@ -25,21 +25,47 @@ import {
   processHtmlContent,
 } from "./epubHandler";
 import { hexToHSL, generateUniqueSoftColor } from "./BookUtils";
+import PracticeStartButton from "../components/PracticeStartButton"; // Imported the PracticeStartButton component
+import { ReadingContext } from '../context/ReadingContext'; // Import the ReadingContext
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 function NativeLibrary() {
   const [isLoading, setIsLoading] = useState(false);
   const [books, setBooks] = useState([]);
   const navigation = useNavigation();
   const bookDirectory = `${FileSystem.documentDirectory}bookjs/`;
-  const colors = useThemeColors(); // Use the hook to get theme colors
+  const themeColors = useThemeColors(); // Renamed to avoid conflict with imported colors
+
+  const [orientation, setOrientation] = useState('Portrait'); // State for orientation
+
+  const { setBookDirName } = useContext(ReadingContext); // Use the context
 
   useEffect(() => {
     loadBooks();
     // Uncomment the line below to delete all books
     // deleteAllBooks();
+
+    const handleOrientationChange = ({ window: { width, height } }) => {
+      const newOrientation = width > height ? 'Landscape' : 'Portrait';
+      setOrientation(newOrientation);
+      console.log(`Orientation changed to: ${newOrientation}`);
+    };
+
+    const subscription = Dimensions.addEventListener('change', handleOrientationChange);
+
+    // Initial orientation setting
+    const { width, height } = Dimensions.get('window');
+    handleOrientationChange({ window: { width, height } });
+
+    return () => {
+      if (typeof subscription?.remove === 'function') {
+        subscription.remove();
+      } else {
+        // For React Native versions < 0.65
+        Dimensions.removeEventListener('change', handleOrientationChange);
+      }
+    };
   }, []);
 
   const loadBooks = async () => {
@@ -268,7 +294,8 @@ function NativeLibrary() {
   };
 
   const handleBookPress = (book) => {
-    navigation.navigate('Reader', { bookDirName: book.id });
+    setBookDirName(book.id); // Set the current book in context
+    navigation.navigate('Reader');
   };
 
   const handleLongPress = (book) => {
@@ -317,7 +344,7 @@ function NativeLibrary() {
   };
 
   return (
-    <View style={[styles.superContainer, { backgroundColor: colors.homeScreenBackground }]}>
+    <View style={[styles.superContainer, { backgroundColor: themeColors.homeScreenBackground }]}>
       <Screen>
         <View style={styles.contentContainer}>
 
@@ -344,10 +371,19 @@ function NativeLibrary() {
             </ScrollView>
           </View>
 
-          <View style={styles.footerContainer}>
-            <TouchableOpacity onPress={handleUpload} style={styles.button} disabled={isLoading}>
-              <Text style={styles.buttonText}>Upload</Text>
-            </TouchableOpacity>
+          {/* Footer with Upload Button and Text */}
+          <View
+            style={[
+              styles.footerContainer,
+              orientation === 'Landscape' && { bottom: 350 }, // Lift by 40 in Landscape
+            ]}
+          >
+            <PracticeStartButton 
+              text="Upload" 
+              onPress={handleUpload} 
+              disabled={isLoading}
+              style={styles.uploadButton} // Apply additional styles if needed
+            />
             <View style={styles.footerTextContainer}>
               <Text style={styles.footerText}>PDF support is coming soon!</Text> 
               <Text style={styles.footerText}>Currently only EPUBs work. Please ensure any file conversions comply with applicable copyright laws and terms of use.</Text>
@@ -387,15 +423,10 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     marginTop: 10,
+    alignItems: 'center', // Center the button and text
   },
-  button: {
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 20,
-    color: 'dodgerblue',
+  uploadButton: {
+    // Add any additional styles if needed to match PracticeStartButton
   },
   footerTextContainer: {
     paddingHorizontal: 45,
@@ -403,6 +434,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     opacity: 0.5,
+    textAlign: 'center', // Center the footer text
   },
 });
 

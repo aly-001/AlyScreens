@@ -3,6 +3,7 @@ import { View, StyleSheet, Linking } from 'react-native';
 import colors from '../../config/colors';
 import PracticeStartButton from '../../components/PracticeStartButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import layout from '../../config/layout';
 
 const DonateScreen = () => {
   const handleDonatePress = () => {
@@ -12,7 +13,7 @@ const DonateScreen = () => {
 
   return (
     <View style={styles.container}>
-      <PracticeStartButton text="Buy us a coffee" onPress={handleDonatePress} width={240} hearts={true} />
+      <PracticeStartButton text="Buy us a coffee" onPress={handleDonatePress} width={240} hearts={layout.donateScreen.hearts} />
     </View>
   );
 };

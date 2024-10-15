@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, Dimensions, StyleSheet } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  Dimensions,
+  StyleSheet,
+} from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,7 +16,8 @@ import { APIKeyProvider, useAPIKey } from "./app/context/APIKeyContext";
 import { TabBarVisibilityProvider } from "./app/navigation/TabBarVisibilityContext";
 import { FlashcardProvider } from "./app/context/FlashcardContext";
 import AppNavigator from "./app/navigation/AppNavigator";
-import * as Font from 'expo-font';
+import * as Font from "expo-font";
+import { ReadingProvider } from "./app/context/ReadingContext";
 
 // Keep the splash screen visible while we fetch the resources
 SplashScreen.preventAutoHideAsync();
@@ -23,7 +30,9 @@ const MainApp = () => {
   useEffect(() => {
     async function prepare() {
       try {
-        const hasLaunchedBefore = await AsyncStorage.getItem("hasLaunchedBefore");
+        const hasLaunchedBefore = await AsyncStorage.getItem(
+          "hasLaunchedBefore"
+        );
         if (hasLaunchedBefore === null) {
           await AsyncStorage.setItem("hasLaunchedBefore", "true");
           setShowWelcome(true);
@@ -69,8 +78,8 @@ export default function App() {
 
   const loadFonts = async () => {
     await Font.loadAsync({
-      'Lora': require('./assets/fonts/lora-standard.ttf'),
-      'LibreBaskerville': require('./assets/fonts/libre-baskerville.ttf'),
+      Lora: require("./assets/fonts/lora-standard.ttf"),
+      LibreBaskerville: require("./assets/fonts/libre-baskerville.ttf"),
       // Add other fonts here
     });
     setFontsLoaded(true);
@@ -88,8 +97,10 @@ export default function App() {
       <TabBarVisibilityProvider>
         <SettingsProvider>
           <FlashcardProvider>
-            <StatusBar hidden={true} />
-            <MainApp />
+            <ReadingProvider>
+              <StatusBar hidden={true} />
+              <MainApp />
+            </ReadingProvider>
           </FlashcardProvider>
         </SettingsProvider>
       </TabBarVisibilityProvider>
