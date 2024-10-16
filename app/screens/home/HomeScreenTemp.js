@@ -213,6 +213,7 @@ export default function HomeScreenTemp() {
                 {...props}
               />
             )}
+            onPress={() => navigation.navigate("Help")}
           />
           <BottomWidget
             style={{
