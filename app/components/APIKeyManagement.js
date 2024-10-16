@@ -86,8 +86,8 @@ const APIKeyManagement = () => {
                 style={[styles.input]}
                 value={key}
                 onChangeText={setKey}
-                multiline
                 placeholder="Enter new key"
+                secureTextEntry
               />
               
               <View style={styles.buttonContainer}>

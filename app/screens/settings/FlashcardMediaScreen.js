@@ -68,24 +68,27 @@ const FlashcardMediaScreen = () => {
   );
 
   return (
-    <ScrollView style={[styles.container, {backgroundColor: colors.homeScreenBackground}]}>
-      <View style={[styles.group, {backgroundColor: colors.mainComponentBackground}]}>
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.homeScreenBackground }]}
+      contentContainerStyle={{ paddingBottom: 100 }} // Added padding to the content
+    >
+      <View style={[styles.group, { backgroundColor: colors.mainComponentBackground }]}>
         <SettingSwitch
           label="Generate Flashcards"
           value={settings.flashcardsEnabled}
           onValueChange={() => toggleSetting("flashcardsEnabled")}
         />
         <SettingSwitch
-          label="Choose when to generate flashcards"
+          label="Choose when to generate"
           value={settings.aiDecidesWhenToGenerate}
           onValueChange={() => toggleSetting("aiDecidesWhenToGenerate")}
           onEdit={() => setIsAiDecideModalVisible(true)}
           disabled={!settings.flashcardsEnabled}
         />
       </View>
-      <View style={[styles.group, {marginTop: 30, backgroundColor: colors.mainComponentBackground}]}>
+      <View style={[styles.group, { marginTop: 30, backgroundColor: colors.mainComponentBackground }]}>
         <View style={styles.description}>
-          <Text style={[styles.descriptionText, {color: colors.utilityGrey}]}>FRONT</Text>
+          <Text style={[styles.descriptionText, { color: colors.utilityGrey }]}>FRONT</Text>
         </View>
         {renderSwitch("Word", "flashcardsFrontWord")}
         <Divider />
@@ -96,11 +99,10 @@ const FlashcardMediaScreen = () => {
         {renderSwitch("Custom Module A", "flashcardsFrontModuleA", () => setIsModuleAModalVisible(true))}
         <Divider />
         {renderSwitch("Custom Module B", "flashcardsFrontModuleB", () => setIsModuleBModalVisible(true))}
-        
       </View>
-      <View style={[styles.group, {marginTop: 15, marginBottom: 50, backgroundColor: colors.mainComponentBackground}]}>
+      <View style={[styles.group, { marginTop: 15, backgroundColor: colors.mainComponentBackground }]}>
         <View style={styles.description}>
-          <Text style={[styles.descriptionText, {color: colors.utilityGrey}]}>BACK</Text>
+          <Text style={[styles.descriptionText, { color: colors.utilityGrey }]}>BACK</Text>
         </View>
         {renderSwitch("Word", "flashcardsBackWord")}
         <Divider />
@@ -117,12 +119,13 @@ const FlashcardMediaScreen = () => {
         {renderSwitch("Image", "flashcardsBackImage", () => setIsImageModalVisible(true))}
         <Divider />
         {renderSwitch("Grammar", "flashcardsBackGrammar", () => setIsGrammarModalVisible(true))}
-        <Divider/>
+        <Divider />
         {renderSwitch("Custom Module A", "flashcardsBackModuleA", () => setIsModuleAModalVisible(true))}
-        <Divider/>
+        <Divider />
         {renderSwitch("Custom Module B", "flashcardsBackModuleB", () => setIsModuleBModalVisible(true))}
       </View>
 
+      {/* Modal Components */}
       <PromptEditModal
         isVisible={isGrammarModalVisible}
         onClose={() => setIsGrammarModalVisible(false)}
@@ -163,7 +166,6 @@ const FlashcardMediaScreen = () => {
         greyPromptPart={"Generate a flashcard when the below is true:"}
         onReset={() => updateSettings({ AIDecidesWhenToGeneratePrompt: defaultPrompts.defaultAIDecidesWhenToGeneratePrompt })}
       />
-      
     </ScrollView>
   );
 };
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     flex: 1,
     paddingBottom: 50,
-    marginBottom: 100,
+    marginBottom: 50,
   },
   group: {
     marginHorizontal: 20,

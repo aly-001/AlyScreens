@@ -32,6 +32,7 @@ export default function useDefinitionManager() {
   const [audioLoading, setAudioLoading] = useState(false);
 
   const customErrorAlert = () => {
+    setPopupVisible(false);
     Alert.alert(
       "Troubleshooting Steps",
       "• Check your internet connection.\n• Verify your API key.\n• Ensure you have sufficient credits on your API key.",
@@ -44,6 +45,14 @@ export default function useDefinitionManager() {
 
   const navigateToHelpScreen = () => {
     navigation.navigate("Help"); // Navigate to the Help screen
+  };
+
+  /**
+   * Centralized error handler for LLM calls
+   */
+  const handleLLMError = (error, context) => {
+    console.error(`Error in ${context}:`, error);
+    customErrorAlert();
   };
 
   const handleWebViewMessageDefinition = async (message) => {
@@ -72,13 +81,14 @@ export default function useDefinitionManager() {
     
     const definitionPromise = callLLM(apiKey, definitionPrompt)
       .then((definitionResponse) => {
-        setCurrentDefinition(definitionResponse);
-        setFinished(true);
+        if (definitionResponse === null) {
+          customErrorAlert(); // Trigger alert if response is null
+        } else {
+          setCurrentDefinition(definitionResponse);
+          setFinished(true);
+        }
       })
-      .catch((error) => {
-        console.error("Error fetching definition:", error);
-        customErrorAlert();
-      })
+      .catch((error) => handleLLMError(error, "Definition"))
       .finally(() => {
         setIsLoading(false);
       });
@@ -92,13 +102,14 @@ export default function useDefinitionManager() {
       
       const grammarPromise = callLLM(apiKey, grammarPrompt)
         .then((grammarResponse) => {
-          setCurrentGrammar(grammarResponse);
-          setGrammarFinished(true);
+          if (grammarResponse === null) {
+            customErrorAlert(); // Trigger alert if response is null
+          } else {
+            setCurrentGrammar(grammarResponse);
+            setGrammarFinished(true);
+          }
         })
-        .catch((error) => {
-          console.error("Error fetching grammar explanation:", error);
-          customErrorAlert();
-        })
+        .catch((error) => handleLLMError(error, "Grammar Explanation"))
         .finally(() => {
           setGrammarLoading(false);
         });
@@ -111,7 +122,11 @@ export default function useDefinitionManager() {
       
       const audioPromise = generateAudio(apiKey, processedWord)
         .then((audio) => {
-          setAudioBase64(audio);
+          if (audio === null) {
+            customErrorAlert(); // Trigger alert if audio is null
+          } else {
+            setAudioBase64(audio);
+          }
         })
         .catch((error) => {
           console.error("Error generating audio:", error);
@@ -130,12 +145,13 @@ export default function useDefinitionManager() {
       
       const moduleAPromise = callLLM(apiKey, moduleAPrompt)
         .then((moduleAResponse) => {
-          setCurrentModuleA(moduleAResponse);
+          if (moduleAResponse === null) {
+            customErrorAlert(); // Trigger alert if response is null
+          } else {
+            setCurrentModuleA(moduleAResponse);
+          }
         })
-        .catch((error) => {
-          console.error("Error fetching moduleA explanation:", error);
-          customErrorAlert();
-        })
+        .catch((error) => handleLLMError(error, "ModuleA"))
         .finally(() => {
           setModuleALoading(false);
         });
@@ -149,12 +165,13 @@ export default function useDefinitionManager() {
       
       const moduleBPromise = callLLM(apiKey, moduleBPrompt)
         .then((moduleBResponse) => {
-          setCurrentModuleB(moduleBResponse);
+          if (moduleBResponse === null) {
+            customErrorAlert(); // Trigger alert if response is null
+          } else {
+            setCurrentModuleB(moduleBResponse);
+          }
         })
-        .catch((error) => {
-          console.error("Error fetching moduleB explanation:", error);
-          customErrorAlert();
-        })
+        .catch((error) => handleLLMError(error, "ModuleB"))
         .finally(() => {
           setModuleBLoading(false);
         });
