@@ -54,14 +54,6 @@ const CustomDrawerContent = (props) => {
           </Text>
         </View>
       </View>
-      <View style={styles.drawerGroup}>
-        <DrawerItem
-          label="Configure AI Key"
-          onPress={() => props.navigation.navigate('LLM Key')}
-          isSelected={currentRouteName === 'LLM Key'}
-          colors={colors}
-        />
-      </View>
       
       <View style={styles.drawerGroup}>
         <DrawerItem
@@ -96,7 +88,6 @@ const TabletNavigator = () => (
       overlayColor: 'transparent',
     }}
   >
-    <Drawer.Screen name="LLM Key" component={LLMKeyScreen} />
     <Drawer.Screen name="Translation Popup" component={TranslationPopupScreen} />
     <Drawer.Screen name="Flashcard Media" component={FlashcardMediaScreen} />
     <Drawer.Screen name="Appearance" component={AppearanceScreen} />

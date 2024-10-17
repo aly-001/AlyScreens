@@ -33,15 +33,6 @@ const MainSettingsScreen = ({ navigation }) => {
         { backgroundColor: colors.homeScreenBackground },
       ]}
     >
-
-      <SettingsGroup colors={colors}>
-        <SettingsItem
-          label="Configure AI Key"
-          onPress={() => navigation.navigate("LLM Key")}
-          colors={colors}
-        />
-      </SettingsGroup>
-
       <SettingsGroup colors={colors}>
         <SettingsItem
           label="Translation Popup"

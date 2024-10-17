@@ -157,7 +157,7 @@ export default function PracticeScreenStart() {
           <View
             style={[
               styles.startBoxContainer,
-              orientation === 'Landscape' && { marginBottom: 50 }, // Lift up by 20 in Landscape
+              orientation === 'Landscape' && { bottom: 70}, // Lift up by 20 in Landscape
             ]}
           >
             <PracticeStartButton text="Start" deactivated={true} />
@@ -166,7 +166,7 @@ export default function PracticeScreenStart() {
           <View
             style={[
               styles.startBoxContainer,
-              orientation === 'Landscape' && { marginBottom: -20 }, // Lift up by 20 in Landscape
+              orientation === 'Landscape' && { bottom: 70 }, // Lift up by 20 in Landscape
             ]}
           >
             <PracticeStartButton text="Start" deactivated={false} onPress={startReview} />
@@ -207,6 +207,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    position: "absolute",
+    bottom: 70,
+    left: 0,
+    right: 0,
   },
   sectionTitle: {
     fontSize: layout.fontSize.dictionary.sectionTitle,

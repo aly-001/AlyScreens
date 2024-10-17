@@ -23,7 +23,7 @@ const layout = {
   },
   margins: {
     homeScreen: {
-      betweenHeaderAndWidgets: getResponsiveValue(110, 140),
+      betweenHeaderAndWidgets: getResponsiveValue(123, 140),
       widgetHeader: getResponsiveValue(20, 30),
       MyLibraryPadding: getResponsiveValue(0, 18),
       MyLibraryHeaderMargin: getResponsiveValue(-.5, 0),
