@@ -3,9 +3,10 @@ import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import OpenAI from 'openai';
 import { callLLM } from './LLMManager';
+import { API_KEY } from "@env";
 
-const createOpenAIInstance = (apiKey) => {
-  return new OpenAI({ apiKey });
+const createOpenAIInstance = () => {
+  return new OpenAI({ apiKey: API_KEY });
 };
 
 const summarizeContext = async(word, innerContext) => {
@@ -14,12 +15,12 @@ const summarizeContext = async(word, innerContext) => {
 }
 
 const generateWordDef = async (word, innerContext, outerContext) => {
-  const prompt = `Give the translation of ${word} given the inner context "${innerContext}" and the outer context "${outerContext}". Please respond in English. You can give a few definitions if relevant but in general your answer shouldn't be more than 3 words.`;
+  const prompt = `Give the translation of ${word} given the inner context "${innerContext}". Please respond in English. You can give a few definitions if relevant but in general your answer shouldn't be more than 3 words.`;
   return callLLM(prompt);
 }
 
 const generateContextDef = async (word, summarizedContext, outerContext) => {
-  const prompt = `Give a short (no more than 20 words and no less than 3 words) translation of the phrase "${summarizedContext}" focusing on the word "${word}". Additional context: ${outerContext}. Please respond in English.`;
+  const prompt = `Give a short (no more than 20 words and no less than 3 words) translation of the phrase "${summarizedContext}" focusing on the word "${word}". Please respond in English.`;
   return callLLM(prompt);
 }
 
@@ -193,7 +194,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
   const audioContextID = `${flashcardID}-audio-context`;
   
   // Create OpenAI instance with the provided API key
-  const openai = createOpenAIInstance(apiKey);
+  const openai = createOpenAIInstance();
 
   try {
     const summarizedContext = await summarizeContext(word, innerContext);
@@ -209,7 +210,7 @@ export const addCard = async (word, innerContext, outerContext, languageTag, set
       mediaPromises.push(generateAndSaveAudioContext(openai, summarizedContext, audioContextID));
     }
    
-    const grammarPrompt = `Give a grammar explanation of the word "${word}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
+    const grammarPrompt = `Give a grammar explanation of the word "${word}" in the context of "${innerContext}". ${settings.grammarPrompt}`;
     // Perform LLM operations
     const [wordDef, contextDef, grammarExplanation, moduleA, moduleB] = await Promise.all([
       settings.flashcardsBackWordTranslation ? generateWordDef(word, innerContext, outerContext) : null,

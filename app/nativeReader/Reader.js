@@ -267,7 +267,7 @@ function Reader() {
       const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
       const { innerContext, outerContext } = message;
 
-      addCard(apiKey, capitalizedWord, innerContext, outerContext, 'en', settings)
+      addCard(capitalizedWord, innerContext, outerContext, 'en', settings)
         .then(() => {
           console.log('Card added successfully');
         })
