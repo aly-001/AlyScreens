@@ -2,8 +2,6 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  Dimensions,
-  StyleSheet,
 } from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -25,20 +23,11 @@ SplashScreen.preventAutoHideAsync();
 const MainApp = () => {
   const { apiKey } = useAPIKey();
   const [appIsReady, setAppIsReady] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
     async function prepare() {
       try {
-        const hasLaunchedBefore = await AsyncStorage.getItem(
-          "hasLaunchedBefore"
-        );
-        if (hasLaunchedBefore === null) {
-          await AsyncStorage.setItem("hasLaunchedBefore", "true");
-          setShowWelcome(true);
-        } else {
-          setShowWelcome(!apiKey);
-        }
+        // Removed hasLaunchedBefore logic
       } catch (e) {
         console.warn(e);
       } finally {
@@ -58,16 +47,10 @@ const MainApp = () => {
     return null;
   }
 
-  // AsyncStorage.removeItem("hasLaunchedBefore");
-
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <NavigationContainer>
-        {showWelcome ? (
-          <WelcomeScreen onApiKeySet={() => setShowWelcome(false)} />
-        ) : (
-          <AppNavigator />
-        )}
+        <AppNavigator />
       </NavigationContainer>
     </View>
   );

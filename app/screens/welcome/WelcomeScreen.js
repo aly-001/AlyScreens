@@ -1,148 +1,116 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Alert, 
-  Linking, 
-  Animated, 
-  Keyboard,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import { useAPIKey } from "../../context/APIKeyContext";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, Linking, ScrollView } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import PracticeStartButton from '../../components/PracticeStartButton';
 import { useThemeColors } from '../../config/colors';
 
 const WelcomeScreen = ({ onApiKeySet }) => {
-  const colors = useThemeColors();
-
-  const dismissKeyboard = () => {
-    Keyboard.dismiss();
-  };
-
   const [apiKey, setApiKey] = useState('');
-  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
-  const [showBlank, setShowBlank] = useState(true);
-  const { updateAPIKey } = useAPIKey();
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowBlank(false);
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }).start();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [fadeAnim]);
-
-  useEffect(() => {
-    setIsButtonEnabled(apiKey.trim().length > 0);
-  }, [apiKey]);
+  const [showHelp, setShowHelp] = useState(false);
+  const colors = useThemeColors();
 
   const handleSubmit = async () => {
     if (apiKey.trim()) {
-      const success = await updateAPIKey(apiKey.trim());
-      if (success) {
-        onApiKeySet();
-      } else {
-        Alert.alert('Error', 'Failed to save API key. Please try again.');
-      }
+      // Implement your API key validation and storage logic here
+      onApiKeySet();
     } else {
       Alert.alert('Error', 'Please enter a valid API key');
     }
   };
 
-  const handleInfoPress = () => {
-    Alert.alert(
-      "OpenAI API Key",
-      "To obtain your OpenAI API key, please visit the OpenAI platform.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Visit OpenAI Platform",
-          onPress: () => Linking.openURL("https://platform.openai.com/api-keys"),
-        },
-      ],
-      { cancelable: false }
+  const openOpenAIPlatform = () => {
+    Linking.openURL("https://platform.openai.com/api-keys").catch((err) =>
+      console.error("Failed to open URL:", err)
     );
   };
 
-  if (showBlank) {
-    return <View style={[styles.blankScreen, { backgroundColor: colors.readScreen.primary }]} />;
-  }
+  const toggleHelp = () => {
+    setShowHelp(!showHelp);
+  };
 
   return (
-    <TouchableWithoutFeedback onPress={dismissKeyboard}>
-      <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: colors.readScreen.primary }]}>
-        <Text style={styles.title}>Welcome!</Text>
-        <Text style={styles.subtitle}>To get started, paste your OpenAI API key below</Text>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={[styles.input, { borderColor: colors.utilityGrey }]}
-            value={apiKey}
-            onChangeText={setApiKey}
-            placeholder="Enter your OpenAI API key"
-          />
-          <TouchableOpacity onPress={handleInfoPress} style={styles.infoIcon}>
-            <Ionicons
-              name="information-circle-outline"
-              size={24}
-              color={colors.appleBlue}
-            />
+    <ScrollView style={[styles.container, { backgroundColor: colors.homeScreenBackground }]}>
+      <View style={styles.logoContainer}>
+
+      </View>
+      <Text style={[styles.title, { color: colors.text }]}>Welcome to Aly!</Text>
+      <Text style={[styles.subtitle, { color: colors.text }]}>To get started, paste your OpenAI API key below</Text>
+      
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[styles.input, { borderColor: colors.utilityGrey, color: colors.text }]}
+          value={apiKey}
+          onChangeText={setApiKey}
+          placeholder="Enter your OpenAI API key"
+          placeholderTextColor={colors.utilityGrey}
+        />
+        <TouchableOpacity onPress={toggleHelp} style={styles.infoIcon}>
+          <FontAwesome name="question-circle" size={24} color={colors.appleBlue} />
+        </TouchableOpacity>
+      </View>
+
+      <PracticeStartButton
+        text="Start"
+        onPress={handleSubmit}
+        deactivated={!apiKey.trim()}
+        width={200}
+      />
+
+      {showHelp && (
+        <View style={styles.helpSection}>
+          <Text style={[styles.helpHeader, { color: colors.text }]}>API Key Setup</Text>
+          <Text style={[styles.helpContent, { color: colors.text }]}>
+            1. Sign in or create an account on OpenAI Platform.
+            2. Verify your phone number, if needed.
+            3. Click on "Create New Secret Key" and name it.
+            4. Save your key securely.
+            5. Navigate to Settings → Organization → Billing.
+            6. Add your payment details, if required.
+            7. Purchase credits. $10 worth should last a few months.
+            8. Paste your key here and press "Start".
+          </Text>
+          <TouchableOpacity
+            style={[styles.helpButton, { backgroundColor: colors.buttonBackground }]}
+            onPress={openOpenAIPlatform}
+          >
+            <Text style={[styles.helpButtonText, { color: colors.highlightColor }]}>Open OpenAI Platform</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity 
-          style={[styles.button, !isButtonEnabled && styles.buttonDisabled, { backgroundColor: isButtonEnabled ? colors.appleBlue : colors.utilityGrey }]}
-          onPress={handleSubmit}
-          disabled={!isButtonEnabled}
-        >
-          <Text style={[styles.buttonText, !isButtonEnabled && styles.buttonTextDisabled]}>Start</Text>
-        </TouchableOpacity>
-        <Text style={styles.subtitle2}>The key is stored securely on your device, and does not leave your device.</Text>
-        <Text style={[styles.disclaimer, { color: colors.utilityGrey }]}>
-          Note: While we utilize the OpenAI API, we are not endorsed,
-          sponsored by, or affiliated with OpenAI. We're an independent
-          application striving to provide value through AI technology.
-        </Text>
-      </Animated.View>
-    </TouchableWithoutFeedback>
+      )}
+
+      <Text style={[styles.disclaimer, { color: colors.utilityGrey }]}>
+        Note: Your API key is stored securely on your device and is not shared with anyone.
+      </Text>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  blankScreen: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    textAlign: 'center',
+    marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 30,
-  },
-  subtitle2: {
-    fontSize: 13,
-    textAlign: 'center',
-    marginTop: 10,
-    color: "red",
+    marginBottom: 20,
   },
   inputContainer: {
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
@@ -157,23 +125,33 @@ const styles = StyleSheet.create({
   infoIcon: {
     marginLeft: 10,
   },
-  button: {
-    padding: 10,
-    borderRadius: 5,
-    width: '100%',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   disclaimer: {
-    width: "70%",
-    marginTop: 40,
     fontSize: 12,
     textAlign: 'center',
-    paddingHorizontal: 10,
+    marginTop: 20,
+  },
+  helpSection: {
+    marginTop: 20,
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  helpHeader: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  helpContent: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  helpButton: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  helpButtonText: {
+    fontWeight: 'bold',
   },
 });
 

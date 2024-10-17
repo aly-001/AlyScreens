@@ -2,14 +2,14 @@ import OpenAI from "openai";
 import { Buffer } from 'buffer';
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-
-const createOpenAIInstance = (apiKey) => {
-  return new OpenAI({ apiKey });
+import { API_KEY } from "@env";
+const createOpenAIInstance = () => {
+  return new OpenAI({ apiKey: API_KEY });
 };
 
-export async function callLLM(apiKey, prompt) {
+export async function callLLM(prompt) {
   try {
-    const openai = createOpenAIInstance(apiKey);
+    const openai = createOpenAIInstance();
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
@@ -21,9 +21,9 @@ export async function callLLM(apiKey, prompt) {
   }
 }
 
-export const generateAudio = async (apiKey, word) => {
+export const generateAudio = async (word) => {
   try {
-    const openai = createOpenAIInstance(apiKey);
+    const openai = createOpenAIInstance();
     const response = await openai.audio.speech.create({
       model: "tts-1",
       voice: "alloy",
@@ -43,9 +43,9 @@ const TrueFalseResponse = z.object({
   result: z.boolean(),
 });
 
-export async function callLLMTrueFalse(apiKey, prompt) {
+export async function callLLMTrueFalse(prompt) {
   try {
-    const openai = createOpenAIInstance(apiKey);
+    const openai = createOpenAIInstance();
     const completion = await openai.beta.chat.completions.parse({
       model: "gpt-4o-mini",
       messages: [

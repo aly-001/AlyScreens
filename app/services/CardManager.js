@@ -8,35 +8,35 @@ const createOpenAIInstance = (apiKey) => {
   return new OpenAI({ apiKey });
 };
 
-const summarizeContext = async(apiKey, word, innerContext) =>{
+const summarizeContext = async(word, innerContext) => {
   const prompt = `I’ve got two variables: word, innerContext. Your job is to summarize innerContext. For example, word: “éclairée” innerContext: “connaissance. C'était une grande salle éclairée par cinq ou six fenêtres, au-de”. You need to answer: “Une grande salle éclairée par cinq ou six fenêtres.”  Note that your final answer should include the word. Here are the variables: word: ${word}, innerContext: ${innerContext}. Don't put any quotes around your answer.`;
-  return callLLM(apiKey, prompt);
+  return callLLM(prompt);
 }
 
-const generateWordDef = async (apiKey, word, innerContext, outerContext) => {
+const generateWordDef = async (word, innerContext, outerContext) => {
   const prompt = `Give the translation of ${word} given the inner context "${innerContext}" and the outer context "${outerContext}". Please respond in English. You can give a few definitions if relevant but in general your answer shouldn't be more than 3 words.`;
-  return callLLM(apiKey, prompt);
+  return callLLM(prompt);
 }
 
-const generateContextDef = async (apiKey, word, summarizedContext, outerContext) => {
+const generateContextDef = async (word, summarizedContext, outerContext) => {
   const prompt = `Give a short (no more than 20 words and no less than 3 words) translation of the phrase "${summarizedContext}" focusing on the word "${word}". Additional context: ${outerContext}. Please respond in English.`;
-  return callLLM(apiKey, prompt);
+  return callLLM(prompt);
 }
 
-const generateGrammarExplanation = async (apiKey, word, innerContext, outerContext, prompt) => {
-  return callLLM(apiKey, prompt);
+const generateGrammarExplanation = async (word, innerContext, outerContext, prompt) => {
+  return callLLM(prompt);
 }
 
-const generateCustomModuleA = async (apiKey, word, innerContext, outerContext, prompt) => {
+const generateCustomModuleA = async (word, innerContext, outerContext, prompt) => {
   const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
   const fullPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${prompt}`;
-  return callLLM(apiKey, fullPrompt);
+  return callLLM(fullPrompt);
 }
 
-const generateCustomModuleB = async (apiKey, word, innerContext, outerContext, prompt) => {
+const generateCustomModuleB = async (word, innerContext, outerContext, prompt) => {
   const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
   const fullPrompt = `Use "${capitalizedWord}" in the context of "${innerContext}" and "${outerContext}". ${prompt}`;
-  return callLLM(apiKey, fullPrompt);
+  return callLLM(fullPrompt);
 }
 
 const generateAndSaveImage = async (openai, word, innerContext, imageID, imagePrompt) => {
@@ -184,7 +184,7 @@ class DatabaseManager {
 
 export const dbManager = new DatabaseManager();
 
-export const addCard = async (apiKey, word, innerContext, outerContext, languageTag, settings) => {
+export const addCard = async (word, innerContext, outerContext, languageTag, settings) => {
   console.log("Word in addCard:", word);
   const db = await dbManager.getConnection();
   const flashcardID = generateId();
@@ -196,7 +196,7 @@ export const addCard = async (apiKey, word, innerContext, outerContext, language
   const openai = createOpenAIInstance(apiKey);
 
   try {
-    const summarizedContext = await summarizeContext(apiKey, word, innerContext);
+    const summarizedContext = await summarizeContext(word, innerContext);
     
     const mediaPromises = [];
     if (settings.flashcardsBackImage) {
@@ -212,11 +212,11 @@ export const addCard = async (apiKey, word, innerContext, outerContext, language
     const grammarPrompt = `Give a grammar explanation of the word "${word}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
     // Perform LLM operations
     const [wordDef, contextDef, grammarExplanation, moduleA, moduleB] = await Promise.all([
-      settings.flashcardsBackWordTranslation ? generateWordDef(apiKey, word, innerContext, outerContext) : null,
-      settings.flashcardsBackContextTranslation ? generateContextDef(apiKey, word, summarizedContext, outerContext) : null,
-      (settings.flashcardsFrontGrammar || settings.flashcardsBackGrammar) ? generateGrammarExplanation(apiKey, word, innerContext, outerContext, grammarPrompt) : null,
-      (settings.flashcardsFrontModuleA || settings.flashcardsBackModuleA) ? generateCustomModuleA(apiKey, word, innerContext, outerContext, settings.moduleAPrompt) : null,
-      (settings.flashcardsFrontModuleB || settings.flashcardsBackModuleB) ? generateCustomModuleB(apiKey, word, innerContext, outerContext, settings.moduleBPrompt) : null,
+      settings.flashcardsBackWordTranslation ? generateWordDef(word, innerContext, outerContext) : null,
+      settings.flashcardsBackContextTranslation ? generateContextDef(word, summarizedContext, outerContext) : null,
+      (settings.flashcardsFrontGrammar || settings.flashcardsBackGrammar) ? generateGrammarExplanation(word, innerContext, outerContext, grammarPrompt) : null,
+      (settings.flashcardsFrontModuleA || settings.flashcardsBackModuleA) ? generateCustomModuleA(word, innerContext, outerContext, settings.moduleAPrompt) : null,
+      (settings.flashcardsFrontModuleB || settings.flashcardsBackModuleB) ? generateCustomModuleB(word, innerContext, outerContext, settings.moduleBPrompt) : null,
     ]);
     
     const cardDataFront = {

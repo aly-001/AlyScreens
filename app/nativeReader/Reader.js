@@ -253,7 +253,6 @@ function Reader() {
     setWordPressLocation(pressObject.location);
     handleWebViewMessageDefinition(pressObject);
     const result = await callLLMTrueFalse(
-      apiKey,
       `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`
     );
     console.log("LLM True/False:", result?.result);

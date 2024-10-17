@@ -79,7 +79,7 @@ export default function useDefinitionManager() {
     // Start the LLM request for the definition
     const definitionPrompt = `Give a translation of the word "${processedWord}" in the context of "${innerContext}". ${settings.translationPrompt}`;
     
-    const definitionPromise = callLLM(apiKey, definitionPrompt)
+    const definitionPromise = callLLM(definitionPrompt)
       .then((definitionResponse) => {
         if (definitionResponse === null) {
           customErrorAlert(); // Trigger alert if response is null
@@ -100,7 +100,7 @@ export default function useDefinitionManager() {
       setGrammarLoading(true);
       const grammarPrompt = `Give a grammar explanation of the word "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.grammarPrompt}`;
       
-      const grammarPromise = callLLM(apiKey, grammarPrompt)
+      const grammarPromise = callLLM(grammarPrompt)
         .then((grammarResponse) => {
           if (grammarResponse === null) {
             customErrorAlert(); // Trigger alert if response is null
@@ -120,7 +120,7 @@ export default function useDefinitionManager() {
     if (settings.translationPopupAudio) {
       setAudioLoading(true);
       
-      const audioPromise = generateAudio(apiKey, processedWord)
+      const audioPromise = generateAudio(processedWord)
         .then((audio) => {
           if (audio === null) {
             customErrorAlert(); // Trigger alert if audio is null
@@ -143,7 +143,7 @@ export default function useDefinitionManager() {
       setModuleALoading(true);
       const moduleAPrompt = `Use "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleAPrompt}`;
       
-      const moduleAPromise = callLLM(apiKey, moduleAPrompt)
+      const moduleAPromise = callLLM(moduleAPrompt)
         .then((moduleAResponse) => {
           if (moduleAResponse === null) {
             customErrorAlert(); // Trigger alert if response is null
@@ -163,7 +163,7 @@ export default function useDefinitionManager() {
       setModuleBLoading(true);
       const moduleBPrompt = `Use "${processedWord}" in the context of "${innerContext}" and "${outerContext}". ${settings.moduleBPrompt}`;
       
-      const moduleBPromise = callLLM(apiKey, moduleBPrompt)
+      const moduleBPromise = callLLM(moduleBPrompt)
         .then((moduleBResponse) => {
           if (moduleBResponse === null) {
             customErrorAlert(); // Trigger alert if response is null
