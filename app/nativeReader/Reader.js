@@ -255,6 +255,7 @@ function Reader() {
     const result = await callLLMTrueFalse(
       `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`
     );
+    console.log("prompt to LLM: ", `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`);
     console.log("LLM True/False:", result?.result);
     if (settings.flashcardsEnabled && result?.result) {
       handleAddCard(pressObject); // **Call the new function to add a card**
@@ -263,10 +264,11 @@ function Reader() {
 
   const handleAddCard = (message) => {
     if (message.word && message.innerContext && message.outerContext) {
-      const cleanWord = message.word.replace(/^[^\w]+|[^\w]+$/g, '');
+      // Updated regex to include all Unicode letters (Cyrillic, Hebrew, Arabic, etc.)
+      const cleanWord = message.word.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, '');
       const capitalizedWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
       const { innerContext, outerContext } = message;
-
+  
       addCard(capitalizedWord, innerContext, outerContext, 'en', settings)
         .then(() => {
           console.log('Card added successfully');

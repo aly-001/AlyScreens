@@ -10,7 +10,7 @@ import { StatusBar } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import WelcomeScreen from "./app/screens/welcome/WelcomeScreen";
 import { SettingsProvider } from "./app/context/useSettingsContext";
-import { APIKeyProvider, useAPIKey } from "./app/context/APIKeyContext";
+import { APIKeyProvider } from "./app/context/APIKeyContext";
 import { TabBarVisibilityProvider } from "./app/navigation/TabBarVisibilityContext";
 import { FlashcardProvider } from "./app/context/FlashcardContext";
 import AppNavigator from "./app/navigation/AppNavigator";
@@ -21,13 +21,21 @@ import { ReadingProvider } from "./app/context/ReadingContext";
 SplashScreen.preventAutoHideAsync();
 
 const MainApp = () => {
-  const { apiKey } = useAPIKey();
   const [appIsReady, setAppIsReady] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     async function prepare() {
       try {
-        // Removed hasLaunchedBefore logic
+        const hasLaunchedBefore = await AsyncStorage.getItem(
+          "hasLaunchedBefore"
+        );
+        if (hasLaunchedBefore === null) {
+          await AsyncStorage.setItem("hasLaunchedBefore", "true");
+          setShowWelcome(true);
+        } else {
+          setShowWelcome(false);
+        }
       } catch (e) {
         console.warn(e);
       } finally {
@@ -35,13 +43,17 @@ const MainApp = () => {
       }
     }
     prepare();
-  }, [apiKey]);
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
     }
   }, [appIsReady]);
+
+  const handleStart = () => {
+    setShowWelcome(false);
+  };
 
   if (!appIsReady) {
     return null;
@@ -50,11 +62,17 @@ const MainApp = () => {
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <NavigationContainer>
-        <AppNavigator />
+        {showWelcome ? (
+          <WelcomeScreen onClickStart={handleStart} />
+        ) : (
+          <AppNavigator />
+        )}
       </NavigationContainer>
     </View>
   );
 };
+
+// AsyncStorage.removeItem("hasLaunchedBefore");
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -90,3 +108,12 @@ export default function App() {
     </APIKeyProvider>
   );
 }
+
+// export default function App() {
+//   return (
+//     <SettingsProvider>
+
+//     <WelcomeScreen /> 
+//     </SettingsProvider>
+//   )
+// }

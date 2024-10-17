@@ -7,7 +7,6 @@ import {
   Linking,
   ScrollView,
 } from "react-native";
-
 import { useThemeColors } from "../../config/colors";
 
 const HelpScreen = () => {
@@ -23,6 +22,12 @@ const HelpScreen = () => {
     Linking.openURL(
       "https://drive.google.com/file/d/1maN375YMhuC_oRqR9Wq50YZyra6h631Q/view?usp=sharing"
     ).catch((err) => console.error("Failed to open URL:", err));
+  };
+
+  const openGutenberg = () => {
+    Linking.openURL("https://www.gutenberg.org/").catch((err) =>
+      console.error("Failed to open URL:", err)
+    );
   };
 
   return (
@@ -65,9 +70,38 @@ const HelpScreen = () => {
         </View>
       </View>
 
+      {/* How to upload books Section */}
       <Text style={[styles.header, { color: colors.text }]}>
         <Text style={styles.bold}>How to upload books</Text>
       </Text>
+      <View style={styles.indentedSection}>
+        <Text style={[styles.content, { color: colors.text }]}>
+          1. Head over to Project Gutenberg to download free EPUB books:
+        </Text>
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: colors.buttonBackground }]}
+          onPress={openGutenberg}
+        >
+          <Text style={[styles.buttonText, { color: colors.highlightColor }]}>
+            Open Project Gutenberg
+          </Text>
+        </TouchableOpacity>
+        <Text style={[styles.content, { color: colors.text }]}>
+          2. <Text style={styles.bold}>Download a book</Text> to your device in <Text style={styles.bold}>.epub format</Text>.
+        </Text>
+        <Text style={[styles.content, { color: colors.text }]}>
+          3. Open Aly, go to <Text style={styles.bold}>library</Text>, then click <Text style={styles.bold}>upload</Text>.
+        </Text>
+        <Text style={[styles.content, { color: colors.text }]}>
+          4. Go to <Text style={styles.bold}>browse</Text>. If necessary, click the <Text style={styles.bold}>back arrow on the top left</Text> of the browse window.
+        </Text>
+        <Text style={[styles.content, { color: colors.text }]}>
+          5. Find your downloaded book and <Text style={styles.bold}>select it</Text>.
+        </Text>
+        <Text style={[styles.content, { color: colors.text }]}>
+          6. You're good to go! You can now open the book by clicking on it from the library screen or from the homepage.
+        </Text>
+      </View>
 
       <View style={{ height: 120 }} />
     </ScrollView>
