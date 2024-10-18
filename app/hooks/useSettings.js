@@ -24,7 +24,7 @@ const useSettings = () => {
     flashcardsBackContextAudio: false,
     flashcardsBackImage: true,
     flashcardsBackGrammar: false,
-    flahscardsBackModuleA: false,
+    flashcardsBackModuleA: false,
     flashcardsBackModuleB: false,
     languageTag: 'en-US',
     translationPrompt: defaultPrompts.defaultTranslationPrompt,

@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import OpenAI from 'openai';
 import { callLLM } from './LLMManager';
-import { API_KEY } from "@env";
+const API_KEY = process.env.API_KEY;
 
 const createOpenAIInstance = () => {
   return new OpenAI({ apiKey: API_KEY });

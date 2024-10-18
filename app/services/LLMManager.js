@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { Buffer } from 'buffer';
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
-import { API_KEY } from "@env";
+const API_KEY = process.env.API_KEY;
 const createOpenAIInstance = () => {
   return new OpenAI({ apiKey: API_KEY });
 };

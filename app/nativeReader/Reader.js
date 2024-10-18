@@ -11,7 +11,7 @@ import * as FileSystem from "expo-file-system";
 
 import ChapterContent from "./ChapterContent";
 import TableOfContents from "./TableOfContents";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import useDefinitionManager from "../hooks/useDefinitionManager";
 import DefinitionPopup from "../components/DefinitionPopup";
 import { addCard } from "../services/CardManager";
@@ -35,6 +35,15 @@ function Reader() {
       setBookDirName(routeBookDirName);
     }
   }, [bookDirName, routeBookDirName, setBookDirName]);
+
+  // **New: Reload content when the screen gains focus**
+  useFocusEffect(
+    React.useCallback(() => {
+      if (bookDirName) {
+        loadBook();
+      }
+    }, [bookDirName])
+  );
 
   const bookDirectory = bookDirName
     ? `${FileSystem.documentDirectory}bookjs/${bookDirName}/`
@@ -252,13 +261,33 @@ function Reader() {
   const handlePress = async (pressObject) => {
     setWordPressLocation(pressObject.location);
     handleWebViewMessageDefinition(pressObject);
-    const result = await callLLMTrueFalse(
-      `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`
-    );
-    console.log("prompt to LLM: ", `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`);
-    console.log("LLM True/False:", result?.result);
-    if (settings.flashcardsEnabled && result?.result) {
-      handleAddCard(pressObject); // **Call the new function to add a card**
+    console.log("Settings:", settings.flashcardsEnabled, settings.AIDecidesWhenToGenerate, settings.AIDecidesWhenToGeneratePrompt);
+
+    if (settings.flashcardsEnabled) {
+      if (settings.AIDecidesWhenToGenerate) {
+        // AI decides whether to add a card
+        const result = await callLLMTrueFalse(
+          `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`
+        );
+        console.log(
+          "prompt to LLM: ",
+          `Generate true/false based on the word: "${pressObject.word}" and the query below: ${settings.AIDecidesWhenToGeneratePrompt}. Here's a little more context: ${pressObject.innerContext}`
+        );
+        console.log("LLM True/False:", result?.result);
+        if (result?.result) {
+          handleAddCard(pressObject);
+          console.log("CARD ADDED WITH AI DECISION");
+        } else {
+          console.log("CARD NOT ADDED WITH AI DECISION");
+        }
+      } else {
+        // Always add a card without calling AI
+        handleAddCard(pressObject);
+        console.log("CARD ADDED WITHOUT AI DECISION");
+      }
+    } else {
+      // Do not call AI or add a card
+      console.log("CARD NOT ADDED");
     }
   };
 

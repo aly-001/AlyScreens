@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef, useState, useEffect, useContext } from "react";
 import { View, StyleSheet, Animated, Alert } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import ScreenHeader from "../../components/ScreenHeader";
@@ -17,6 +17,7 @@ import {
   getMatureCards,
 } from "../../context/FlashcardContext";
 import * as FileSystem from 'expo-file-system';
+import { ReadingContext } from '../../context/ReadingContext'; // Imported ReadingContext
 
 export default function HomeScreenTemp() {
   const colors = useThemeColors();
@@ -31,6 +32,8 @@ export default function HomeScreenTemp() {
   const [books, setBooks] = useState([]);
   const bookDirectory = `${FileSystem.documentDirectory}bookjs/`;
 
+  const { setBookDirName } = useContext(ReadingContext); // Using the context
+  
   useEffect(() => {
     initializeDatabase();
     loadBooks();
@@ -130,7 +133,8 @@ export default function HomeScreenTemp() {
   };
 
   const handleBookPress = (book) => {
-    navigation.navigate('Reader', { bookDirName: book.id });
+    setBookDirName(book.id); // Update the context with the selected book
+    navigation.navigate('Reader');
   };
 
   const handleBookLongPress = (book) => {

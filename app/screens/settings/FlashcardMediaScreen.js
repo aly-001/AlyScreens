@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { useSettingsContext } from "../../context/useSettingsContext";
 import SettingSwitch from "../../components/SettingsSwitch";
@@ -14,11 +14,11 @@ const FlashcardMediaScreen = () => {
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [isModuleAModalVisible, setIsModuleAModalVisible] = useState(false);
   const [isModuleBModalVisible, setIsModuleBModalVisible] = useState(false);
-  const [isAiDecideModalVisible, setIsAiDecideModalVisible] = useState(false);
+  const [isAIDecideModalVisible, setIsAIDecideModalVisible] = useState(false);
 
   // Mapping of settings to their corresponding modal setters
   const settingToModalMap = {
-    aiDecidesWhenToGenerate: () => setIsAiDecideModalVisible(true),
+    AIDecidesWhenToGenerate: () => setIsAIDecideModalVisible(true),
     flashcardsFrontGrammar: () => setIsGrammarModalVisible(true),
     flashcardsBackGrammar: () => setIsGrammarModalVisible(true),
     flashcardsBackImage: () => setIsImageModalVisible(true),
@@ -45,7 +45,7 @@ const FlashcardMediaScreen = () => {
 
     // If "Generate Flashcards" is being turned off, also turn off "AI decides when to generate"
     if (setting === "flashcardsEnabled" && !newSettings[setting]) {
-      newSettings.aiDecidesWhenToGenerate = false;
+      newSettings.AIDecidesWhenToGenerate = false;
     }
 
     updateSettings(newSettings);
@@ -55,6 +55,12 @@ const FlashcardMediaScreen = () => {
       settingToModalMap[setting]();
     }
   };
+
+  // effect hook to log AI decides when to generate and flashcards enabled
+  useEffect(() => {
+    console.log("++++++++++++++++AI decides when to generate:", settings.AIDecidesWhenToGenerate);
+    console.log("++++++++++++++++Flashcards enabled:", settings.flashcardsEnabled);
+  }, [settings.AIDecidesWhenToGenerate, settings.flashcardsEnabled]);
 
   const renderSwitch = (label, setting, onEdit = null) => (
     <SettingSwitch
@@ -80,9 +86,9 @@ const FlashcardMediaScreen = () => {
         />
         <SettingSwitch
           label="Choose when to generate"
-          value={settings.aiDecidesWhenToGenerate}
-          onValueChange={() => toggleSetting("aiDecidesWhenToGenerate")}
-          onEdit={() => setIsAiDecideModalVisible(true)}
+          value={settings.AIDecidesWhenToGenerate}
+          onValueChange={() => toggleSetting("AIDecidesWhenToGenerate")}
+          onEdit={() => setIsAIDecideModalVisible(true)}
           disabled={!settings.flashcardsEnabled}
         />
       </View>
@@ -159,8 +165,8 @@ const FlashcardMediaScreen = () => {
         onReset={() => updateSettings({ moduleBPrompt: defaultPrompts.defaultModuleBPrompt })}
       />
       <PromptEditModal
-        isVisible={isAiDecideModalVisible}
-        onClose={() => setIsAiDecideModalVisible(false)}
+        isVisible={isAIDecideModalVisible}
+        onClose={() => setIsAIDecideModalVisible(false)}
         promptType="AIDecidesWhenToGeneratePrompt"
         initialPrompt={settings.AIDecidesWhenToGeneratePrompt}
         greyPromptPart={"Generate a flashcard when the below is true:"}

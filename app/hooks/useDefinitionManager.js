@@ -35,7 +35,7 @@ export default function useDefinitionManager() {
     setPopupVisible(false);
     Alert.alert(
       "Troubleshooting Steps",
-      "• Check your internet connection.\n• Verify your API key.\n• Ensure you have sufficient credits on your API key.",
+      "• Check your internet connection.",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Go to Help", onPress: () => navigateToHelpScreen() } // Updated handler
