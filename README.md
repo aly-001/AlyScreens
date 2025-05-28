@@ -9,7 +9,7 @@ This project is an Expo + React-Native app that needs an OpenAI key. Follow thes
 ## 1  Clone & install
 ```bash
 # clone the repo and enter the project
- git clone <repo-url>
+ git clone https://github.com/aly-001/AlyScreens.git
  cd new/AlyScreens
 
 # install JS dependencies
