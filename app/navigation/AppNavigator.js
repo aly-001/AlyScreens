@@ -2,11 +2,11 @@
    import React from 'react';
    import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
    import HomeNavigator from './HomeNavigator';
-   import Reader from '../nativeReader/reader';
+   import Reader from '../nativeReader/Reader';
    import PracticeNavigator from './PracticeNavigator';
    import SettingsNavigator from './SettingsNavigator';
    import { useThemeColors } from '../config/colors';
-   import CustomBar from '../components/CustomBar';
+   import CustomBar from '../components/misc/CustomBar';
 
    const Tab = createBottomTabNavigator();
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import APIKeyManagement from '../../components/APIKeyManagement';
+import APIKeyManagement from '../../components/settings/APIKeyManagement';
 import { useThemeColors } from '../../config/colors';
 
 const SettingsScreen = () => {

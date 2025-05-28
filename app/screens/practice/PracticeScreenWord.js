@@ -2,10 +2,10 @@ import React from "react";
 import { View, StyleSheet, Text, SafeAreaView, StatusBar, TouchableWithoutFeedback } from 'react-native';
 
 import { useThemeColors } from "../../config/colors";
-import PracticeStatsFooter from "../../components/PracticeStatsFooter";
+import PracticeStatsFooter from "../../components/practice/PracticeStatsFooter";
 import { useFlashcards } from "../../context/FlashcardContext";
-import FlashcardModuleBox from "../../components/FlashcardModuleBox";
-import FlashcardModuleBoxGeneral from "../../components/FlashcardModuleBoxGeneral";
+import FlashcardModuleBox from "../../components/practice/FlashcardModuleBox";
+import FlashcardModuleBoxGeneral from "../../components/practice/FlashcardModuleBoxGeneral";
 import Markdown from 'react-native-markdown-display';
 import layout from "../../config/layout";
 

@@ -18,13 +18,11 @@ import { Audio } from "expo-av";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { BlurView } from 'expo-blur';
 import { useThemeColors } from "../../config/colors";
-import PracticeStatsFooter from "../../components/PracticeStatsFooter";
-import PracticeRatingTab from "../../components/PracticeRatingTab";
-import PracticeDividerLine from "../../components/PracticeDividerLine";
-import PracticeAudio from "../../components/PracticeAudio";
+import PracticeRatingTab from "../../components/practice/PracticeRatingTab";
+import PracticeAudio from "../../components/practice/PracticeAudio";
 import { useFlashcards } from "../../context/FlashcardContext";
-import FlashcardModuleBox from "../../components/FlashcardModuleBox";
-import FlashcardModuleBoxGeneral from "../../components/FlashcardModuleBoxGeneral";
+import FlashcardModuleBox from "../../components/practice/FlashcardModuleBox";
+import FlashcardModuleBoxGeneral from "../../components/practice/FlashcardModuleBoxGeneral";
 import layout from "../../config/layout";
 import Markdown from "react-native-markdown-display";
 

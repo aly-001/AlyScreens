@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { useSettingsContext } from "../../context/useSettingsContext";
-import SettingSwitch from "../../components/SettingsSwitch";
+import SettingSwitch from "../../components/settings/SettingsSwitch";
 import { useThemeColors } from "../../config/colors";
 import { Divider } from "react-native-paper";
-import PromptEditModal from "../../components/PromptEditModal";
+import PromptEditModal from "../../components/settings/PromptEditModal";
 import defaultPrompts from "../../config/defaultPrompts.json";
 
 const FlashcardMediaScreen = () => {

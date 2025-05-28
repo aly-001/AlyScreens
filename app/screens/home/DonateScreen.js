@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Linking } from 'react-native';
 import colors from '../../config/colors';
-import PracticeStartButton from '../../components/PracticeStartButton';
+import PracticeStartButton from '../../components/practice/PracticeStartButton';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import layout from '../../config/layout';
 

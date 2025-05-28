@@ -1,14 +1,14 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { View, StyleSheet, Animated, Alert } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import ScreenHeader from "../../components/ScreenHeader";
+import ScreenHeader from "../../components/misc/ScreenHeader";
 import { FontAwesome6, FontAwesome5 } from "@expo/vector-icons";
 import { useThemeColors } from "../../config/colors";
 import layout from "../../config/layout";
-import MyLibrary from "../../components/MyLibrary";
-import BottomWidget from "../../components/BottomWidget";
+import MyLibrary from "../../components/home/MyLibrary";
+import BottomWidget from "../../components/home/BottomWidget";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import StatBoxMax from "../../components/StatBoxMax";
+import StatBoxMax from "../../components/home/StatBoxMax";
 import { DolphinSR } from "../../../lib/index";
 import * as SQLite from "expo-sqlite";
 import {
@@ -17,8 +17,6 @@ import {
   getMatureCards,
 } from "../../context/FlashcardContext";
 import * as FileSystem from 'expo-file-system';
-import * as DocumentPicker from 'expo-document-picker';
-import BookCoverThumb from "../../components/BookCoverThumb";
 
 export default function HomeScreen() {
   const colors = useThemeColors();

@@ -15,14 +15,13 @@ import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome6 } from "@expo/vector-icons";
 
-import EpubPicker from "../../components/EpubPicker";
 import EpubReader from "../../reader/EpubReader";
-import DefinitionPopup from "../../components/DefinitionPopup";
+import DefinitionPopup from "../../components/popup-card/DefinitionPopup";
 import useEpubManager from "../../hooks/useEpubManager";
 import useDefinitionManager from "../../hooks/useDefinitionManager";
 import LocationPointer from "../../components/LocationPointer";
 import colors from "../../config/colors";
-import BookHiddenFooter from "../../components/BookHiddenFooter";
+import BookHiddenFooter from "../../components/read/BookHiddenFooter";
 import { useTabBarVisibility } from "../../navigation/TabBarVisibilityContext";
 import { addCard } from "../../services/CardManager";
 

@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useThemeColors } from "../../config/colors";
-import Screen from "../../components/Screen";
-import ScreenHeader from "../../components/ScreenHeader";
+import Screen from "../../components/misc/Screen";
 import layout from "../../config/layout";
 import { DolphinSR } from "../../../lib/index";
 import * as SQLite from "expo-sqlite";
@@ -17,8 +16,8 @@ import {
   getYoungCards,
   getMatureCards,
 } from "../../context/FlashcardContext";
-import Word from "../../components/Word";
-import FlashcardBackModal from "../../components/FlashcardBackModal";
+import Word from "../../components/practice/Word";
+import FlashcardBackModal from "../../components/practice/FlashcardBackModal";
 
 const DictionaryScreen = () => {
   const colors = useThemeColors();

@@ -13,7 +13,7 @@ import ChapterContent from "./ChapterContent";
 import TableOfContents from "./TableOfContents";
 import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import useDefinitionManager from "../hooks/useDefinitionManager";
-import DefinitionPopup from "../components/DefinitionPopup";
+import DefinitionPopup from "../components/popup-card/DefinitionPopup";
 import { addCard } from "../services/CardManager";
 import { useAPIKey } from "../context/APIKeyContext";
 import { useSettingsContext } from "../context/useSettingsContext";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import PracticeStartButton from "../../components/PracticeStartButton";
+import PracticeStartButton from "../../components/practice/PracticeStartButton";
 
 const WelcomeScreen = ({ onClickStart }) => {
   const fullText = 'Welcome to Aly!';

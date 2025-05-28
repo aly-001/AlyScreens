@@ -12,9 +12,9 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { useNavigation } from '@react-navigation/native';
 import colors, { useThemeColors } from "../config/colors";
-import BookCoverThumb from "../components/BookCoverThumb";
-import Screen from "../components/Screen";
-import ScreenHeader from "../components/ScreenHeader";
+import BookCoverThumb from "../components/home/BookCoverThumb";
+import Screen from "../components/misc/Screen";
+import ScreenHeader from "../components/misc/ScreenHeader";
 import layout from "../config/layout";
 import {
   loadEpubFromUri,
@@ -25,7 +25,7 @@ import {
   processHtmlContent,
 } from "./epubHandler";
 import { hexToHSL, generateUniqueSoftColor } from "./BookUtils";
-import PracticeStartButton from "../components/PracticeStartButton"; // Imported the PracticeStartButton component
+import PracticeStartButton from "../components/practice/PracticeStartButton"; // Imported the PracticeStartButton component
 import { ReadingContext } from '../context/ReadingContext'; // Import the ReadingContext
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
