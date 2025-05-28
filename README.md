@@ -2,6 +2,8 @@
 
 *Aly is a language-learning e-reader that lets you tap words, see AI-generated translations, save them as spaced-repetition flashcards, and even generate eye-catching DALL·E artwork and TTS audio for each term.*
 
+See a demo here: https://drive.google.com/file/d/1BI4_XZMBIcx8cZBSuewXiBIWibFkP3y3/view?usp=sharing
+
 This project is an Expo + React-Native app that needs an OpenAI key. Follow these **four steps** to get a development build running on your device or simulator.
 
 ---
@@ -49,7 +51,7 @@ We use EAS Build to generate a **development client** that you install on the de
 ```bash
 npm start         # or: yarn start
 ```
-* Scan the QR shown in the terminal with the dev-client you just installed, **or** press `i` / `a` to open an iOS or Android simulator.
+* Scan the QR shown in the terminal with the dev-client you just installed, **or** press `i` / `a` to open an iOS simulator.
 * Hot-reload works out of the box. If you ever see "`OPENAI_API_KEY` missing", confirm that `.env` exists and you used `npm start` (not `npx expo start`).
 
 That's it—enjoy hacking! 🎉 
